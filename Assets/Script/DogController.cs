@@ -71,7 +71,7 @@ public class DogController : MonoBehaviour
             else
             {
                 //resets camera rotation
-                cameraObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+                cameraObject.transform.rotation = transform.rotation;
                 //zeroes out the x and y rotation
                 yRotation = 0;
                 xRotation = 0;
@@ -88,9 +88,18 @@ public class DogController : MonoBehaviour
 
         hInput = Input.GetAxisRaw("Horizontal");
         vInput = Input.GetAxisRaw("Vertical");
-
+        Vector3 movementdirection = new Vector3(hInput, 0, vInput);
         Vector3 newPos = new Vector3(transform.position.x + hInput * 10 * Time.deltaTime, transform.position.y, transform.position.z + vInput * 10 * Time.deltaTime);
         transform.position = newPos;
+        movementdirection.Normalize();
+        if (movementdirection!= Vector3.zero)
+        {
+            Quaternion lookrotation = Quaternion.LookRotation(movementdirection, Vector3.up);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, lookrotation, 100*Time.deltaTime);
+
+            
+        }
+        //transform.rotation = Quaternion.LookRotation(direction,Vector3.up );
     }
 
 }
