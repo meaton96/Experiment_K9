@@ -15,6 +15,7 @@ public class DogController : MonoBehaviour
     private float vInput;
     private Vector3 oldPos;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +42,8 @@ public class DogController : MonoBehaviour
 
     private void CameraUpdate()
     {
+        /// we're going to need to lock the mouse
+        
         if (threeD)
         {
             //Follow the dog when it moves
@@ -67,6 +70,12 @@ public class DogController : MonoBehaviour
             }
             else
             {
+                //resets camera rotation
+                cameraObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+                //zeroes out the x and y rotation
+                yRotation = 0;
+                xRotation = 0;
+                //finally resets position
                 cameraObject.transform.position = transform.position;
                 cameraObject.transform.position -= transform.forward * 20;
                 cameraObject.transform.position += new Vector3(0, 8, 0);
