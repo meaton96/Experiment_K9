@@ -17,12 +17,12 @@ public class CameraControllerBeta : MonoBehaviour
         RotateCamera();
     }
     private void LateUpdate() {
-        transform.position = playerTransform.position + cameraOffset;
+       // transform.position = playerTransform.position + cameraOffset;
     }
 
     void RotateCamera() {
-        float mouseX = Input.GetAxis("Mouse X") * rotationSpeed;
-        float mouseY = Input.GetAxis("Mouse Y") * rotationSpeed;
+        float mouseX = Input.GetAxis("Mouse X") * rotationSpeed*Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
 
         if (!lockVerticalRotation) {
             transform.RotateAround(playerTransform.position, Vector3.up, mouseX);
