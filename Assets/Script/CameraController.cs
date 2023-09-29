@@ -21,6 +21,7 @@ public class CameraController : MonoBehaviour {
     }
 
     void LateUpdate() {
+        //isRotating = Keyboard.current.aKey.isPressed || Keyboard.current.dKey.isPressed;    
         // Check if the right mouse button is pressed for rotating the camera
         if (Mouse.current.rightButton.isPressed) {
             // Calculate the horizontal movement of the mouse and set the rotating flag to true
