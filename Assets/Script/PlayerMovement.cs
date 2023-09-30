@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;  // Make sure to install the new Input System package
+using UnityEngine.InputSystem; 
 
 public class PlayerMovement : MonoBehaviour {
     public float moveSpeed = 5.0f;
