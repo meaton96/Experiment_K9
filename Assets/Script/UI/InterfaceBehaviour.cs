@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InterfaceBehaviour : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI dogToggleText;
-    private string dogToggleTextPrefix = "D.O.G. Toggle: ";
+    private string dogToggleTextPrefix = "D.O.G. Mode: ";
     // Start is called before the first frame update
     void Start() {
 
@@ -16,7 +16,7 @@ public class InterfaceBehaviour : MonoBehaviour {
 
     }
 
-    public void SetDogToggleText(bool dogEnabled) {
-        dogToggleText.text = dogToggleTextPrefix + (dogEnabled ? "On" : "Off");
+    public void SetDogToggleText(bool dogIsRangedMode) {
+        dogToggleText.text = dogToggleTextPrefix + (dogIsRangedMode ? "Manual" : "Auto");
     }
 }
