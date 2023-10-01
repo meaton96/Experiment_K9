@@ -24,6 +24,7 @@ public class PlayerControllerBeta : MonoBehaviour {
             }
         }
     }
+    //handles movement in 3d mode
     void Move3D() {
         Vector2 input = GetInput();
 
@@ -37,7 +38,7 @@ public class PlayerControllerBeta : MonoBehaviour {
             transform.position += moveSpeed3D * Time.deltaTime * direction;
         }
     }
-
+    //handles movement in 2d mode
     void Move2D() {
         Vector2 input = GetInput();
 
@@ -48,22 +49,24 @@ public class PlayerControllerBeta : MonoBehaviour {
 
         transform.position += moveSpeed2D * Time.deltaTime * direction;
     }
-
+    //helper method to grab keyboard input in 3d, checks for WASD presses
     Vector2 GetInput() {
         var keyboard = Keyboard.current;
         return new Vector2(keyboard.dKey.isPressed ? 1 : keyboard.aKey.isPressed ? -1 : 0,
                            keyboard.wKey.isPressed ? 1 : keyboard.sKey.isPressed ? -1 : 0);
     }
 
-    
+    //swap between dimensions
     public void ChangeDimension() {
 
         Is3D = !Is3D;
 
     }
+    //enable/disable movement logic 
     public void ToggleMovement() {
         CanMove = !CanMove;
     }
+    //returns true if the game is in 3d mode
     public bool IsIn3D() { return Is3D; }
 }
 

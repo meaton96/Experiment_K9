@@ -21,7 +21,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
 
 
-    [SerializeField] private CameraControllerBeta cameraControllerScript;
+//    [SerializeField] private CameraControllerBeta cameraControllerScript;
     private PlayerControllerBeta playerControllerScript;
     [SerializeField] private InterfaceBehaviour interfaceScript;
 
@@ -56,35 +56,44 @@ public class PlayerDimensionController : MonoBehaviour {
             SwapDOGModes();
         }
 
+        //manual dog mode
         if (RangedDOGEnabled) {
-            HandleDimensionTransition();
+            HandleManualTransition();
 
             //update the position of the projected sprite if the camera is being rotated
             if (Input.GetKey(KeyCode.Space) && playerControllerScript.IsIn3D()) {
                 MoveProjectionWithCamera();
             }
         }
+        //auto mode
+        //TODO: add ability to toggle off DOG to leave wall
         else if (DOGEnabled) {
             HandleAutoDOG();
 
 
         }
     }
+    //swap between manual and auto mode
+    //TODO: test how this behaves when a projection is currently active on a wall
     private void SwapDOGModes() {
         RangedDOGEnabled = !RangedDOGEnabled;
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
         DisableProjections();
 
     }
+    //handles collisions
     private void OnCollisionEnter(Collision collision) {
+        //only handle 3d collisions while in 3d mode
         if (playerControllerScript.IsIn3D()) {
+            //handle a collision with a wall to potentially trnasfer to 2d
             if (collision.collider.gameObject.layer == WALL_LAYER) {
-                if (collision.collider.GetComponent<WallBehaviour>().AllowsDimensionTransition) {
+                if (collision.collider.GetComponent<WallBehaviour>().AllowsDimensionTransition && DOGEnabled) {
                     TransitionTo2D();
                 }
             }
         }
     }
+    //handles the auto mode of the Dimension device
     public void HandleAutoDOG() {
         
         GameObject nearestWall;
@@ -92,8 +101,9 @@ public class PlayerDimensionController : MonoBehaviour {
         if (isTransitioningTo2D)
             TransitionCamera();
         else if (playerControllerScript.IsIn3D()) {
+            //get the nearest wall location
+            //also store the location on the wall where we wawnt to draw the projection
             if ((nearestWall = FindNearbyWall(out Vector3 projectionDrawLocation)) != null) {
-               // Debug.Log("test");
                 if (projectionOutOfRange.activeInHierarchy == false) {
 
                     //activate and set position and rotation of the projection
@@ -111,6 +121,8 @@ public class PlayerDimensionController : MonoBehaviour {
             
         }
     }
+    //finds the nearest wall to this game object by performing an Overlap Sphere test
+    //returns the wall which is the shorest distance away and sets the out variable to the closest point on the wall to the player
     public GameObject FindNearbyWall(out Vector3 closestPoint) {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, DOGProjectionRange);
 
@@ -123,8 +135,6 @@ public class PlayerDimensionController : MonoBehaviour {
             // Ensure not to return the game object itself and only check objects on layer 6 (wall layer)
             if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != WALL_LAYER || !hitCollider.GetComponent<WallBehaviour>().AllowsDimensionTransition)
                 continue;
-
-            Debug.Log(hitCollider.name);
 
             var closestPointOnWall = hitCollider.ClosestPoint(transform.position); 
 
@@ -146,7 +156,9 @@ public class PlayerDimensionController : MonoBehaviour {
 
         return closestObject;
     }
-    private void HandleDimensionTransition() {
+    //handles a manual transition to 2d
+    private void HandleManualTransition() {
+        //checks for player input with space
         if (Input.GetKeyDown(KeyCode.Space)) {
             if (playerControllerScript.IsIn3D())
                 PerformRaycast();
@@ -233,16 +245,17 @@ public class PlayerDimensionController : MonoBehaviour {
         transferLocation = hit.point + positionAdjustment * WALL_DRAW_OFFSET;
         cameraTranstionTarget = transferLocation + cameraOffset2D * hit.collider.transform.up;
     }
-
+    //disable all projections
     private void DisableProjections() {
         projectionEntry.SetActive(false);
         projectionNoEntry.SetActive(false);
         projectionOutOfRange.SetActive(false);
     }
-
+    //perform the necessary steps to begin the transfer to 2d
     private void TransitionTo2D() {
         dog3D.SetActive(false);
         isTransitioningTo2D = true;
+        //swap the projections to the colored active one if the auto mode is enabled 
         if (!RangedDOGEnabled) {
             projectionEntry.transform.position = projectionOutOfRange.transform.position;
             projectionEntry.transform.forward = projectionOutOfRange.transform.forward;
@@ -256,7 +269,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
 
         //toggle camera rotation controls and tell player script to swap to 2d movement
-        cameraControllerScript.ChangeDimension();
+        
         playerControllerScript.ToggleMovement();
     }
 

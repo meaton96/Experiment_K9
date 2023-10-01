@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 1282100498}
+  playerControllerScript: {fileID: 1282100499}
   rotationSpeed: 2000
   lockVerticalRotation: 0
 --- !u!4 &316548808
@@ -661,7 +662,6 @@ MonoBehaviour:
   projectionNoEntry: {fileID: 316548809}
   dog3D: {fileID: 1406236381}
   RangedDOGEnabled: 0
-  cameraControllerScript: {fileID: 117310073}
   interfaceScript: {fileID: 1993308044}
   projectionMoveSpeed: 1
   DOGEnabled: 1

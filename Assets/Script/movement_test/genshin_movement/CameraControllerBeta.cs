@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class CameraControllerBeta : MonoBehaviour {
     public Transform playerTransform;
+    [SerializeField] private PlayerControllerBeta playerControllerScript;
     public float rotationSpeed = 5.0f;
     public bool lockVerticalRotation = false;
 
     private Vector3 previousPlayerPosition;
-    private bool is3D = true;
+   // private bool is3D = true;
 
     private void Start() {
         Cursor.lockState = CursorLockMode.Locked;
@@ -16,7 +17,8 @@ public class CameraControllerBeta : MonoBehaviour {
     }
 
     void Update() {
-        if (is3D) {
+        //allow camera rotation only in 3d mode
+        if (playerControllerScript.IsIn3D()) {
             RotateCamera();
         }
     }
@@ -55,8 +57,5 @@ public class CameraControllerBeta : MonoBehaviour {
         previousPlayerPosition = playerTransform.position;
     }
 
-    public void ChangeDimension() {
-        is3D = !is3D;
-
-    }
+    
 }
