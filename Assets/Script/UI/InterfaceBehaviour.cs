@@ -4,8 +4,10 @@ using TMPro;
 using UnityEngine;
 
 public class InterfaceBehaviour : MonoBehaviour {
-    [SerializeField] private TextMeshProUGUI dogToggleText;
+    [SerializeField] private TextMeshProUGUI dogModeText;
+    [SerializeField] private TextMeshProUGUI dogAutoEnabledText;
     private string dogToggleTextPrefix = "D.O.G. Mode: ";
+    private string dogEnabledPrefix = "D.O.G. Transfer: ";
     // Start is called before the first frame update
     void Start() {
 
@@ -17,6 +19,10 @@ public class InterfaceBehaviour : MonoBehaviour {
     }
 
     public void SetDogToggleText(bool dogIsRangedMode) {
-        dogToggleText.text = dogToggleTextPrefix + (dogIsRangedMode ? "Manual" : "Auto");
+        dogModeText.text = dogToggleTextPrefix + (dogIsRangedMode ? "Manual" : "Auto");
+        dogAutoEnabledText.gameObject.SetActive(!dogIsRangedMode);
+    }
+    public void SetDogAutoEnabledText(bool isAutoEnabled) {
+        dogAutoEnabledText.text = dogEnabledPrefix + (isAutoEnabled ? "On" : "Off");
     }
 }

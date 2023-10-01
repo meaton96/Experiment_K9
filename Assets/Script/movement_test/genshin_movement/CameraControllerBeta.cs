@@ -8,6 +8,8 @@ public class CameraControllerBeta : MonoBehaviour {
     public float rotationSpeed = 5.0f;
     public bool lockVerticalRotation = false;
 
+    private bool canRotateCamera = true;
+
     private Vector3 previousPlayerPosition;
    // private bool is3D = true;
 
@@ -18,7 +20,7 @@ public class CameraControllerBeta : MonoBehaviour {
 
     void Update() {
         //allow camera rotation only in 3d mode
-        if (playerControllerScript.IsIn3D()) {
+        if (playerControllerScript.IsIn3D() && canRotateCamera) {
             RotateCamera();
         }
     }
@@ -57,5 +59,9 @@ public class CameraControllerBeta : MonoBehaviour {
         previousPlayerPosition = playerTransform.position;
     }
 
-    
+    public void ToggleCameraRotation(bool enable) {
+        canRotateCamera = enable;
+    }
+
+
 }
