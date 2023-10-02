@@ -12,7 +12,7 @@ public class CameraControllerBeta : MonoBehaviour {
 
     private bool canRotateCamera = true;
 
-    [SerializeField] private float cameraLookOffset = 10f;
+  //  [SerializeField] private float cameraLookOffset = 10f;
 
     private Vector3 previousPlayerPosition;
 
@@ -36,7 +36,9 @@ public class CameraControllerBeta : MonoBehaviour {
     private void LateUpdate() {
         FollowPlayer();
     }
-
+    /// <summary>
+    /// Handle mouse input for camera rotation using RotateHorizontal and RotateVertical, also keeps the camera looking at the player
+    /// </summary>
     void RotateCamera() {
         float mouseX = Input.GetAxis("Mouse X")
             * rotationSpeed
@@ -53,29 +55,52 @@ public class CameraControllerBeta : MonoBehaviour {
 
         transform.LookAt(playerTransform);
     }
-
+    /// <summary>
+    /// Handles horizontal camera rotation
+    /// </summary>
+    /// <param name="mouseX"></param>
     void RotateHorizontal(float mouseX) {
-        transform.RotateAround(playerTransform.position + playerTransform.forward * cameraLookOffset,
+        transform.RotateAround(playerTransform.position,
             Vector3.up, mouseX);
     }
 
+    /// <summary>
+    /// Handles verticle camera rotaton 
+    /// </summary>
+    /// <param name="mouseY">float rotational speed of the mouse in the y direction</param>
     void RotateVertical(float mouseY) {
-        transform.RotateAround(playerTransform.position + playerTransform.forward * cameraLookOffset,
+        //possibly could lock this value to prevent clipping into the ground but i think a hitbox is a better option
+        //so when the player keeps trying to look up the camera should slide forward towards the player
+        //possibly also making the player model see through
+        transform.RotateAround(playerTransform.position,
             -transform.right, mouseY);
     }
-
+    /// <summary>
+    /// Keeps the camera moving with the player's transform
+    /// </summary>
     void FollowPlayer() {
         transform.position += playerTransform.position - previousPlayerPosition;
         previousPlayerPosition = playerTransform.position;
     }
 
+    /// <summary>
+    /// Enables or disables the camera's rotation based on the provided boolean value.
+    /// </summary>
+    /// <param name="enable">A boolean value indicating whether to enable (true) or disable (false) the camera rotation.</param>
     public void ToggleCameraRotation(bool enable) {
         canRotateCamera = enable;
     }
+    /// <summary>
+    /// Resets the camera's position and orientation to its default state, typically aligning it with the player's position and orientation.
+    /// </summary>
     public void ResetCameraLocation() {
      //   transform.position = playerTransform.position + defaultCameraOffset;
         transform.position =  GetUpdatedCameraPosition();
     }
+    /// <summary>
+    /// Calculates and returns the updated position of the camera based on the player's current position and orientation, as well as any applicable camera offsets and constraints.
+    /// </summary>
+    /// <returns>A Vector3 representing the updated position of the camera.</returns>
     public Vector3 GetUpdatedCameraPosition() {
         // Rotate the default camera offset by the game object's local rotation
         Vector3 rotatedOffset = playerTransform.localRotation * defaultCameraOffset;

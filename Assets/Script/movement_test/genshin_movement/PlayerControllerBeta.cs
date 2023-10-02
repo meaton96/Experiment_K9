@@ -8,28 +8,28 @@ using UnityEngine.InputSystem.Controls;
 
 public class PlayerControllerBeta : MonoBehaviour {
 
-    public const int GROUND_LAYER = 8;
-    public float moveSpeed3D = 5.0f;
-    public float moveSpeed2D = 10.0f;
-    public Transform cameraTransform;
-    private bool is3D = true;
-    private bool canMove = true;
-    private bool canInteract = true;
+    public const int GROUND_LAYER = 8;                      //layer all ground objects should be on for gravity
+    public float moveSpeed3D = 5.0f;                        //movement speed while in 3D        
+    public float moveSpeed2D = 10.0f;                       //movement speed while in 2D
+    public Transform cameraTransform;                       //transform of the main camera
+    private bool is3D = true;                               //handles checking if the player is in 3d or 2d mode
+    private bool canMove = true;                            //disable or enable player movement
+    private bool canInteract = true;                        //disable or enable player interactions
 
-    [SerializeField] private GameObject player2D;
+    [SerializeField] private GameObject player2D;           //holds the 2d depiction of the player
 
-    [SerializeField] private float interactDisplayRadius = 20f;
-    [SerializeField] private GameObject interactRadar;
+    [SerializeField] private float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
+    [SerializeField] private GameObject interactRadar;          //holds the game object that has the radar collider on it
 
-    private KeyControl interactKey;
+    private KeyControl interactKey;     //which key to use for interaction, set in Start()
 
-    private List<TransferableObject> objectsInInteractRange;
-    private Rigidbody rigidBody;
+    private List<TransferableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
+    private Rigidbody rigidBody;                                //holds the player's rigid body
 
-    public bool IsHoldingObject = false;
-    public TransferableObject HeldObject;
+    public bool IsHoldingObject = false;                    //if the player has something in their hands or not
+    public TransferableObject HeldObject;                   //the object the player is hold
 
-    private bool isTouchingGround;
+    private bool isTouchingGround;                          //if the player is on the ground, to enable movement logic
 
     private void Start() {
         interactKey = Keyboard.current.eKey;
@@ -72,6 +72,7 @@ public class PlayerControllerBeta : MonoBehaviour {
                 transform.forward = direction.normalized;  // Only set forward direction if there is input
                 transform.position += moveSpeed3D * Time.deltaTime * direction;
             }
+            //jump
         }
     }
     //handles movement in 2d mode

@@ -354,7 +354,7 @@ public class PlayerDimensionController : MonoBehaviour {
     private void TransitionTo2D() {
 
         playerControllerScript.ToggleMovement();
-        dog3D.SetActive(false);
+        dog3D.SetActive(false); 
         isTransitioningTo2D = true;
         //swap the projections to the colored active one if the auto mode is enabled 
         if (!RangedDOGEnabled) {
