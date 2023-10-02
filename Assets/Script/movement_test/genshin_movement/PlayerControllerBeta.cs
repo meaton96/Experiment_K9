@@ -1,41 +1,77 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class PlayerControllerBeta : MonoBehaviour {
 
+    public const int GROUND_LAYER = 8;
     public float moveSpeed3D = 5.0f;
     public float moveSpeed2D = 10.0f;
     public Transform cameraTransform;
-    private bool Is3D = true;
-    private bool CanMove = true;
+    private bool is3D = true;
+    private bool canMove = true;
+    private bool canInteract = true;
 
     [SerializeField] private GameObject player2D;
 
+    [SerializeField] private float interactDisplayRadius = 20f;
+    [SerializeField] private GameObject interactRadar;
+
+    private KeyControl interactKey;
+
+    private List<TransferableObject> objectsInInteractRange;
+    private Rigidbody rigidBody;
+
+    public bool IsHoldingObject = false;
+    public TransferableObject HeldObject;
+
+    private bool isTouchingGround;
+
+    private void Start() {
+        interactKey = Keyboard.current.eKey;
+        interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
+        objectsInInteractRange = new();
+        rigidBody = GetComponent<Rigidbody>();  
+    }
+
     void Update() {
-        if (CanMove) {
-            if (Is3D) {
+        if (canMove) {
+            if (is3D) {
                 Move3D();
+                if (canInteract) {
+
+                    //remove
+                    //Debug.Log(transform.forward);
+
+                    HandleInteractionInput();   
+                }
             }
             else {
                 Move2D();
             }
         }
     }
+    #region Player Movement Controls
     //handles movement in 3d mode
     void Move3D() {
-        Vector2 input = GetInput();
+        Debug.Log(isTouchingGround);
+        //only allow move while touching the ground
+        if (isTouchingGround) {
+            Vector2 input = GetInput();
 
-        if (input != Vector2.zero) {  // Check if there's any input
-            Vector3 cameraForward = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
-            Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
+            if (input != Vector2.zero) {  // Check if there's any input
+                Vector3 cameraForward = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
+                Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
 
-            Vector3 direction = cameraForward * input.y + cameraRight * input.x;
+                Vector3 direction = cameraForward * input.y + cameraRight * input.x;
 
-            transform.forward = direction.normalized;  // Only set forward direction if there is input
-            transform.position += moveSpeed3D * Time.deltaTime * direction;
+                transform.forward = direction.normalized;  // Only set forward direction if there is input
+                transform.position += moveSpeed3D * Time.deltaTime * direction;
+            }
         }
     }
     //handles movement in 2d mode
@@ -59,14 +95,77 @@ public class PlayerControllerBeta : MonoBehaviour {
     //swap between dimensions
     public void ChangeDimension() {
 
-        Is3D = !Is3D;
+        is3D = !is3D;
+        rigidBody.isKinematic = !is3D;
 
     }
     //enable/disable movement logic 
     public void ToggleMovement() {
-        CanMove = !CanMove;
+        canMove = !canMove;
     }
+    #endregion
+
     //returns true if the game is in 3d mode
-    public bool IsIn3D() { return Is3D; }
+    public bool IsIn3D() { return is3D; }
+    
+
+    public void AddObjectToInRangeList(TransferableObject tObject) {
+        objectsInInteractRange.Add(tObject);
+    }
+    public void RemoveObjectFromRangeList(TransferableObject tObject) {
+        objectsInInteractRange.Remove(tObject);
+    }
+
+    //handles player interaction with interactable objects
+    private void HandleInteractionInput() {
+
+        if (interactKey.wasPressedThisFrame) {
+            //if the player is already holding something then drop it
+            if (IsHoldingObject) {
+                HeldObject.Drop();
+                IsHoldingObject = false;
+                HeldObject = null;
+            } 
+            //only process interact press if theres something to interact with
+            else if (objectsInInteractRange.Any()) {
+                float closestToCameraLookDirection = float.MaxValue;
+                TransferableObject tObject = null;
+                //iterate each object
+                foreach (var obj in objectsInInteractRange) {
+                    //get the vector from the object to the main camera
+                    var vecToObject = obj.transform.position - Camera.main.transform.position;
+                    //use the dot product to project the vector onto the camera's right axis
+                    var dist = Mathf.Abs(
+                        Vector3.Dot(
+                            vecToObject, 
+                            Camera.main.transform.right));
+                    //compare the distance to camera and find the smallest one
+                    if (dist < closestToCameraLookDirection) {
+                        closestToCameraLookDirection = dist;
+                        tObject = obj;
+                    }
+                }
+                HeldObject = tObject;
+                //pick up the object that was found to be the closest
+                HeldObject.Pickup(gameObject);
+                
+                IsHoldingObject = true;
+
+            }
+
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.collider.gameObject.layer == GROUND_LAYER) {
+            isTouchingGround = true;
+        }
+    }
+    private void OnCollisionExit(Collision collision) {
+        if (collision.collider.gameObject.layer == GROUND_LAYER) {
+            isTouchingGround = false;
+        }
+    }
+
 }
 

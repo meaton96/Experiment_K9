@@ -10,7 +10,7 @@ using UnityEngine.InputSystem.HID;
 
 public class PlayerDimensionController : MonoBehaviour {
     public const int WALL_LAYER = 6;
-    public const float WALL_DRAW_OFFSET = 0.001f;
+    public const float WALL_DRAW_OFFSET = -.9f;
 
     [SerializeField] private float raycastLength = 50f;
     [SerializeField] private float wall_intersect_radius_2d = 10f;
@@ -18,6 +18,7 @@ public class PlayerDimensionController : MonoBehaviour {
     [SerializeField] private GameObject projectionNoEntry;
     [SerializeField] private GameObject dog3D;
     private float cameraTransitionSpeed = 4f;
+    private float projectionDrawRadius;
 
     //flag for Ranged version of device where you hold down space and release to transfer
     public bool RangedDOGEnabled = false;
@@ -37,7 +38,7 @@ public class PlayerDimensionController : MonoBehaviour {
     [SerializeField] private float projectionMoveSpeed = 1.0f;
 
     //for flying the camera to the 2d sprite
-    private readonly float cameraOffset2D = 20f;
+    public float cameraOffset2D = 20f;
     private Vector3 cameraTranstionTarget;
     private Vector3 projectionTransferLocation;
 
@@ -62,12 +63,16 @@ public class PlayerDimensionController : MonoBehaviour {
         playerControllerScript = GetComponent<PlayerControllerBeta>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
         DOGToggleKey = Keyboard.current.spaceKey;
+
+        //store the size of the projection for drawing objects around it
+        projectionDrawRadius = projectionOutOfRange.GetComponent<SpriteRenderer>().sprite.rect.height;
     }
 
     private void Update() {
         if (isTransitioningTo2D) {
             TransitionCamera();
-        } else if (isTransitioningTo3D) {
+        }
+        else if (isTransitioningTo3D) {
             TransitionCameraTo3D();
         }
         else if (Keyboard.current.f1Key.wasPressedThisFrame) {
@@ -124,13 +129,18 @@ public class PlayerDimensionController : MonoBehaviour {
         if (playerControllerScript.IsIn3D()) {
             Handle3DAutoDOG();
 
+
+
         }
         else {
             Handle2DAutoDog();
         }
     }
+    private void HandleObjectProjection(GameObject nearestWall, Vector3 projectionDrawCenter) {
+        playerControllerScript.HeldObject.ProjectOntoWallAtLocation(nearestWall, projectionDrawCenter, projectionDrawRadius, WALL_DRAW_OFFSET);
+    }
     private void Handle3DAutoDOG() {
-        
+
 
         //only check for walls and stuff is the device is enabled
         if (DOGEnabled) {
@@ -148,14 +158,21 @@ public class PlayerDimensionController : MonoBehaviour {
                 //always move the projection while it is enabled 
                 projectionOutOfRange.transform.position = projectionDrawLocation + (nearestWall.transform.up * WALL_DRAW_OFFSET);
                 projectionOutOfRange.transform.forward = nearestWall.transform.up;
+
+                //if the player is holding an item, project it onto the wall
+                if (playerControllerScript.IsHoldingObject)
+                    HandleObjectProjection(nearestWall, projectionDrawLocation);
+                
             }
             else {
+                //disable projection if a wall wasnt found
                 projectionOutOfRange.SetActive(false);
+                
             }
         }
     }
     private void Handle2DAutoDog() {
-       
+
         if (!DOGEnabled) {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, wall_intersect_radius_2d);
             hitColliders.ToList().ForEach(hit => Debug.Log(name));
@@ -191,14 +208,14 @@ public class PlayerDimensionController : MonoBehaviour {
 
         GameObject closestObject = null;
         float closestDistance = DOGProjectionRange; // Initialize with the maximum possible distance
-        closestPoint = Vector3.zero; 
+        closestPoint = Vector3.zero;
 
         foreach (var hitCollider in hitColliders) {
             // Ensure not to return the game object itself and only check objects on layer 6 (wall layer)
             if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != WALL_LAYER || !hitCollider.GetComponent<WallBehaviour>().AllowsDimensionTransition)
                 continue;
 
-            var closestPointOnWall = hitCollider.ClosestPoint(transform.position); 
+            var closestPointOnWall = hitCollider.ClosestPoint(transform.position);
 
             float distance = Vector3.Distance(transform.position, closestPointOnWall);
 
@@ -212,7 +229,7 @@ public class PlayerDimensionController : MonoBehaviour {
                 projectionTransferLocation = closestPoint + hitCollider.transform.up * WALL_DRAW_OFFSET;
                 cameraTranstionTarget = projectionTransferLocation + cameraOffset2D * hitCollider.transform.up;
 
-               
+
 
             }
 
@@ -229,7 +246,7 @@ public class PlayerDimensionController : MonoBehaviour {
             HandleManualMode3D();
         else
             HandleManualMode2D();
-       
+
     }
 
     private void HandleManualMode2D() {
@@ -328,12 +345,14 @@ public class PlayerDimensionController : MonoBehaviour {
         projectionEntry.SetActive(false);
         projectionNoEntry.SetActive(false);
         projectionOutOfRange.SetActive(false);
+
+        
+
     }
     #region 2D<->3D Transitions
     //perform the necessary steps to begin the transfer to 2d
     private void TransitionTo2D() {
-        originalCameraPosition = Camera.main.transform.localPosition;
-        originalCameraRotation = Camera.main.transform.localRotation;
+
         playerControllerScript.ToggleMovement();
         dog3D.SetActive(false);
         isTransitioningTo2D = true;
@@ -353,6 +372,14 @@ public class PlayerDimensionController : MonoBehaviour {
         //toggle camera rotation controls and tell player script to swap to 2d movement
         cameraControllerScript.ToggleCameraRotation(false);
 
+        if (playerControllerScript.IsHoldingObject) {
+            var heldObject = playerControllerScript.HeldObject;
+            if (heldObject != null) {
+                //heldObject.Enable2D();
+                heldObject.Disable3D();
+            }
+        }
+
     }
     private void TransitionTo3D() {
         Debug.Log("transitioning to 3D");
@@ -360,7 +387,7 @@ public class PlayerDimensionController : MonoBehaviour {
         playerControllerScript.ToggleMovement();
 
         //Set the transitioning flag
-        isTransitioningTo3D = true; 
+        isTransitioningTo3D = true;
 
         //Enable camera rotation
         cameraControllerScript.ToggleCameraRotation(true);
@@ -369,7 +396,19 @@ public class PlayerDimensionController : MonoBehaviour {
         dog3D.SetActive(true);
 
         //Disable the 2D projection
-        projectionEntry.SetActive(false);  
+        projectionEntry.SetActive(false);
+
+        //calculate camera position
+        originalCameraPosition = Camera.main.GetComponent<CameraControllerBeta>().GetUpdatedCameraPosition();
+        originalCameraRotation = Quaternion.LookRotation(transform.position - originalCameraPosition, Vector3.up);
+
+        if (playerControllerScript.IsHoldingObject) {
+            var heldObject = playerControllerScript.HeldObject;
+            if (heldObject != null) {
+                heldObject.Enable3D();
+                heldObject.Disable2D();
+            }
+        }
 
     }
 
@@ -387,31 +426,32 @@ public class PlayerDimensionController : MonoBehaviour {
             playerControllerScript.ChangeDimension();
             playerControllerScript.ToggleMovement();
 
-            
+
         }
 
-        
+
     }
     private void TransitionCameraTo3D() {
         Camera.main.transform.SetPositionAndRotation(
             Vector3.Lerp(
-                Camera.main.transform.position, 
-                originalCameraPosition, 
-                cameraTransitionSpeed * Time.deltaTime), 
-            Quaternion.Slerp(Camera.main.transform.rotation, 
-                originalCameraRotation, 
+                Camera.main.transform.position,
+                originalCameraPosition,
+                cameraTransitionSpeed * Time.deltaTime),
+            Quaternion.Slerp(Camera.main.transform.rotation,
+                originalCameraRotation,
                 cameraTransitionSpeed * Time.deltaTime));
 
         // Check if the transition is complete
         if (Vector3.Distance(Camera.main.transform.position, originalCameraPosition) < 0.15f) {
             isTransitioningTo3D = false;  // Clear the transitioning flag
 
-            // Step 7: Complete the transition by re-enabling player controls
+            //Complete the transition by re-enabling player controls
             playerControllerScript.ChangeDimension();
             playerControllerScript.ToggleMovement();
             cameraControllerScript.ToggleCameraRotation(true);
         }
     }
+
     #endregion
 
 }

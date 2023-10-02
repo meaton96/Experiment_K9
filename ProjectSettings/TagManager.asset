@@ -3,19 +3,21 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - CinemachineTarget
+  - InteractRadar
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Physics Disabled
   - Water
   - UI
   - Walls
-  - 
-  - 
-  - 
-  - 
+  - Interactable Objects
+  - Ground
+  - Ignore Ground
+  - Player
   - 
   - 
   - 
