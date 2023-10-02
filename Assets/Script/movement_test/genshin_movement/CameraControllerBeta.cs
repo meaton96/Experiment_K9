@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class CameraControllerBeta : MonoBehaviour {
     public Transform playerTransform;
     [SerializeField] private PlayerControllerBeta playerControllerScript;
+    [SerializeField] private Vector3 defaultCameraOffset = new(3, 14, -13);
     public float rotationSpeed = 5.0f;
     public bool lockVerticalRotation = false;
 
@@ -69,6 +71,19 @@ public class CameraControllerBeta : MonoBehaviour {
 
     public void ToggleCameraRotation(bool enable) {
         canRotateCamera = enable;
+    }
+    public void ResetCameraLocation() {
+     //   transform.position = playerTransform.position + defaultCameraOffset;
+        transform.position =  GetUpdatedCameraPosition();
+    }
+    public Vector3 GetUpdatedCameraPosition() {
+        // Rotate the default camera offset by the game object's local rotation
+        Vector3 rotatedOffset = playerTransform.localRotation * defaultCameraOffset;
+
+        // Calculate the updated camera position
+        Vector3 updatedCameraPosition = playerTransform.position + rotatedOffset;
+
+        return updatedCameraPosition;
     }
 
 

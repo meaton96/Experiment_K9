@@ -7,6 +7,8 @@ public class TransferableObject : MonoBehaviour {
     [SerializeField] private GameObject displayObject_2D;
     [SerializeField] private ObjectInteractDisplayController interactDisplayController;
 
+    [SerializeField] private float objectDrawOffset = 40f;
+
     public bool Is3D = true;
     public bool IsBeingHeld = false;
 
@@ -57,5 +59,24 @@ public class TransferableObject : MonoBehaviour {
         holder = null;
         IsBeingHeld = false;
         transform.parent = null;    
+    }
+    public void ProjectOntoWallAtLocation(GameObject nearestWall, Vector3 projectionDrawCenter, float playerProjectionSize, float wallDrawOffset) {
+
+        var drawLoc = projectionDrawCenter + -Vector3.forward * objectDrawOffset;
+        Debug.Log(drawLoc);
+        if (displayObject_2D.activeInHierarchy == false) {
+
+            //activate and set position and rotation of the projection
+            displayObject_2D.transform.position = drawLoc;
+            displayObject_2D.transform.forward = nearestWall.transform.up;
+            Enable2D();
+        }
+        //always move the projection while it is enabled 
+        displayObject_2D.transform.position = drawLoc + (nearestWall.transform.up * wallDrawOffset);
+        displayObject_2D.transform.forward = nearestWall.transform.up;
+        
+    }
+    public void DisableProjection() {
+        displayObject_2D.SetActive(false);
     }
 }

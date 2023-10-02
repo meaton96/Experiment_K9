@@ -48,12 +48,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayObject_3D: {fileID: 5267620588336022957}
-  displayObject_2D: {fileID: 5589621960750868870}
+  displayObject_2D: {fileID: 3426124303402463909}
   interactDisplayController: {fileID: 2617706958035673109}
   Is3D: 1
   IsBeingHeld: 0
-  objectHoldOffsetForward: 4
-  objectHoldOffsetUpward: 2
+  holdOffset: {x: 0, y: -2.5, z: 8}
 --- !u!1 &3426124303402463909
 GameObject:
   m_ObjectHideFlags: 0

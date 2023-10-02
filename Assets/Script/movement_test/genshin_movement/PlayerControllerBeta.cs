@@ -24,8 +24,8 @@ public class PlayerControllerBeta : MonoBehaviour {
 
     private List<TransferableObject> objectsInInteractRange;
 
-    private bool isHoldingObject = false;
-    private TransferableObject heldObject;
+    public bool IsHoldingObject = false;
+    public TransferableObject HeldObject;
 
     private void Start() {
         interactKey = Keyboard.current.eKey;
@@ -111,10 +111,10 @@ public class PlayerControllerBeta : MonoBehaviour {
 
         if (interactKey.wasPressedThisFrame) {
             //if the player is already holding something then drop it
-            if (isHoldingObject) {
-                heldObject.Drop();
-                isHoldingObject = false;
-                heldObject = null;
+            if (IsHoldingObject) {
+                HeldObject.Drop();
+                IsHoldingObject = false;
+                HeldObject = null;
             } 
             //only process interact press if theres something to interact with
             else if (objectsInInteractRange.Any()) {
@@ -135,11 +135,11 @@ public class PlayerControllerBeta : MonoBehaviour {
                         tObject = obj;
                     }
                 }
-                heldObject = tObject;
+                HeldObject = tObject;
                 //pick up the object that was found to be the closest
-                heldObject.Pickup(gameObject);
+                HeldObject.Pickup(gameObject);
                 
-                isHoldingObject = true;
+                IsHoldingObject = true;
 
             }
 
