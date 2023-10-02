@@ -8,6 +8,7 @@ using UnityEngine.InputSystem.Controls;
 
 public class PlayerControllerBeta : MonoBehaviour {
 
+    public const int GROUND_LAYER = 8;
     public float moveSpeed3D = 5.0f;
     public float moveSpeed2D = 10.0f;
     public Transform cameraTransform;
@@ -23,14 +24,18 @@ public class PlayerControllerBeta : MonoBehaviour {
     private KeyControl interactKey;
 
     private List<TransferableObject> objectsInInteractRange;
+    private Rigidbody rigidBody;
 
     public bool IsHoldingObject = false;
     public TransferableObject HeldObject;
+
+    private bool isTouchingGround;
 
     private void Start() {
         interactKey = Keyboard.current.eKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
         objectsInInteractRange = new();
+        rigidBody = GetComponent<Rigidbody>();  
     }
 
     void Update() {
@@ -53,16 +58,20 @@ public class PlayerControllerBeta : MonoBehaviour {
     #region Player Movement Controls
     //handles movement in 3d mode
     void Move3D() {
-        Vector2 input = GetInput();
+        Debug.Log(isTouchingGround);
+        //only allow move while touching the ground
+        if (isTouchingGround) {
+            Vector2 input = GetInput();
 
-        if (input != Vector2.zero) {  // Check if there's any input
-            Vector3 cameraForward = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
-            Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
+            if (input != Vector2.zero) {  // Check if there's any input
+                Vector3 cameraForward = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
+                Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
 
-            Vector3 direction = cameraForward * input.y + cameraRight * input.x;
+                Vector3 direction = cameraForward * input.y + cameraRight * input.x;
 
-            transform.forward = direction.normalized;  // Only set forward direction if there is input
-            transform.position += moveSpeed3D * Time.deltaTime * direction;
+                transform.forward = direction.normalized;  // Only set forward direction if there is input
+                transform.position += moveSpeed3D * Time.deltaTime * direction;
+            }
         }
     }
     //handles movement in 2d mode
@@ -87,6 +96,7 @@ public class PlayerControllerBeta : MonoBehaviour {
     public void ChangeDimension() {
 
         is3D = !is3D;
+        rigidBody.isKinematic = !is3D;
 
     }
     //enable/disable movement logic 
@@ -145,6 +155,17 @@ public class PlayerControllerBeta : MonoBehaviour {
 
         }
     }
-    
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.collider.gameObject.layer == GROUND_LAYER) {
+            isTouchingGround = true;
+        }
+    }
+    private void OnCollisionExit(Collision collision) {
+        if (collision.collider.gameObject.layer == GROUND_LAYER) {
+            isTouchingGround = false;
+        }
+    }
+
 }
 

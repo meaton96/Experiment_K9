@@ -15,9 +15,9 @@ TagManager:
   - UI
   - Walls
   - Interactable Objects
-  - 
-  - 
-  - 
+  - Ground
+  - Ignore Ground
+  - Player
   - 
   - 
   - 
