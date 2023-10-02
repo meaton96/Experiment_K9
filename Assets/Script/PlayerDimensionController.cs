@@ -38,7 +38,7 @@ public class PlayerDimensionController : MonoBehaviour {
     [SerializeField] private float projectionMoveSpeed = 1.0f;
 
     //for flying the camera to the 2d sprite
-    private readonly float cameraOffset2D = 20f;
+    public float cameraOffset2D = 20f;
     private Vector3 cameraTranstionTarget;
     private Vector3 projectionTransferLocation;
 

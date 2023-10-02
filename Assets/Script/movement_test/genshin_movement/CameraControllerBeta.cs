@@ -6,7 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 public class CameraControllerBeta : MonoBehaviour {
     public Transform playerTransform;
     [SerializeField] private PlayerControllerBeta playerControllerScript;
-    [SerializeField] private Vector3 defaultCameraOffset = new(3, 14, -13);
+    [SerializeField] private Vector3 defaultCameraOffset;
     public float rotationSpeed = 5.0f;
     public bool lockVerticalRotation = false;
 
