@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.HID;
 
 public class PlayerDimensionController : MonoBehaviour {
@@ -12,6 +13,7 @@ public class PlayerDimensionController : MonoBehaviour {
     public const float WALL_DRAW_OFFSET = 0.001f;
 
     [SerializeField] private float raycastLength = 50f;
+    [SerializeField] private float wall_intersect_radius_2d = 10f;
     [SerializeField] private GameObject projectionEntry;
     [SerializeField] private GameObject projectionNoEntry;
     [SerializeField] private GameObject dog3D;
@@ -39,6 +41,8 @@ public class PlayerDimensionController : MonoBehaviour {
     private Vector3 cameraTranstionTarget;
     private Vector3 projectionTransferLocation;
 
+    private KeyControl DOGToggleKey;
+
 
 
     //vars for toggle mode DOG
@@ -57,6 +61,7 @@ public class PlayerDimensionController : MonoBehaviour {
     private void Start() {
         playerControllerScript = GetComponent<PlayerControllerBeta>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
+        DOGToggleKey = Keyboard.current.spaceKey;
     }
 
     private void Update() {
@@ -77,7 +82,7 @@ public class PlayerDimensionController : MonoBehaviour {
                 HandleManualMode();
 
                 //update the position of the projected sprite if the camera is being rotated
-                if (Input.GetKey(KeyCode.Space) && playerControllerScript.IsIn3D()) {
+                if (DOGToggleKey.isPressed && playerControllerScript.IsIn3D()) {
                     MoveProjectionWithCamera();
                 }
             }
@@ -109,6 +114,7 @@ public class PlayerDimensionController : MonoBehaviour {
             }
         }
     }
+    #region Auto Mode
     //handles the auto mode of the Dimension device
     public void HandleAutoDOG() {
         //check for player input when in Auto mode (currently enable/disable device)
@@ -118,6 +124,9 @@ public class PlayerDimensionController : MonoBehaviour {
         if (playerControllerScript.IsIn3D()) {
             Handle3DAutoDOG();
 
+        }
+        else {
+            Handle2DAutoDog();
         }
     }
     private void Handle3DAutoDOG() {
@@ -145,13 +154,32 @@ public class PlayerDimensionController : MonoBehaviour {
             }
         }
     }
+    private void Handle2DAutoDog() {
+       
+        if (!DOGEnabled) {
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, wall_intersect_radius_2d);
+            hitColliders.ToList().ForEach(hit => Debug.Log(name));
+
+            foreach (var hitCollider in hitColliders) {
+                if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != WALL_LAYER) {
+                    continue;
+                }
+                Debug.Log(hitCollider.gameObject.name);
+                if (hitCollider.GetComponent<WallBehaviour>().AllowsDimensionTransition) {
+                    TransitionTo3D();
+                    return;
+                }
+            }
+        }
+    }
 
     //handle enable/disasble of DOG device while in auto mode
     private void HandleAutoModeInput() {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame) {
+        if (DOGToggleKey.wasPressedThisFrame) {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
-            DisableProjections();
+            if (playerControllerScript.IsIn3D())
+                DisableProjections();
         }
     }
 
@@ -192,6 +220,9 @@ public class PlayerDimensionController : MonoBehaviour {
 
         return closestObject;
     }
+    #endregion
+
+    #region Manual Mode
     //handles a manual transition to 2d
     private void HandleManualMode() {
         if (playerControllerScript.IsIn3D())
@@ -202,18 +233,18 @@ public class PlayerDimensionController : MonoBehaviour {
     }
 
     private void HandleManualMode2D() {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame) {
+        if (DOGToggleKey.wasPressedThisFrame) {
             TransitionTo3D();
         }
     }
 
     private void HandleManualMode3D() {
         //checks for player input with space
-        if (Keyboard.current.spaceKey.isPressed) {
+        if (DOGToggleKey.isPressed) {
             PerformRaycast();
         }
         //release space to initiate trasition to 2d
-        if (Keyboard.current.spaceKey.wasReleasedThisFrame && playerControllerScript.IsIn3D()) {
+        if (DOGToggleKey.wasReleasedThisFrame && playerControllerScript.IsIn3D()) {
             if (canTransitionTo2D && projectionEntry.activeInHierarchy)
                 TransitionTo2D();
             else
@@ -271,6 +302,8 @@ public class PlayerDimensionController : MonoBehaviour {
             DisableProjections();
         }
     }
+    #endregion
+
     //enable one of the projections
     private void EnableProjection(GameObject projection, RaycastHit hit) {
         projection.SetActive(true);
@@ -296,6 +329,7 @@ public class PlayerDimensionController : MonoBehaviour {
         projectionNoEntry.SetActive(false);
         projectionOutOfRange.SetActive(false);
     }
+    #region 2D<->3D Transitions
     //perform the necessary steps to begin the transfer to 2d
     private void TransitionTo2D() {
         originalCameraPosition = Camera.main.transform.localPosition;
@@ -321,6 +355,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
     }
     private void TransitionTo3D() {
+        Debug.Log("transitioning to 3D");
         //Toggle movement to disable player controls during the transition
         playerControllerScript.ToggleMovement();
 
@@ -377,5 +412,6 @@ public class PlayerDimensionController : MonoBehaviour {
             cameraControllerScript.ToggleCameraRotation(true);
         }
     }
-    
+    #endregion
+
 }
