@@ -38,6 +38,10 @@ public class PlayerControllerBeta : MonoBehaviour {
             if (is3D) {
                 Move3D();
                 if (canInteract) {
+
+                    //remove
+                    //Debug.Log(transform.forward);
+
                     HandleInteractionInput();   
                 }
             }
@@ -134,6 +138,7 @@ public class PlayerControllerBeta : MonoBehaviour {
                 heldObject = tObject;
                 //pick up the object that was found to be the closest
                 heldObject.Pickup(gameObject);
+                
                 isHoldingObject = true;
 
             }

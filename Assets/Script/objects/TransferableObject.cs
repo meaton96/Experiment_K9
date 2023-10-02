@@ -11,24 +11,8 @@ public class TransferableObject : MonoBehaviour {
     public bool IsBeingHeld = false;
 
     private GameObject holder;
-    private Vector3 holderPreviousPos;
-    [SerializeField] private float objectHoldOffsetForward = 2f;
-    [SerializeField] private float objectHoldOffsetUpward = 4f;
-    // Start is called before the first frame update
-    void Start() {
 
-    }
-
-    // Update is called once per frame
-    void Update() {
-        if (IsBeingHeld && holder != null) {
-            transform.position += holder.transform.position - holderPreviousPos;
-            holderPreviousPos = holder.transform.position;
-        }
-        
-        
-
-    }
+    [SerializeField] private Vector3 holdOffset = new(0, -2.5f, 8);
 
     public void Set3DDisplayMode(bool is3D) {
         Is3D = is3D;
@@ -56,9 +40,14 @@ public class TransferableObject : MonoBehaviour {
         //disable interaction indicator
         interactDisplayController.SetInteractIndicatorActive(false);
         this.holder = holder;
-        holderPreviousPos = holder.transform.position;
 
-        transform.position = holder.transform.position + holder.transform.forward * objectHoldOffsetForward + Vector3.up * objectHoldOffsetUpward;
+        //set the hold as the parent to carry it around
+        transform.SetParent(holder.transform);
+        //set offset to be infront of the player at all times
+        transform.localPosition = holdOffset;
+
+        //reset the position of the 3d transform to 0
+        //this is an alternative to updating the position of the entire transferable object at all times instead of leaving it in one spot and just moving it when required 
         displayObject_3D.transform.localPosition = Vector3.zero;
         IsBeingHeld = true;
     }
@@ -66,7 +55,7 @@ public class TransferableObject : MonoBehaviour {
         displayObject_3D.GetComponent<Rigidbody>().isKinematic = false;
         interactDisplayController.SetInteractIndicatorActive(true);
         holder = null;
-        holderPreviousPos = Vector3.zero;
         IsBeingHeld = false;
+        transform.parent = null;    
     }
 }

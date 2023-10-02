@@ -12,12 +12,6 @@ public class ObjectInteractDisplayController : MonoBehaviour
     private bool isDisplayingInteractIndicator = false;
     [SerializeField] private TransferableObject tObject;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -29,13 +23,9 @@ public class ObjectInteractDisplayController : MonoBehaviour
             interactIndicator_3D.transform.forward = -vecToCamera;
 
         }
-        //if (tObject.IsBeingHeld) {
-        //    interactIndicator_3D.SetActive(false);
-        //}
     }
 
     public void SetInteractIndicatorActive(bool enable) {
-        Debug.Log("Setting Interact Indicator to: " +  enable);
         isDisplayingInteractIndicator = enable;
         interactIndicator_3D.SetActive(enable);
     }
