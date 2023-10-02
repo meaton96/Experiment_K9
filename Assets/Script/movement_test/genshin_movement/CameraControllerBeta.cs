@@ -10,10 +10,13 @@ public class CameraControllerBeta : MonoBehaviour {
 
     private bool canRotateCamera = true;
 
+    [SerializeField] private float cameraLookOffset = 10f;
+
     private Vector3 previousPlayerPosition;
    // private bool is3D = true;
 
     private void Start() {
+       // transform.position = playerTransform.position + cameraDefaultOffset;
         Cursor.lockState = CursorLockMode.Locked;
         previousPlayerPosition = playerTransform.position;
     }
@@ -47,11 +50,13 @@ public class CameraControllerBeta : MonoBehaviour {
     }
 
     void RotateHorizontal(float mouseX) {
-        transform.RotateAround(playerTransform.position, Vector3.up, mouseX);
+        transform.RotateAround(playerTransform.position + playerTransform.forward * cameraLookOffset,
+            Vector3.up, mouseX);
     }
 
     void RotateVertical(float mouseY) {
-        transform.RotateAround(playerTransform.position, -transform.right, mouseY);
+        transform.RotateAround(playerTransform.position + playerTransform.forward * cameraLookOffset,
+            -transform.right, mouseY);
     }
 
     void FollowPlayer() {
