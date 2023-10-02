@@ -13,12 +13,15 @@ public class CameraControllerBeta : MonoBehaviour {
     [SerializeField] private float cameraLookOffset = 10f;
 
     private Vector3 previousPlayerPosition;
+
+    
    // private bool is3D = true;
 
     private void Start() {
        // transform.position = playerTransform.position + cameraDefaultOffset;
         Cursor.lockState = CursorLockMode.Locked;
         previousPlayerPosition = playerTransform.position;
+
     }
 
     void Update() {
