@@ -10,12 +10,17 @@ public class PlayerControllerBeta : MonoBehaviour {
 
     public const int GROUND_LAYER = 8;                      //layer all ground objects should be on for gravity
     public float moveSpeed3D = 5.0f;                        //movement speed while in 3D        
-    public float moveSpeed2D = 10.0f;                       //movement speed while in 2D
+    public float moveSpeed2D = 10.0f;
+    public float rotationSpeed = 400f;
+    public bool oldrotation = false;
+    public bool newrotation = true;
+    public bool testrotation = false;//movement speed while in 2D
     public Transform cameraTransform;                       //transform of the main camera
     private bool is3D = true;                               //handles checking if the player is in 3d or 2d mode
     private bool canMove = true;                            //disable or enable player movement
     private bool canInteract = true;                        //disable or enable player interactions
-
+    Vector3 position;
+    private Vector3 moveDirection;
     [SerializeField] private GameObject player2D;           //holds the 2d depiction of the player
 
     [SerializeField] private float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
@@ -28,20 +33,22 @@ public class PlayerControllerBeta : MonoBehaviour {
 
     public bool IsHoldingObject = false;                    //if the player has something in their hands or not
     public TransferableObject HeldObject;                   //the object the player is hold
-
+    private float rotation;
     private bool isTouchingGround;                          //if the player is on the ground, to enable movement logic
-
+    private CharacterController characterController;
     private void Start() {
         interactKey = Keyboard.current.eKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
         objectsInInteractRange = new();
-        rigidBody = GetComponent<Rigidbody>();  
+        rigidBody = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
     }
 
     void Update() {
         if (canMove) {
             if (is3D) {
                 Move3D();
+                
                 if (canInteract) {
 
                     //remove
@@ -58,9 +65,11 @@ public class PlayerControllerBeta : MonoBehaviour {
     #region Player Movement Controls
     //handles movement in 3d mode
     void Move3D() {
-        Debug.Log(isTouchingGround);
+        //Debug.Log(isTouchingGround);
+        float ground = transform.position.y;
         //only allow move while touching the ground
         if (isTouchingGround) {
+            position = transform.position;
             Vector2 input = GetInput();
 
             if (input != Vector2.zero) {  // Check if there's any input
@@ -68,9 +77,45 @@ public class PlayerControllerBeta : MonoBehaviour {
                 Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
 
                 Vector3 direction = cameraForward * input.y + cameraRight * input.x;
+                if (oldrotation == true)
+                {
+                    transform.forward = direction.normalized;  // Only set forward direction if there is input
+                    transform.position += moveSpeed3D * Time.deltaTime * direction;
+                    newrotation = false;
+                }
+                else if (newrotation == true)
+                {
+                    //Vector3 rotate = direction.normalized;
+                    Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
 
-                transform.forward = direction.normalized;  // Only set forward direction if there is input
-                transform.position += moveSpeed3D * Time.deltaTime * direction;
+                    // Interpolate between the current rotation and the desired rotation
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+                    // Update player position
+                    position += direction * moveSpeed3D * Time.deltaTime;
+                    transform.position = position;
+
+                }
+                else
+                {
+
+                    //transform.Rotate(0, direction.normalized, 0);
+                    //transform.forward = direction.normalized;
+                    var move = Keyboard.current.wKey.isPressed ? 1 : Keyboard.current.sKey.isPressed ? -1 : 0;
+                    var rotate = Keyboard.current.aKey.isPressed ? -1 : Keyboard.current.dKey.isPressed ? 1 : 0;
+
+                    // Calculate the movement direction
+                    
+                    moveDirection = move * moveSpeed3D * transform.TransformDirection(direction);
+                  //moveDirection.y = 4.59f;
+                   rotation = rotate * rotationSpeed * Time.deltaTime;
+                    transform.Rotate(0, rotation, 0);
+                   // transform.forward= Quaternion.RotateTowards(0, rotation, 0);
+                    position += move*transform.forward * moveSpeed3D * Time.deltaTime;
+                    transform.position = position;
+                    //characterController.Move(moveDirection * Time.deltaTime);
+
+                }
             }
             //jump
         }
