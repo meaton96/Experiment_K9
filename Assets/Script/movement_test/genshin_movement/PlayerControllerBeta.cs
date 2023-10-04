@@ -68,59 +68,63 @@ public class PlayerControllerBeta : MonoBehaviour {
         //Debug.Log(isTouchingGround);
         float ground = transform.position.y;
         //only allow move while touching the ground
-        if (isTouchingGround) {
-            position = transform.position;
-            Vector2 input = GetInput();
+        position = transform.position;
+        Vector2 input = GetInput();
 
-            if (input != Vector2.zero) {  // Check if there's any input
-                Vector3 cameraForward = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
-                Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
+        if (input != Vector2.zero)
+        {  // Check if there's any input
+            Vector3 cameraForward = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
+            Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
 
-                Vector3 direction = cameraForward * input.y + cameraRight * input.x;
-                if (oldrotation == true)
-                {
-                    transform.forward = direction.normalized;  // Only set forward direction if there is input
-                    transform.position += moveSpeed3D * Time.deltaTime * direction;
-                    newrotation = false;
-                }
-                else if (newrotation == true)
-                {
-                    //Vector3 rotate = direction.normalized;
-                    Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
-
-                    // Interpolate between the current rotation and the desired rotation
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-                    // Update player position
-                    position += direction * moveSpeed3D * Time.deltaTime;
-                    transform.position = position;
-
-                }
-                else
-                {
-
-                    //transform.Rotate(0, direction.normalized, 0);
-                    //transform.forward = direction.normalized;
-                    var move = Keyboard.current.wKey.isPressed ? 1 : Keyboard.current.sKey.isPressed ? -1 : 0;
-                    var rotate = Keyboard.current.aKey.isPressed ? -1 : Keyboard.current.dKey.isPressed ? 1 : 0;
-
-                    // Calculate the movement direction
-                    
-                    moveDirection = move * moveSpeed3D * transform.TransformDirection(direction);
-                  //moveDirection.y = 4.59f;
-                   rotation = rotate * rotationSpeed * Time.deltaTime;
-                    transform.Rotate(0, rotation, 0);
-                   // transform.forward= Quaternion.RotateTowards(0, rotation, 0);
-                    position += move*transform.forward * moveSpeed3D * Time.deltaTime;
-                    transform.position = position;
-                    //characterController.Move(moveDirection * Time.deltaTime);
-
-                }
+            Vector3 direction = cameraForward * input.y + cameraRight * input.x;
+            if (oldrotation == true)
+            {
+                transform.forward = direction.normalized;  // Only set forward direction if there is input
+                transform.position += moveSpeed3D * Time.deltaTime * direction;
+                newrotation = false;
             }
+            else if (newrotation == true)
+            {
+                //Vector3 rotate = direction.normalized;
+                Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
+
+                // Interpolate between the current rotation and the desired rotation
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+                // Update player position
+                position += direction * moveSpeed3D * Time.deltaTime;
+                transform.position = position;
+
+            }
+            else
+            {
+
+                //transform.Rotate(0, direction.normalized, 0);
+                //transform.forward = direction.normalized;
+                var move = Keyboard.current.wKey.isPressed ? 1 : Keyboard.current.sKey.isPressed ? -1 : 0;
+                var rotate = Keyboard.current.aKey.isPressed ? -1 : Keyboard.current.dKey.isPressed ? 1 : 0;
+
+                // Calculate the movement direction
+
+                moveDirection = move * moveSpeed3D * transform.TransformDirection(direction);
+                //moveDirection.y = 4.59f;
+                rotation = rotate * rotationSpeed * Time.deltaTime;
+                transform.Rotate(0, rotation, 0);
+                // transform.forward= Quaternion.RotateTowards(0, rotation, 0);
+                position += move * transform.forward * moveSpeed3D * Time.deltaTime;
+                transform.position = position;
+                //characterController.Move(moveDirection * Time.deltaTime);
+
+            }
+        }
+
+        if (isTouchingGround) {
             //jump
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
                 rigidBody.AddForce(Vector3.up * 25f * rigidBody.mass, ForceMode.Impulse); //For some reason ForceMode.Impulse must be used here, not ForceMode.Force
         }
+        else
+            rigidBody.AddForce(Vector3.down * rigidBody.mass * 9.81f, ForceMode.Force);
     }
     //handles movement in 2d mode
     void Move2D() {

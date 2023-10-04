@@ -62,7 +62,7 @@ public class PlayerDimensionController : MonoBehaviour {
     private void Start() {
         playerControllerScript = GetComponent<PlayerControllerBeta>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
-        DOGToggleKey = Keyboard.current.spaceKey;
+        DOGToggleKey = Keyboard.current.fKey;
 
         //store the size of the projection for drawing objects around it
         projectionDrawRadius = projectionOutOfRange.GetComponent<SpriteRenderer>().sprite.rect.height;
