@@ -68,7 +68,7 @@ public class PlayerControllerBeta : MonoBehaviour {
         //Debug.Log(isTouchingGround);
         float ground = transform.position.y;
         //only allow move while touching the ground
-        if (isTouchingGround || !isTouchingGround) {
+        if (isTouchingGround) {
             position = transform.position;
             Vector2 input = GetInput();
 
