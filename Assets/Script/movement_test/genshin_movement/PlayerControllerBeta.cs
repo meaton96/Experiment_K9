@@ -68,7 +68,7 @@ public class PlayerControllerBeta : MonoBehaviour {
         //Debug.Log(isTouchingGround);
         float ground = transform.position.y;
         //only allow move while touching the ground
-        if (isTouchingGround) {
+        if (isTouchingGround || !isTouchingGround) {
             position = transform.position;
             Vector2 input = GetInput();
 
@@ -118,6 +118,8 @@ public class PlayerControllerBeta : MonoBehaviour {
                 }
             }
             //jump
+            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+                rigidBody.AddForce(Vector3.up * 25f * rigidBody.mass, ForceMode.Impulse); //For some reason ForceMode.Impulse must be used here, not ForceMode.Force
         }
     }
     //handles movement in 2d mode
