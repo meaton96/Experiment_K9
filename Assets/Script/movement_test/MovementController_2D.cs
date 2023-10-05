@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -12,6 +13,17 @@ public class MovementController_2D : MonoBehaviour {
 
     public float moveSpeed2D = 10.0f;
     public float pushForce = .1f;
+
+    public const float AXIS_CHANGE_MIN = 1000f;
+
+
+    private bool cameraTransitioning = false;
+    private Vector3 newSpritePos;
+    private Vector3 newCameraTarget;
+    private float cameraTransitionSpeed = 4f;
+
+    
+
     // Start is called before the first frame update
     void Awake() {
 
@@ -21,7 +33,12 @@ public class MovementController_2D : MonoBehaviour {
     void Update() {
         if (!playerController.IsIn3D()) {
             // Move2D();
-            TryMove();
+            if (cameraTransitioning) {
+                TransitionCamera();
+            }
+            else {
+                TryMove();
+            }
         }
     }
     void Move2D(Vector3 direction) {
@@ -35,6 +52,8 @@ public class MovementController_2D : MonoBehaviour {
         Vector3 direction = up * input.y + left * input.x;
         Vector3 destination = playerController.transform.position + moveSpeed2D * Time.deltaTime * direction;
 
+        //dont like having GetComponent in updat emethod but this fully breaks without this
+        //assignign any other hitbox just doesnt work for some reason
         Collider playerCollider = playerController.GetComponent<Collider>();
         Bounds playerBounds = playerCollider.bounds;
         playerBounds.center = destination;
@@ -64,22 +83,57 @@ public class MovementController_2D : MonoBehaviour {
             else {
                 Debug.LogError("Doggo on ceiling");
             }
-            Debug.Log(distance);
+            var temp = hitCollider.GetComponent<WallBehaviour>();
+
+            //flag a change in axes
+            if (temp != null && temp.transform.up != transform.forward && !temp.IsPassthrough && !temp.RemoveFromWalkChecks) {
+
+            }
+            //handles overlapping walls uses the one closer to the camera to handle movement logic
             if (distance < closest) {
                 closest = distance;
-                wall = hitCollider.GetComponent<WallBehaviour>();
+                wall = temp;
             }
 
 
 
         }
+        if (wall.transform.up != transform.forward) {
+            //transition to new axis
+
+        }
 
         if (wall != null && wall.IsWalkThroughEnabled) {
-            Move2D(direction); // Move player if no overlapping wall is found or IsWalkThroughEnabled is true
+            Move2D(direction); // Move player if IsWalkThroughEnabled is true
         }
-        
+
 
     }
 
+    void TransitionToNewAxis(Vector3 pos, WallBehaviour wall) {
+        transform.forward = wall.transform.up;
+        transform.position = pos;
+    }
 
+    private void TransitionCamera() {
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newCameraTarget, cameraTransitionSpeed * Time.deltaTime);
+
+        Vector3 lookDirection = newSpritePos - Camera.main.transform.position;
+        Quaternion rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, rotation, cameraTransitionSpeed * Time.deltaTime);
+
+        if (Vector3.Distance(Camera.main.transform.position, newCameraTarget) < 0.15f) {
+            cameraTransitioning = false;
+
+            //  playerControllerScript.ChangeDimension();
+            //  playerControllerScript.ToggleMovement();
+            //  dog2DHitbox.SetActive(true);    //enable 2d movement hitbox as last step to avoid double collision
+
+        }
+
+
+    }
+    public void CallOnTrigger(Collider other) {
+        Debug.Log(other.gameObject.name);
+    }
 }

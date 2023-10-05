@@ -16,4 +16,7 @@ public class player_hitbox_2d_movement : MonoBehaviour
     {
         
     }
+    private void OnTriggerEnter(Collider other) {
+        movementController.CallOnTrigger(other);
+    }
 }

@@ -7,6 +7,10 @@ public class WallBehaviour : MonoBehaviour {
     public bool AllowsDimensionTransition = false;
     //to check if the player can move into this object or not
     public bool IsWalkThroughEnabled = true;
+    //to check if the player can pass through the wall while in 2D
+    public bool IsPassthrough = false;
+    //remove from all checks for player movement
+    public bool RemoveFromWalkChecks = false;
     // Start is called before the first frame update
     void Start() {
         
