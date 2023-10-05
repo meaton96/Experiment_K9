@@ -814,7 +814,7 @@ Transform:
   m_GameObject: {fileID: 396792763}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.66, z: 0}
+  m_LocalPosition: {x: -1.1, y: -3.66, z: 0}
   m_LocalScale: {x: 11.788281, y: 1, z: 13.087501}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -961,8 +961,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "F1: Toggle DOG Mode\nSpace: Manual - Transfer Dimension\n            
-    Auto - Toggle DOG\nE: Interact with objects \t"
+  m_text: "F1: Toggle DOG Mode\nF: Manual - Transfer Dimension\n             Auto
+    - Toggle DOG\nSpace: Jump\nE: Interact with objects \t"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1049,6 +1049,71 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a0144ca182b59c24fba8d9ef3ac9f1d5, type: 3}
   m_PrefabInstance: {fileID: 1755336916}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1138076753
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3460354804257265962, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4.2072496
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -39
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 13.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 66.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8310837404339325246, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_Name
+      value: Wall_no_walk (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
 --- !u!1 &1173063570
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,7 +1323,6 @@ MonoBehaviour:
   cameraControllerScript: {fileID: 117310073}
   interfaceScript: {fileID: 1993308044}
   projectionMoveSpeed: 1
-  cameraOffset2D: 40
   DOGEnabled: 1
   DOGProjectionRange: 20.1
   projectionOutOfRange: {fileID: 583492133}
@@ -1758,6 +1822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 1282100499}
+  movementCollider: {fileID: 1173063572}
   currentWallBounds: []
   moveSpeed2D: 10
 --- !u!1 &1888458750
@@ -2048,7 +2113,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5777044561863398770, guid: fb8c3e8ae224536429ccdea06bdbd743, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.8
+      value: 10.5
       objectReference: {fileID: 0}
     - target: {fileID: 5777044561863398770, guid: fb8c3e8ae224536429ccdea06bdbd743, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2178,4 +2243,5 @@ SceneRoots:
   - {fileID: 2050698375}
   - {fileID: 1312332617}
   - {fileID: 188294224}
+  - {fileID: 1138076753}
   - {fileID: 309907602}

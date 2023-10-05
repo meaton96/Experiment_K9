@@ -8,6 +8,7 @@ using UnityEngine.Windows;
 
 public class MovementController_2D : MonoBehaviour {
     [SerializeField] PlayerControllerBeta playerController;
+    [SerializeField] BoxCollider movementCollider;
     // GameObject player2D;
     [SerializeField] List<float> currentWallBounds;
     Vector3 forward;                                    //used to check which wall object is in the foreground to use that as the movement override
@@ -20,7 +21,7 @@ public class MovementController_2D : MonoBehaviour {
 
     private bool cameraTransitioning = false;
     private Vector3 newSpritePos;
-    private Vector3 newCameraTarget;
+    private Vector3 newCamTargetPos;
     private float cameraTransitionSpeed = 4f;
 
     //up, right, down, left
@@ -70,40 +71,94 @@ public class MovementController_2D : MonoBehaviour {
         playerController.transform.position += moveSpeed2D * Time.deltaTime * direction;
     }
 
-    
+
 
     void TransitionToNewAxis(Vector3 pos, WallBehaviour wall) {
+        //rotate first to get correct transform.right
         transform.forward = wall.transform.up;
-        transform.position = pos;
+        
+
+        //only supports changing x/z plane not y (ceiling/floor)
+        var offsetDirection = GetDirection(wall) == 1 ? -transform.right : transform.right;
+
+        newSpritePos = pos + offsetDirection * movementCollider.size.x;
+        
+        //move to offset position
+      //  transform.position = newSpritePos;
+        playerController.transform.position = newSpritePos;
+        transform.localPosition = Vector3.zero;
+
+        newCamTargetPos = newSpritePos + wall.transform.up * PlayerDimensionController.cameraOffset2D;
+
+        cameraTransitioning = true;
     }
 
     private void TransitionCamera() {
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newCameraTarget, cameraTransitionSpeed * Time.deltaTime);
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newCamTargetPos, cameraTransitionSpeed * Time.deltaTime);
 
         Vector3 lookDirection = newSpritePos - Camera.main.transform.position;
         Quaternion rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
         Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, rotation, cameraTransitionSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(Camera.main.transform.position, newCameraTarget) < 0.15f) {
+        if (Vector3.Distance(Camera.main.transform.position, newCamTargetPos) < 0.15f) {
             cameraTransitioning = false;
-
-            //  playerControllerScript.ChangeDimension();
-            //  playerControllerScript.ToggleMovement();
-            //  dog2DHitbox.SetActive(true);    //enable 2d movement hitbox as last step to avoid double collision
-
+            //reset any weird player object movements 
+          //  playerController.transform.position = transform.position;
+            
+            Debug.Log("camera done moving");
         }
 
 
     }
+    void HandleNewPlaneCollision(Collider other) {
+        if (other.TryGetComponent(out WallBehaviour wallB)) {
+            if (wallB.IsWalkThroughEnabled) {
+                TransitionToNewAxis(other.ClosestPointOnBounds(transform.position), wallB);
+                Debug.Log(wallB.gameObject.name);
+
+
+            }
+            else if (!wallB.IsPassthrough) {
+                moveDirEnabled[GetDirection(other)] = false;
+            }
+            else {
+                //allow player to pass through wall maybe do something with camera?
+            }
+        }
+    }
     public void CallOnTriggerEnter(Collider other) {
-        moveDirEnabled[GetDirection(other)] = false;
+        if (cameraTransitioning)
+            return;
+        if (other.transform.up == transform.forward)
+            moveDirEnabled[GetDirection(other)] = false;
+        else {
+            HandleNewPlaneCollision(other);
+        }
+
     }
     public void CallOnTriggerExit(Collider other) {
-        Debug.Log("leaving: " + other.gameObject.name);
+        if (cameraTransitioning)
+            return;
         moveDirEnabled[GetDirection(other)] = true;
+
     }
 
     public int GetDirection(Collider other) {
+        Vector3 toOther = other.transform.position - transform.position;
+
+        float dotUp = Vector3.Dot(toOther.normalized, transform.up);
+        float dotRight = Vector3.Dot(toOther.normalized, transform.right);
+
+        //checks +/- 45 degrees to check if object is more above or below than left or right
+        if (dotUp > 0.7071) return 0; // Above
+        if (dotUp < -0.7071) return 2; // Below
+
+        if (dotRight > 0) return 3; // Right
+        if (dotRight < 0) return 1; // Left
+
+        return -1; // Error or the object is too close
+    }
+    public int GetDirection(WallBehaviour other) {
         Vector3 toOther = other.transform.position - transform.position;
 
         float dotUp = Vector3.Dot(toOther.normalized, transform.up);

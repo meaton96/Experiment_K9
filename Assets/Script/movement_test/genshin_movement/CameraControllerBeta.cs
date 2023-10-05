@@ -11,6 +11,7 @@ public class CameraControllerBeta : MonoBehaviour {
     public bool lockVerticalRotation = false;
 
     private bool canRotateCamera = true;
+    private Vector3 prevCamPos;
 
   //  [SerializeField] private float cameraLookOffset = 10f;
 
@@ -79,8 +80,14 @@ public class CameraControllerBeta : MonoBehaviour {
     /// Keeps the camera moving with the player's transform
     /// </summary>
     void FollowPlayer() {
+        
         transform.position += playerTransform.position - previousPlayerPosition;
         previousPlayerPosition = playerTransform.position;
+        
+        if (prevCamPos != transform.position) {
+            Debug.Log(transform.position);
+            prevCamPos = transform.position;
+        }
     }
 
     /// <summary>
