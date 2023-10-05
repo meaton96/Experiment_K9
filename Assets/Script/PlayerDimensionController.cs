@@ -73,7 +73,6 @@ public class PlayerDimensionController : MonoBehaviour {
 
     private void Update() {
 
-        Debug.Log(isProjecting);
 
         if (isTransitioningTo2D) {
             TransitionCameraTo2D();
