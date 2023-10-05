@@ -10,7 +10,7 @@ public class PlayerControllerBeta : MonoBehaviour {
 
     public const int GROUND_LAYER = 8;                      //layer all ground objects should be on for gravity
     public float moveSpeed3D = 5.0f;                        //movement speed while in 3D        
-    public float moveSpeed2D = 10.0f;
+
     public float rotationSpeed = 400f;
     public bool oldrotation = false;
     public bool newrotation = true;
@@ -21,7 +21,7 @@ public class PlayerControllerBeta : MonoBehaviour {
     private bool canInteract = true;                        //disable or enable player interactions
     Vector3 position;
     private Vector3 moveDirection;
-    [SerializeField] private GameObject player2D;           //holds the 2d depiction of the player
+    public GameObject player2D;           //holds the 2d depiction of the player
 
     [SerializeField] private float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
     [SerializeField] private GameObject interactRadar;          //holds the game object that has the radar collider on it
@@ -31,34 +31,34 @@ public class PlayerControllerBeta : MonoBehaviour {
     private List<TransferableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
     private Rigidbody rigidBody;                                //holds the player's rigid body
 
-    public bool IsHoldingObject = false;                    //if the player has something in their hands or not
-    public TransferableObject HeldObject;                   //the object the player is hold
+    [HideInInspector] public bool IsHoldingObject = false;                    //if the player has something in their hands or not
+    [HideInInspector] public TransferableObject HeldObject;                   //the object the player is hold
     private float rotation;
     private bool isTouchingGround;                          //if the player is on the ground, to enable movement logic
-    private CharacterController characterController;
+                                                            //   private CharacterController characterController;
     private void Start() {
         interactKey = Keyboard.current.eKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
         objectsInInteractRange = new();
         rigidBody = GetComponent<Rigidbody>();
-        characterController = GetComponent<CharacterController>();
+        // characterController = GetComponent<CharacterController>();
     }
 
     void Update() {
         if (canMove) {
             if (is3D) {
                 Move3D();
-                
+
                 if (canInteract) {
 
                     //remove
                     //Debug.Log(transform.forward);
 
-                    HandleInteractionInput();   
+                    HandleInteractionInput();
                 }
             }
             else {
-                Move2D();
+                //  Move2D();
             }
         }
     }
@@ -71,20 +71,17 @@ public class PlayerControllerBeta : MonoBehaviour {
         position = transform.position;
         Vector2 input = GetInput();
 
-        if (input != Vector2.zero)
-        {  // Check if there's any input
+        if (input != Vector2.zero) {  // Check if there's any input
             Vector3 cameraForward = new Vector3(cameraTransform.forward.x, 0, cameraTransform.forward.z).normalized;
             Vector3 cameraRight = new Vector3(cameraTransform.right.x, 0, cameraTransform.right.z).normalized;
 
             Vector3 direction = cameraForward * input.y + cameraRight * input.x;
-            if (oldrotation == true)
-            {
+            if (oldrotation == true) {
                 transform.forward = direction.normalized;  // Only set forward direction if there is input
                 transform.position += moveSpeed3D * Time.deltaTime * direction;
                 newrotation = false;
             }
-            else if (newrotation == true)
-            {
+            else if (newrotation == true) {
                 //Vector3 rotate = direction.normalized;
                 Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
 
@@ -96,8 +93,7 @@ public class PlayerControllerBeta : MonoBehaviour {
                 transform.position = position;
 
             }
-            else
-            {
+            else {
 
                 //transform.Rotate(0, direction.normalized, 0);
                 //transform.forward = direction.normalized;
@@ -126,19 +122,9 @@ public class PlayerControllerBeta : MonoBehaviour {
         else
             rigidBody.AddForce(Vector3.down * rigidBody.mass * 9.81f, ForceMode.Force);
     }
-    //handles movement in 2d mode
-    void Move2D() {
-        Vector2 input = GetInput();
 
-        Vector3 up = player2D.transform.up;
-        Vector3 left = -player2D.transform.right;
-
-        Vector3 direction = up * input.y + left * input.x;
-
-        transform.position += moveSpeed2D * Time.deltaTime * direction;
-    }
     //helper method to grab keyboard input in 3d, checks for WASD presses
-    Vector2 GetInput() {
+    public Vector2 GetInput() {
         var keyboard = Keyboard.current;
         return new Vector2(keyboard.dKey.isPressed ? 1 : keyboard.aKey.isPressed ? -1 : 0,
                            keyboard.wKey.isPressed ? 1 : keyboard.sKey.isPressed ? -1 : 0);
@@ -159,7 +145,7 @@ public class PlayerControllerBeta : MonoBehaviour {
 
     //returns true if the game is in 3d mode
     public bool IsIn3D() { return is3D; }
-    
+
 
     public void AddObjectToInRangeList(TransferableObject tObject) {
         objectsInInteractRange.Add(tObject);
@@ -177,7 +163,7 @@ public class PlayerControllerBeta : MonoBehaviour {
                 HeldObject.Drop();
                 IsHoldingObject = false;
                 HeldObject = null;
-            } 
+            }
             //only process interact press if theres something to interact with
             else if (objectsInInteractRange.Any()) {
                 float closestToCameraLookDirection = float.MaxValue;
@@ -189,7 +175,7 @@ public class PlayerControllerBeta : MonoBehaviour {
                     //use the dot product to project the vector onto the camera's right axis
                     var dist = Mathf.Abs(
                         Vector3.Dot(
-                            vecToObject, 
+                            vecToObject,
                             Camera.main.transform.right));
                     //compare the distance to camera and find the smallest one
                     if (dist < closestToCameraLookDirection) {
@@ -200,7 +186,7 @@ public class PlayerControllerBeta : MonoBehaviour {
                 HeldObject = tObject;
                 //pick up the object that was found to be the closest
                 HeldObject.Pickup(gameObject);
-                
+
                 IsHoldingObject = true;
 
             }

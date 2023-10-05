@@ -17,6 +17,7 @@ public class PlayerDimensionController : MonoBehaviour {
     [SerializeField] private GameObject projectionEntry;
     [SerializeField] private GameObject projectionNoEntry;
     [SerializeField] private GameObject dog3D;
+    [SerializeField] private GameObject dog2DHitbox;
     private float cameraTransitionSpeed = 4f;
     private float projectionDrawRadius;
 
@@ -70,7 +71,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
     private void Update() {
         if (isTransitioningTo2D) {
-            TransitionCamera();
+            TransitionCameraTo2D();
         }
         else if (isTransitioningTo3D) {
             TransitionCameraTo3D();
@@ -398,6 +399,9 @@ public class PlayerDimensionController : MonoBehaviour {
         //Disable the 2D projection
         projectionEntry.SetActive(false);
 
+        //disable 2d movement hitbox
+        dog2DHitbox.SetActive(false);
+
         //calculate camera position
         originalCameraPosition = Camera.main.GetComponent<CameraControllerBeta>().GetUpdatedCameraPosition();
         originalCameraRotation = Quaternion.LookRotation(transform.position - originalCameraPosition, Vector3.up);
@@ -413,7 +417,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
 
     //smooth pan camera to sprite location
-    private void TransitionCamera() {
+    private void TransitionCameraTo2D() {
         Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, cameraTranstionTarget, cameraTransitionSpeed * Time.deltaTime);
 
         Vector3 lookDirection = spritePosition - Camera.main.transform.position;
@@ -425,7 +429,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
             playerControllerScript.ChangeDimension();
             playerControllerScript.ToggleMovement();
-
+            dog2DHitbox.SetActive(true);    //enable 2d movement hitbox as last step to avoid double collision
 
         }
 
