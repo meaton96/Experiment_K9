@@ -63,7 +63,7 @@ public class TransferableObject : MonoBehaviour {
     public void ProjectOntoWallAtLocation(GameObject nearestWall, Vector3 projectionDrawCenter, float playerProjectionSize, float wallDrawOffset) {
 
         var drawLoc = projectionDrawCenter + -Vector3.forward * objectDrawOffset;
-        Debug.Log(drawLoc);
+        
         if (displayObject_2D.activeInHierarchy == false) {
 
             //activate and set position and rotation of the projection

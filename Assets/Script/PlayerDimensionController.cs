@@ -45,6 +45,8 @@ public class PlayerDimensionController : MonoBehaviour {
 
     private KeyControl DOGToggleKey;
 
+    private bool isProjecting = false;
+
 
 
     //vars for toggle mode DOG
@@ -70,6 +72,9 @@ public class PlayerDimensionController : MonoBehaviour {
     }
 
     private void Update() {
+
+        Debug.Log(isProjecting);
+
         if (isTransitioningTo2D) {
             TransitionCameraTo2D();
         }
@@ -85,20 +90,20 @@ public class PlayerDimensionController : MonoBehaviour {
 
             //manual dog mode
             if (RangedDOGEnabled) {
-                HandleManualMode();
-
-                //update the position of the projected sprite if the camera is being rotated
-                if (DOGToggleKey.isPressed && playerControllerScript.IsIn3D()) {
-                    MoveProjectionWithCamera();
-                }
+                HandleManualModeAndCamera();
             }
             //auto mode
-            //TODO: add ability to toggle off DOG to leave wall
             else {
                 HandleAutoDOG();
-
-
             }
+        }
+    }
+    private void HandleManualModeAndCamera() {
+        HandleManualMode();
+
+        //update the position of the projected sprite if the camera is being rotated
+        if (DOGToggleKey.isPressed && playerControllerScript.IsIn3D()) {
+            MoveProjectionWithCamera();
         }
     }
     //swap between manual and auto mode
@@ -129,15 +134,13 @@ public class PlayerDimensionController : MonoBehaviour {
         //get wall and projection draw location (closest point to dog on the wall)
         if (playerControllerScript.IsIn3D()) {
             Handle3DAutoDOG();
-
-
-
         }
         else {
             Handle2DAutoDog();
         }
     }
     private void HandleObjectProjection(GameObject nearestWall, Vector3 projectionDrawCenter) {
+        
         playerControllerScript.HeldObject.ProjectOntoWallAtLocation(nearestWall, projectionDrawCenter, projectionDrawRadius, WALL_DRAW_OFFSET);
     }
     private void Handle3DAutoDOG() {
@@ -155,6 +158,7 @@ public class PlayerDimensionController : MonoBehaviour {
                     projectionOutOfRange.transform.position = projectionDrawLocation;
                     projectionOutOfRange.transform.forward = nearestWall.transform.up;
                     projectionOutOfRange.SetActive(true);
+                    isProjecting = true;
                 }
                 //always move the projection while it is enabled 
                 projectionOutOfRange.transform.position = projectionDrawLocation + (nearestWall.transform.up * WALL_DRAW_OFFSET);
@@ -167,7 +171,7 @@ public class PlayerDimensionController : MonoBehaviour {
             }
             else {
                 //disable projection if a wall wasnt found
-                projectionOutOfRange.SetActive(false);
+                DisableProjections();
                 
             }
         }
@@ -324,6 +328,11 @@ public class PlayerDimensionController : MonoBehaviour {
 
     //enable one of the projections
     private void EnableProjection(GameObject projection, RaycastHit hit) {
+        
+        isProjecting = true;
+
+        Debug.Log("enabling projection " + isProjecting);
+
         projection.SetActive(true);
 
         //get the direction to the camera and create an offset based on it
@@ -336,16 +345,24 @@ public class PlayerDimensionController : MonoBehaviour {
         //set the rotation and position of the projection
         projection.transform.SetPositionAndRotation(hit.point + positionAdjustment * WALL_DRAW_OFFSET, Quaternion.LookRotation(hit.normal, Vector3.up));
 
-        //update transfer location and camera transition target for when the space bar is released 
+        //update transfer location and camera transition target 
 
         projectionTransferLocation = projection.transform.position;
         cameraTranstionTarget = projectionTransferLocation + cameraOffset2D * hit.collider.transform.up;
     }
     //disable all projections
     private void DisableProjections() {
-        projectionEntry.SetActive(false);
-        projectionNoEntry.SetActive(false);
-        projectionOutOfRange.SetActive(false);
+        if (isProjecting) {
+            projectionEntry.SetActive(false);
+            projectionNoEntry.SetActive(false);
+            projectionOutOfRange.SetActive(false);
+
+            Debug.Log("Resetting projections");
+            if (playerControllerScript.IsHoldingObject) {
+                playerControllerScript.HeldObject.DisableProjection();
+            }
+            isProjecting = false;
+        }
 
         
 

@@ -85,7 +85,6 @@ public class CameraControllerBeta : MonoBehaviour {
         previousPlayerPosition = playerTransform.position;
         
         if (prevCamPos != transform.position) {
-            Debug.Log(transform.position);
             prevCamPos = transform.position;
         }
     }
