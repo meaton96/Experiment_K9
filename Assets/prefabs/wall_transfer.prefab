@@ -123,6 +123,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AllowsDimensionTransition: 1
   IsWalkThroughEnabled: 1
+  IsPassthrough: 0
+  RemoveFromWalkChecks: 0
 --- !u!54 &3460354804257265962
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -169,5 +171,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10.000002, y: 2, z: 10.000001}
+  m_Size: {x: 10.000002, y: 0.1, z: 10.000001}
   m_Center: {x: 0, y: 0, z: 0}

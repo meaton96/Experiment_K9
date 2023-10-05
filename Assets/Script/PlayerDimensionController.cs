@@ -10,7 +10,7 @@ using UnityEngine.InputSystem.HID;
 
 public class PlayerDimensionController : MonoBehaviour {
     public const int WALL_LAYER = 6;
-    public const float WALL_DRAW_OFFSET = -.9f;
+    public const float WALL_DRAW_OFFSET = .1f;
 
     [SerializeField] private float raycastLength = 50f;
     [SerializeField] private float wall_intersect_radius_2d = 10f;
