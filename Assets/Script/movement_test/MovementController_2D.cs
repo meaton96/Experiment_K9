@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class MovementController_2D : MonoBehaviour {
@@ -22,39 +24,14 @@ public class MovementController_2D : MonoBehaviour {
             TryMove();
         }
     }
-
-    //handles movement in 2d mode
-    //void Move2D() {
-    //    Vector2 input = playerController.GetInput();
-
-    //    Vector3 up = transform.up;
-    //    Vector3 left = -transform.right;
-
-    //    Vector3 direction = up * input.y + left * input.x;
-
-    //    playerController.transform.position += moveSpeed2D * Time.deltaTime * direction;
-    //}
     void Move2D(Vector3 direction) {
         playerController.transform.position += moveSpeed2D * Time.deltaTime * direction;
     }
 
-    //public void OnTriggerStayCustom(Collider other) {
-    //    WallBehaviour wall = other.gameObject.GetComponent<WallBehaviour>();
-    //    if (wall != null && !wall.IsWalkThroughEnabled) {
-    //        Vector3 pushDirection = playerController.transform.position - other.transform.position;
-    //        //move the player out of the wall if they are inside one
-    //        //might want to be LERP
-    //        playerController.transform.position += pushDirection.normalized * pushForce;
-    //    }
-    //}
-
-
-
-
     void TryMove() {
         Vector2 input = playerController.GetInput();
         Vector3 up = transform.up;
-        Vector3 left = transform.right;
+        Vector3 left = -transform.right;
         Vector3 direction = up * input.y + left * input.x;
         Vector3 destination = playerController.transform.position + moveSpeed2D * Time.deltaTime * direction;
 
@@ -62,7 +39,6 @@ public class MovementController_2D : MonoBehaviour {
         Bounds playerBounds = playerCollider.bounds;
         playerBounds.center = destination;
 
-        bool canMove = true;
 
         Collider[] hitColliders = Physics.OverlapBox(playerBounds.center, playerBounds.extents, Quaternion.identity, LayerMask.GetMask("Walls"));
 
@@ -71,32 +47,39 @@ public class MovementController_2D : MonoBehaviour {
             return;
         }
 
+        //determine the wall closest to the camera
+        WallBehaviour wall = null;
+        float closest = float.MaxValue;
         foreach (var hitCollider in hitColliders) {
-            WallBehaviour wall = hitCollider.GetComponent<WallBehaviour>();
 
-            if (wall != null && !wall.IsWalkThroughEnabled) {
-                canMove = false;
-                return;
+            float distance = 0;
+            if (left == new Vector3(0, 0, 1) || left == new Vector3(0, 0, -1)) {
+                distance = Mathf.Abs(Mathf.Pow(Camera.main.transform.position.x, 2) - Mathf.Pow(hitCollider.transform.position.x, 2));
+
             }
+            else if ((left == new Vector3(1, 0, 0) || left == new Vector3(-1, 0, 0))) {
+                distance = Mathf.Abs(Mathf.Pow(Camera.main.transform.position.z, 2) - Mathf.Pow(hitCollider.transform.position.z, 2));
+
+            }
+            else {
+                Debug.LogError("Doggo on ceiling");
+            }
+            Debug.Log(distance);
+            if (distance < closest) {
+                closest = distance;
+                wall = hitCollider.GetComponent<WallBehaviour>();
+            }
+
+
+
         }
 
-        if (canMove) {
+        if (wall != null && wall.IsWalkThroughEnabled) {
             Move2D(direction); // Move player if no overlapping wall is found or IsWalkThroughEnabled is true
         }
-    }
-
-
-
-    public void UpdateCurrentWallBounds(List<float> updatedBounds) {
-        if (updatedBounds.Count != 4)
-            throw new System.ArgumentException("List must have 4 bounds values");
+        
 
     }
-    public void SetAxis(Vector3 fwd) {
-        forward = fwd;
 
-    }
-    public void HandleSurfaceExit() {
-        //TODO
-    }
+
 }

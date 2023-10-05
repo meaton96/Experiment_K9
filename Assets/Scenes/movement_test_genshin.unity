@@ -1060,7 +1060,7 @@ GameObject:
   - component: {fileID: 1173063571}
   - component: {fileID: 1173063572}
   - component: {fileID: 1173063573}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: 2d_movement_hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1642,7 +1642,7 @@ GameObject:
   - component: {fileID: 1793280025}
   - component: {fileID: 1793280026}
   - component: {fileID: 1793280027}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: 2D Projection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1732,6 +1732,7 @@ MonoBehaviour:
   playerController: {fileID: 1282100499}
   currentWallBounds: []
   moveSpeed2D: 10
+  pushForce: 10
 --- !u!1 &1888458750
 GameObject:
   m_ObjectHideFlags: 0
@@ -2078,6 +2079,10 @@ PrefabInstance:
     - target: {fileID: 3460354804257265962, guid: b2705ed3faf55cf4395196d84eb8accc, type: 3}
       propertyPath: m_IsKinematic
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033518516474956368, guid: b2705ed3faf55cf4395196d84eb8accc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 13.569783
       objectReference: {fileID: 0}
     - target: {fileID: 7033518516474956368, guid: b2705ed3faf55cf4395196d84eb8accc, type: 3}
       propertyPath: m_LocalPosition.x
