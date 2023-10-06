@@ -30,10 +30,12 @@ public class MovementController_2D : MonoBehaviour {
 
     private int dirIn;
 
+    private SpriteRenderer dog2DSprite;
+
 
     // Start is called before the first frame update
     void Awake() {
-
+        dog2DSprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -73,6 +75,16 @@ public class MovementController_2D : MonoBehaviour {
         }
 
         playerController.transform.position += moveSpeed2D * Time.deltaTime * direction;
+
+        // Flip the sprite when the dog moves the other way
+        if (input.x < 0)
+        {
+            dog2DSprite.flipX = true;
+        }
+        else if (input.x > 0)
+        {
+            dog2DSprite.flipX = false;
+        }
     }
 
 

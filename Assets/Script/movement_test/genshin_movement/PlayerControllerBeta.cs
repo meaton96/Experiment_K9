@@ -137,7 +137,7 @@ public class PlayerControllerBeta : MonoBehaviour {
 
         is3D = !is3D;
         rigidBody.isKinematic = !is3D;
-        if (is3D) {
+        if (is3D && HeldObject != null) {
             HeldObject.transform.localPosition = HeldObject.HoldOffset3D;
         }
 
