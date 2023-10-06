@@ -117,7 +117,7 @@ public class PlayerDimensionController : MonoBehaviour {
         //only handle 3d collisions while in 3d mode
         if (playerControllerScript.IsIn3D()) {
             //handle a collision with a wall to potentially trnasfer to 2d
-            if (collision.collider.gameObject.layer == LayerInfo.WALL) {
+            if (collision.collider.gameObject.layer == WALL_LAYER) {
                 if (collision.collider.GetComponent<WallBehaviour>().AllowsDimensionTransition && DOGEnabled) {
                     TransitionTo2D();
                 }
