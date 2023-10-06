@@ -187,7 +187,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
         if (!DOGEnabled) {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, wall_intersect_radius_2d);
-            hitColliders.ToList().ForEach(hit => Debug.Log(name));
+            
 
             foreach (var hitCollider in hitColliders) {
                 if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != LayerInfo.WALL) {

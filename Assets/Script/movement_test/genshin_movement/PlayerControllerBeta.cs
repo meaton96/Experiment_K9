@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.Controls;
 
 public class PlayerControllerBeta : MonoBehaviour {
 
- //   public const int GROUND_LAYER = 8;                      //layer all ground objects should be on for gravity
+    //   public const int GROUND_LAYER = 8;                      //layer all ground objects should be on for gravity
     public float moveSpeed3D = 5.0f;                        //movement speed while in 3D        
 
     public float rotationSpeed = 400f;
@@ -36,6 +36,10 @@ public class PlayerControllerBeta : MonoBehaviour {
     private float rotation;
     private bool isTouchingGround;                          //if the player is on the ground, to enable movement logic
                                                             //   private CharacterController characterController;
+
+    public const float GRAVITY = 981f;
+    public const float JUMP_FORCE = 25f;
+
     private void Start() {
         interactKey = Keyboard.current.eKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
@@ -45,20 +49,16 @@ public class PlayerControllerBeta : MonoBehaviour {
     }
 
     void Update() {
+        if (canInteract) {
+
+            //remove
+            //Debug.Log(transform.forward);
+
+            HandleInteractionInput();
+        }
         if (canMove) {
             if (is3D) {
                 Move3D();
-
-                if (canInteract) {
-
-                    //remove
-                    //Debug.Log(transform.forward);
-
-                    HandleInteractionInput();
-                }
-            }
-            else {
-                //  Move2D();
             }
         }
     }
@@ -66,7 +66,7 @@ public class PlayerControllerBeta : MonoBehaviour {
     //handles movement in 3d mode
     void Move3D() {
         //Debug.Log(isTouchingGround);
-        float ground = transform.position.y;
+        //float ground = transform.position.y;
         //only allow move while touching the ground
         position = transform.position;
         Vector2 input = GetInput();
@@ -89,7 +89,7 @@ public class PlayerControllerBeta : MonoBehaviour {
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
                 // Update player position
-                position += direction * moveSpeed3D * Time.deltaTime;
+                position += moveSpeed3D * Time.deltaTime * direction;
                 transform.position = position;
 
             }
@@ -104,10 +104,12 @@ public class PlayerControllerBeta : MonoBehaviour {
 
                 moveDirection = move * moveSpeed3D * transform.TransformDirection(direction);
                 //moveDirection.y = 4.59f;
-                rotation = rotate * rotationSpeed * Time.deltaTime;
+                rotation = rotate
+                    * rotationSpeed
+                    * Time.deltaTime;
                 transform.Rotate(0, rotation, 0);
                 // transform.forward= Quaternion.RotateTowards(0, rotation, 0);
-                position += move * transform.forward * moveSpeed3D * Time.deltaTime;
+                position += move * moveSpeed3D * Time.deltaTime * transform.forward;
                 transform.position = position;
                 //characterController.Move(moveDirection * Time.deltaTime);
 
@@ -117,10 +119,10 @@ public class PlayerControllerBeta : MonoBehaviour {
         if (isTouchingGround) {
             //jump
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
-                rigidBody.AddForce(Vector3.up * 25f * rigidBody.mass, ForceMode.Impulse); //For some reason ForceMode.Impulse must be used here, not ForceMode.Force
+                rigidBody.AddForce(JUMP_FORCE * rigidBody.mass * Vector3.up, ForceMode.Impulse); //For some reason ForceMode.Impulse must be used here, not ForceMode.Force
         }
         else
-            rigidBody.AddForce(Vector3.down * rigidBody.mass * 9.81f, ForceMode.Force);
+            rigidBody.AddForce(GRAVITY * Vector3.down, ForceMode.Force);
     }
 
     //helper method to grab keyboard input in 3d, checks for WASD presses
@@ -135,6 +137,9 @@ public class PlayerControllerBeta : MonoBehaviour {
 
         is3D = !is3D;
         rigidBody.isKinematic = !is3D;
+        if (is3D) {
+            HeldObject.transform.localPosition = HeldObject.HoldOffset3D;
+        }
 
     }
     //enable/disable movement logic 
@@ -146,11 +151,16 @@ public class PlayerControllerBeta : MonoBehaviour {
     //returns true if the game is in 3d mode
     public bool IsIn3D() { return is3D; }
 
-
+    //only allows one copy of each object
     public void AddObjectToInRangeList(TransferableObject tObject) {
+        
+        if (objectsInInteractRange.Contains(tObject)) return;
+        
         objectsInInteractRange.Add(tObject);
+        
     }
     public void RemoveObjectFromRangeList(TransferableObject tObject) {
+        
         objectsInInteractRange.Remove(tObject);
     }
 
@@ -158,40 +168,100 @@ public class PlayerControllerBeta : MonoBehaviour {
     private void HandleInteractionInput() {
 
         if (interactKey.wasPressedThisFrame) {
+
             //if the player is already holding something then drop it
             if (IsHoldingObject) {
-                HeldObject.Drop();
-                IsHoldingObject = false;
-                HeldObject = null;
+                if (IsIn3D()) {
+                    HeldObject.Drop3D();
+                    IsHoldingObject = false;
+                    HeldObject = null;
+                }
+                else {
+                    HeldObject.Drop2D();
+                    IsHoldingObject = false;
+                    HeldObject = null;
+                }
             }
             //only process interact press if theres something to interact with
-            else if (objectsInInteractRange.Any()) {
-                float closestToCameraLookDirection = float.MaxValue;
-                TransferableObject tObject = null;
-                //iterate each object
-                foreach (var obj in objectsInInteractRange) {
-                    //get the vector from the object to the main camera
-                    var vecToObject = obj.transform.position - Camera.main.transform.position;
-                    //use the dot product to project the vector onto the camera's right axis
-                    var dist = Mathf.Abs(
-                        Vector3.Dot(
-                            vecToObject,
-                            Camera.main.transform.right));
-                    //compare the distance to camera and find the smallest one
-                    if (dist < closestToCameraLookDirection) {
-                        closestToCameraLookDirection = dist;
-                        tObject = obj;
-                    }
+            else {
+                if (IsIn3D()) {
+                    Handle3DInteractions();
                 }
-                HeldObject = tObject;
-                //pick up the object that was found to be the closest
-                HeldObject.Pickup(gameObject);
+                else {
 
-                IsHoldingObject = true;
+                    Handle2DInteractions();
+                }
+
 
             }
 
         }
+    }
+    //handle picking up objects while in 2d
+    private void Handle2DInteractions() {
+        var tObject = GetObjectClosestTo2DPlayer();
+        Debug.Log(tObject == null);
+        if (tObject != null && !tObject.Is3D) {
+            HeldObject = tObject;
+            //pick up the object that was found to be the closest
+            HeldObject.Pickup2D(gameObject);
+            IsHoldingObject = true;
+        }
+    }
+    //handle picking up 3d objects while in 3d 
+    private void Handle3DInteractions() {
+        var tObject = GetObjectClosestToCameraLookAt();
+        //only process interactions with 3d objects while in 3d
+        if (tObject != null && tObject.Is3D) {
+            HeldObject = tObject;
+            //pick up the object that was found to be the closest
+            HeldObject.Pickup3D(gameObject);
+            IsHoldingObject = true;
+        }
+    }
+    //returns the interactable object closest to where the player is looking at with the camera
+    private TransferableObject GetObjectClosestToCameraLookAt() {
+        if (!objectsInInteractRange.Any()) {
+            return null;
+        }
+        float closestToCameraLookDirection = float.MaxValue;
+        TransferableObject tObject = null;
+        //iterate each object
+        foreach (var obj in objectsInInteractRange) {
+            //get the vector from the object to the main camera
+            var vecToObject = obj.transform.position - Camera.main.transform.position;
+            //use the dot product to project the vector onto the camera's right axis
+            var dist = Mathf.Abs(
+                Vector3.Dot(
+                    vecToObject,
+                    Camera.main.transform.right));
+            //compare the distance to camera and find the smallest one
+            if (dist < closestToCameraLookDirection) {
+                closestToCameraLookDirection = dist;
+                tObject = obj;
+            }
+        }
+        return tObject;
+    }
+    //returns the object to pick up that is closest to the player transform
+    //this behaviour might want to be changed later
+    private TransferableObject GetObjectClosestTo2DPlayer() {
+
+        if (!objectsInInteractRange.Any()) {
+            return null;
+        }
+        float closestToPlayer = float.MaxValue;
+        TransferableObject tObject = null;
+
+        foreach (var obj in objectsInInteractRange) {
+            var vecToObject = obj.transform.position - transform.position;
+            var length = vecToObject.magnitude;
+            if (length < closestToPlayer) {
+                closestToPlayer = length;
+                tObject = obj;
+            }
+        }
+        return tObject;
     }
 
     private void OnCollisionEnter(Collision collision) {
