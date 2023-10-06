@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class InteractRadarController : MonoBehaviour
 {
-    [SerializeField] private PlayerControllerBeta playerScript;
+  //  [SerializeField] private PlayerControllerBeta playerScript;
+    [SerializeField] private PlayerBehaviour newPlayerScript;
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject.TryGetComponent(out TransferableObject tObject)) {
-                playerScript.AddObjectToInRangeList(tObject);
+                newPlayerScript.AddObjectToInRangeList(tObject);
             }
         }
     }
@@ -18,7 +19,7 @@ public class InteractRadarController : MonoBehaviour
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject.TryGetComponent(out TransferableObject tObject)) {
-                playerScript.RemoveObjectFromRangeList(tObject);
+                newPlayerScript.RemoveObjectFromRangeList(tObject);
             }
         }
     }

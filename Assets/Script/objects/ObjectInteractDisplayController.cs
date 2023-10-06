@@ -42,14 +42,24 @@ public class ObjectInteractDisplayController : MonoBehaviour
             return;
         if (other.gameObject.CompareTag("InteractRadar")) {
             //get the player script to check what dimension its in
-            if (other.transform.parent.TryGetComponent(out PlayerControllerBeta playerController)) {
+            //if (other.transform.parent.TryGetComponent(out PlayerControllerBeta playerController)) {
+            //    //make sure both objects are in the same dimension before displaying the indicator
+            //    if ((tObject.Is3D && playerController.IsIn3D()) ||
+            //        (!tObject.Is3D && !playerController.IsIn3D())) {
+            //        SetInteractIndicatorActive(true);
+            //    }
+            //}
+            var player = GameObject.FindWithTag("Player");
+            
+            if (player.TryGetComponent(out PlayerBehaviour playerBehaviourScript)) {
+                
                 //make sure both objects are in the same dimension before displaying the indicator
-                if ((tObject.Is3D && playerController.IsIn3D()) ||
-                    (!tObject.Is3D && !playerController.IsIn3D())) {
+                if ((tObject.Is3D && playerBehaviourScript.IsIn3D()) ||
+                    (!tObject.Is3D && !playerBehaviourScript.IsIn3D())) {
                     SetInteractIndicatorActive(true);
                 }
             }
-            
+
         }
     }
     private void OnTriggerExit(Collider other) {
