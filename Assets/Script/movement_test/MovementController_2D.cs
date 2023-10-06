@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -47,6 +48,7 @@ public class MovementController_2D : MonoBehaviour {
             }
         }
     }
+    //handles player movement in 2D
     void Move2D() {
         var input = playerController.GetInput();
         var up = transform.up;
@@ -74,19 +76,19 @@ public class MovementController_2D : MonoBehaviour {
     }
 
 
-
+    //handles transitioning to anew axis when encountering another wall at a 90 degree angle
     void TransitionToNewAxis(Vector3 pos, WallBehaviour wall) {
         //rotate first to get correct transform.right
         transform.forward = wall.transform.up;
-        
+
 
         //only supports changing x/z plane not y (ceiling/floor)
         var offsetDirection = GetDirection(wall) == 1 ? -transform.right : transform.right;
 
         newSpritePos = pos + offsetDirection * movementCollider.size.x;
-        
+
         //move to offset position
-      //  transform.position = newSpritePos;
+        //  transform.position = newSpritePos;
         playerController.transform.position = newSpritePos;
         transform.localPosition = Vector3.zero;
 
@@ -94,7 +96,8 @@ public class MovementController_2D : MonoBehaviour {
 
         cameraTransitioning = true;
     }
-
+    //moves the camera to the new location when moving to a new wall
+    //camera moves to newCamTargetPos and points at newSpritePos
     private void TransitionCamera() {
         Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newCamTargetPos, cameraTransitionSpeed * Time.deltaTime);
 
@@ -104,56 +107,73 @@ public class MovementController_2D : MonoBehaviour {
 
         if (Vector3.Distance(Camera.main.transform.position, newCamTargetPos) < 0.15f) {
             cameraTransitioning = false;
-            //reset any weird player object movements 
-          //  playerController.transform.position = transform.position;
             
-            Debug.Log("camera done moving");
         }
 
 
     }
+    //handles collision with a wall that is not on the same plane as the player
+    //supports 90 degree interactions with walls and nothing else
     void HandleNewPlaneCollision(Collider other) {
         if (other.TryGetComponent(out WallBehaviour wallB)) {
             if (wallB.IsWalkThroughEnabled) {
                 TransitionToNewAxis(other.ClosestPointOnBounds(transform.position), wallB);
-                Debug.Log(wallB.gameObject.name);
-
 
             }
             else if (!wallB.IsPassthrough) {
-                moveDirEnabled[GetDirection(other)] = false;
+                DisablePlayerMovementInDirection(GetDirection(other));
             }
             else {
                 //allow player to pass through wall maybe do something with camera?
             }
         }
     }
+    //disables the movement in the passed in direction
+    void DisablePlayerMovementInDirection(int dir) {
+        if (dir < 0 || dir >= moveDirEnabled.Length)
+            throw new ArgumentException("movement direction not supported");
+        moveDirEnabled[dir] = false;
+        dirIn = dir;
+    }
+    //called when the movement hitbox hits something 
     public void CallOnTriggerEnter(Collider other) {
         if (cameraTransitioning)
             return;
-        if (other.transform.up == transform.forward)
-        {
-            moveDirEnabled[GetDirection(other)] = false;
-            dirIn = GetDirection(other);
+        if (other.gameObject.layer == LayerInfo.GROUND) {
+            HandleGroundCollision(other);
+            return;
         }
-        else
-        {
+
+        if (other.transform.up == transform.forward) {
+            DisablePlayerMovementInDirection(GetDirection(other));
+        }
+        else {
             HandleNewPlaneCollision(other);
         }
 
     }
+    //reenable the movement direction when leaving a collision
     public void CallOnTriggerExit(Collider other) {
         if (cameraTransitioning)
             return;
         moveDirEnabled[dirIn] = true;
     }
+    //handles interaction with the ground planes
+    private void HandleGroundCollision(Collider other) {
 
+
+        var direction = GetGroundDirection(other);
+
+        DisablePlayerMovementInDirection(direction);
+    }
+
+    //gets the direction that the object is in relative to the player
+    //returns 0 for up, 1 for right, 2 for down, 3 for left
     public int GetDirection(Collider other) {
         Vector3 toOther = other.transform.position - transform.position;
 
         float dotUp = Vector3.Dot(toOther.normalized, transform.up);
         float dotRight = Vector3.Dot(toOther.normalized, transform.right);
-
         //checks +/- 45 degrees to check if object is more above or below than left or right
         if (dotUp > 0.7071) return 0; // Above
         if (dotUp < -0.7071) return 2; // Below
@@ -178,6 +198,15 @@ public class MovementController_2D : MonoBehaviour {
 
         return -1; // Error or the object is too close
     }
+    //gets the direction of the ground using the dot product of the vector to the object
+    //with the objects transform.up property
+    //returns 2 for down and 0 for up
+    public int GetGroundDirection(Collider other) {
+        var toOther = other.transform.position - transform.position;
+        return Vector3.Dot(toOther.normalized, transform.up) < 0 ? 2 : 0;
+
+    }
+
 
 
 }
