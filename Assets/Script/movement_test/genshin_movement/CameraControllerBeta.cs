@@ -13,6 +13,8 @@ public class CameraControllerBeta : MonoBehaviour {
     private bool canRotateCamera = true;
     private Vector3 prevCamPos;
 
+    private Rigidbody rb;
+
   //  [SerializeField] private float cameraLookOffset = 10f;
 
     private Vector3 previousPlayerPosition;
@@ -24,7 +26,7 @@ public class CameraControllerBeta : MonoBehaviour {
        // transform.position = playerTransform.position + cameraDefaultOffset;
         Cursor.lockState = CursorLockMode.Locked;
         previousPlayerPosition = playerTransform.position;
-
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update() {
@@ -37,6 +39,8 @@ public class CameraControllerBeta : MonoBehaviour {
     private void LateUpdate() {
         FollowPlayer();
     }
+
+
     /// <summary>
     /// Handle mouse input for camera rotation using RotateHorizontal and RotateVertical, also keeps the camera looking at the player
     /// </summary>
@@ -80,7 +84,7 @@ public class CameraControllerBeta : MonoBehaviour {
     /// Keeps the camera moving with the player's transform
     /// </summary>
     void FollowPlayer() {
-        
+
         transform.position += playerTransform.position - previousPlayerPosition;
         previousPlayerPosition = playerTransform.position;
         
@@ -116,6 +120,4 @@ public class CameraControllerBeta : MonoBehaviour {
 
         return updatedCameraPosition;
     }
-
-
 }
