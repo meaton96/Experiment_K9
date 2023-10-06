@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.HID;
 
 public class PlayerDimensionController : MonoBehaviour {
-    public const int WALL_LAYER = 6;
+  //  public const int WALL_LAYER = 6;
     public const float WALL_DRAW_OFFSET = .1f;
 
     [SerializeField] private float raycastLength = 50f;
@@ -117,7 +117,7 @@ public class PlayerDimensionController : MonoBehaviour {
         //only handle 3d collisions while in 3d mode
         if (playerControllerScript.IsIn3D()) {
             //handle a collision with a wall to potentially trnasfer to 2d
-            if (collision.collider.gameObject.layer == WALL_LAYER) {
+            if (collision.collider.gameObject.layer == LayerInfo.WALL) {
                 if (collision.collider.GetComponent<WallBehaviour>().AllowsDimensionTransition && DOGEnabled) {
                     TransitionTo2D();
                 }
@@ -151,21 +151,29 @@ public class PlayerDimensionController : MonoBehaviour {
             //get the nearest wall location
             //also store the location on the wall where we wawnt to draw the projection
             if ((nearestWall = FindNearbyWall(out Vector3 projectionDrawLocation)) != null) {
-                if (projectionOutOfRange.activeInHierarchy == false) {
+                //check if the wall allows dimension transfer before drawing the projection
+                if (nearestWall.GetComponent<WallBehaviour>().AllowsDimensionTransition) {
+                    
+                    if (projectionOutOfRange.activeInHierarchy == false) {
 
-                    //activate and set position and rotation of the projection
-                    projectionOutOfRange.transform.position = projectionDrawLocation;
+                        //activate and set position and rotation of the projection
+                        projectionOutOfRange.transform.position = projectionDrawLocation;
+                        projectionOutOfRange.transform.forward = nearestWall.transform.up;
+                        projectionOutOfRange.SetActive(true);
+                        isProjecting = true;
+                    }
+                    //always move the projection while it is enabled 
+                    projectionOutOfRange.transform.position = projectionDrawLocation + (nearestWall.transform.up * WALL_DRAW_OFFSET);
                     projectionOutOfRange.transform.forward = nearestWall.transform.up;
-                    projectionOutOfRange.SetActive(true);
-                    isProjecting = true;
-                }
-                //always move the projection while it is enabled 
-                projectionOutOfRange.transform.position = projectionDrawLocation + (nearestWall.transform.up * WALL_DRAW_OFFSET);
-                projectionOutOfRange.transform.forward = nearestWall.transform.up;
 
-                //if the player is holding an item, project it onto the wall
-                if (playerControllerScript.IsHoldingObject)
-                    HandleObjectProjection(nearestWall, projectionDrawLocation);
+                    //if the player is holding an item, project it onto the wall
+                    if (playerControllerScript.IsHoldingObject)
+                        HandleObjectProjection(nearestWall, projectionDrawLocation);
+                }
+                else {
+                    //non transferable wall is the closest
+                    DisableProjections();
+                }
                 
             }
             else {
@@ -182,7 +190,7 @@ public class PlayerDimensionController : MonoBehaviour {
             hitColliders.ToList().ForEach(hit => Debug.Log(name));
 
             foreach (var hitCollider in hitColliders) {
-                if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != WALL_LAYER) {
+                if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != LayerInfo.WALL) {
                     continue;
                 }
                 Debug.Log(hitCollider.gameObject.name);
@@ -216,7 +224,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
         foreach (var hitCollider in hitColliders) {
             // Ensure not to return the game object itself and only check objects on layer 6 (wall layer)
-            if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != WALL_LAYER || !hitCollider.GetComponent<WallBehaviour>().AllowsDimensionTransition)
+            if (hitCollider.gameObject == gameObject || hitCollider.gameObject.layer != LayerInfo.WALL)
                 continue;
 
             var closestPointOnWall = hitCollider.ClosestPoint(transform.position);
@@ -229,7 +237,7 @@ public class PlayerDimensionController : MonoBehaviour {
                 // Get the closest point on the collider to the game object
                 closestPoint = closestPointOnWall;
 
-                //update transfer location and camera transition target for when the space bar is released 
+                //update transfer location and camera transition target for when the player walks into the wall
                 projectionTransferLocation = closestPoint + hitCollider.transform.up * WALL_DRAW_OFFSET;
                 cameraTranstionTarget = projectionTransferLocation + cameraOffset2D * hitCollider.transform.up;
 
@@ -281,7 +289,7 @@ public class PlayerDimensionController : MonoBehaviour {
         if (Physics.Raycast(ray, out RaycastHit hit, raycastLength)) {
             //check if its a wall
             //all walls need to be layer 6 for this to work
-            if (hit.collider.gameObject.layer == WALL_LAYER) {
+            if (hit.collider.gameObject.layer == LayerInfo.WALL) {
                 WallBehaviour wallBehaviour = hit.collider.GetComponent<WallBehaviour>();
 
                 //check if the wall allows dimension transfer and enable the appropriate sprite
@@ -301,7 +309,7 @@ public class PlayerDimensionController : MonoBehaviour {
         Ray ray = new(transform.position, Camera.main.transform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, raycastLength)) {
-            if (hit.collider.gameObject.layer == WALL_LAYER) {
+            if (hit.collider.gameObject.layer == LayerInfo.WALL) {
                 WallBehaviour wallBehaviour = hit.collider.GetComponent<WallBehaviour>();
 
                 GameObject activeProjection = wallBehaviour != null && wallBehaviour.AllowsDimensionTransition ? projectionEntry : projectionNoEntry;

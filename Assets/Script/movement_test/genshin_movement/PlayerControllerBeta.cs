@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.Controls;
 
 public class PlayerControllerBeta : MonoBehaviour {
 
-    public const int GROUND_LAYER = 8;                      //layer all ground objects should be on for gravity
+ //   public const int GROUND_LAYER = 8;                      //layer all ground objects should be on for gravity
     public float moveSpeed3D = 5.0f;                        //movement speed while in 3D        
 
     public float rotationSpeed = 400f;
@@ -195,12 +195,12 @@ public class PlayerControllerBeta : MonoBehaviour {
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if (collision.collider.gameObject.layer == GROUND_LAYER) {
+        if (collision.collider.gameObject.layer == LayerInfo.GROUND) {
             isTouchingGround = true;
         }
     }
     private void OnCollisionExit(Collision collision) {
-        if (collision.collider.gameObject.layer == GROUND_LAYER) {
+        if (collision.collider.gameObject.layer == LayerInfo.GROUND) {
             isTouchingGround = false;
         }
     }
