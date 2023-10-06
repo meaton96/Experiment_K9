@@ -112,23 +112,23 @@ public class MovementController_2D : MonoBehaviour {
 
 
     }
-    void HandleNewPlaneCollision(Collider other) {
-        if (other.TryGetComponent(out WallBehaviour wallB)) {
+    void HandleNewPlaneCollision(WallBehaviour wallB, Collider wallCollider) {
             if (wallB.IsWalkThroughEnabled) {
-                TransitionToNewAxis(other.ClosestPointOnBounds(transform.position), wallB);
+                TransitionToNewAxis(wallCollider.ClosestPointOnBounds(transform.position), wallB);
                 Debug.Log(wallB.gameObject.name);
 
 
             }
             else if (!wallB.IsPassthrough) {
-                moveDirEnabled[GetDirection(other)] = false;
+                moveDirEnabled[GetDirection(wallB)] = false;
             }
             else {
                 //allow player to pass through wall maybe do something with camera?
             }
-        }
+        
     }
     public void CallOnTriggerEnter(Collider other) {
+        
         if (cameraTransitioning)
             return;
         if (other.transform.up == transform.forward)
@@ -138,7 +138,16 @@ public class MovementController_2D : MonoBehaviour {
         }
         else
         {
-            HandleNewPlaneCollision(other);
+            //other plane was a wall so try transitioning to it
+            if (other.TryGetComponent(out WallBehaviour wallB))
+                HandleNewPlaneCollision(wallB, other);
+            else { 
+                //other plane was something else
+                if (other.gameObject.layer == LayerInfo.GROUND) {
+
+                }
+
+            }
         }
 
     }

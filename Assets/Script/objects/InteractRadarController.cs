@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InteractRadarController : MonoBehaviour
 {
-    private const int OBJECT_LAYER = 7;
+    
     [SerializeField] private PlayerControllerBeta playerScript;
     // Start is called before the first frame update
     void Start()
@@ -18,7 +18,7 @@ public class InteractRadarController : MonoBehaviour
         
     }
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.layer == OBJECT_LAYER) {
+        if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject.TryGetComponent(out TransferableObject tObject)) {
                 playerScript.AddObjectToInRangeList(tObject);
@@ -26,7 +26,7 @@ public class InteractRadarController : MonoBehaviour
         }
     }
     private void OnTriggerExit(Collider other) {
-        if (other.gameObject.layer == OBJECT_LAYER) {
+        if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject.TryGetComponent(out TransferableObject tObject)) {
                 playerScript.RemoveObjectFromRangeList(tObject);
