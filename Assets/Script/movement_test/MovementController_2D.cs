@@ -27,6 +27,8 @@ public class MovementController_2D : MonoBehaviour {
     //up, right, down, left
     private bool[] moveDirEnabled = { true, true, true, true };
 
+    private int dirIn;
+
 
     // Start is called before the first frame update
     void Awake() {
@@ -130,8 +132,12 @@ public class MovementController_2D : MonoBehaviour {
         if (cameraTransitioning)
             return;
         if (other.transform.up == transform.forward)
+        {
             moveDirEnabled[GetDirection(other)] = false;
-        else {
+            dirIn = GetDirection(other);
+        }
+        else
+        {
             HandleNewPlaneCollision(other);
         }
 
@@ -139,8 +145,7 @@ public class MovementController_2D : MonoBehaviour {
     public void CallOnTriggerExit(Collider other) {
         if (cameraTransitioning)
             return;
-        moveDirEnabled[GetDirection(other)] = true;
-
+        moveDirEnabled[dirIn] = true;
     }
 
     public int GetDirection(Collider other) {
