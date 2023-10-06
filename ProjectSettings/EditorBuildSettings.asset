@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MVI_Level_Small.unity
+    guid: 68676cb5ad933d6469db7c2284193a50
   m_configObjects: {}
