@@ -109,22 +109,22 @@ public class TransferableObject : MonoBehaviour {
         IsBeingHeld = false;
         transform.parent = null;
     }
-    public void ProjectOntoWallAtLocation(GameObject nearestWall, Vector3 projectionDrawCenter, float playerProjectionSize, float wallDrawOffset) {
+    //public void ProjectOntoWallAtLocation(GameObject nearestWall, Vector3 projectionDrawCenter, float playerProjectionSize, float wallDrawOffset) {
 
-        var drawLoc = projectionDrawCenter + -Vector3.forward * objectDrawOffset;
+    //    var drawLoc = projectionDrawCenter + -Vector3.forward * objectDrawOffset;
         
-        if (displayObject_2D.activeInHierarchy == false) {
+    //    if (displayObject_2D.activeInHierarchy == false) {
 
-            //activate and set position and rotation of the projection
-            displayObject_2D.transform.position = drawLoc;
-            displayObject_2D.transform.forward = nearestWall.transform.up;
-            Enable2D();
-        }
-        //always move the projection while it is enabled 
-        displayObject_2D.transform.position = drawLoc + (nearestWall.transform.up * wallDrawOffset);
-        displayObject_2D.transform.forward = nearestWall.transform.up;
+    //        //activate and set position and rotation of the projection
+    //        displayObject_2D.transform.position = drawLoc;
+    //        displayObject_2D.transform.forward = nearestWall.transform.up;
+    //        Enable2D();
+    //    }
+    //    //always move the projection while it is enabled 
+    //    displayObject_2D.transform.position = drawLoc + (nearestWall.transform.up * wallDrawOffset);
+    //    displayObject_2D.transform.forward = nearestWall.transform.up;
         
-    }
+    //}
     public void DisableProjection() {
         displayObject_2D.SetActive(false);
     }

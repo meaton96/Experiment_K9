@@ -108,7 +108,7 @@ public class PlayerBehaviour : MonoBehaviour {
         if (tObject != null && !tObject.Is3D) {
             HeldObject = tObject;
             //pick up the object that was found to be the closest
-            HeldObject.Pickup2D(gameObject);
+            HeldObject.Pickup2D(player2D);
             IsHoldingObject = true;
         }
     }
@@ -119,7 +119,7 @@ public class PlayerBehaviour : MonoBehaviour {
         if (tObject != null && tObject.Is3D) {
             HeldObject = tObject;
             //pick up the object that was found to be the closest
-            HeldObject.Pickup3D(gameObject);
+            HeldObject.Pickup3D(player3D);
             IsHoldingObject = true;
         }
     }
@@ -168,7 +168,9 @@ public class PlayerBehaviour : MonoBehaviour {
         return tObject;
     }
 
-   
+    
+
+
 
 }
 

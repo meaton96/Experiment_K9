@@ -1,26 +1,121 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class InteractRadarController : MonoBehaviour
-{
-  //  [SerializeField] private PlayerControllerBeta playerScript;
-    [SerializeField] private PlayerBehaviour newPlayerScript;
+public class InteractRadarController : MonoBehaviour {
+    //  [SerializeField] private PlayerControllerBeta playerScript;
+    [SerializeField] private PlayerBehaviour playerBehaviour;
+    [SerializeField] private PlayerDimensionController playerDimensionController;
+    [SerializeField] private GameObject Player3D;
+    private List<Collider> potentialProjectionSurfaces = new();
+    private Collider currentProjectionSurface;
 
+    private Vector3 gizmoDrawLoc;
+
+    private void Update() {
+        if (!playerBehaviour.IsIn3D() || !playerDimensionController.DOGEnabled) {
+            playerDimensionController.DisableProjections();
+            return;
+        }
+        CheckForPotentialSurfaces();
+    }
+    private void HandleOneSurfaceNearby() {
+
+        //if the only surface found is not transferable disable project and quit out
+        if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition) {
+            playerDimensionController.DisableProjections();
+            return;
+        }
+
+        currentProjectionSurface = potentialProjectionSurfaces[0];
+        if (playerDimensionController.IsProjecting) {
+            //update the position if currently projecting
+            playerDimensionController.UpdateProjectionPosition(
+                currentProjectionSurface,
+                currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
+        }
+        //found a surface and wasnt projecting before
+        else {
+            //so enable the projection at the closest point
+            playerDimensionController.EnableProjection(currentProjectionSurface,
+                currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
+        }
+    }
+    private void HandleMultipleSurfacesNearby() {
+        float distance = float.MaxValue;
+        Collider closest = null;
+        Vector3 closestPointOnBounds = Vector3.zero;
+        //iterate colliders that are currently in range of the player's interaction range
+        foreach (Collider c in potentialProjectionSurfaces) {
+            var closePoint = c.ClosestPointOnBounds(Player3D.transform.position);
+            var distToCollider = Vector3.Distance(closePoint, Player3D.transform.position);
+            
+            //looking for the closest one to the player
+            if (distToCollider < distance) {
+                gizmoDrawLoc = Player3D.transform.position;
+                distance = distToCollider;
+                closest = c;
+                closestPointOnBounds = closePoint;
+            }
+        }
+        //enable the projection on the closest wall
+        if (closest != null) {
+            currentProjectionSurface = closest;
+            playerDimensionController.UpdateProjectionPosition(
+                currentProjectionSurface,
+                closestPointOnBounds);
+        }
+    }
+    //Checks through potentialSurfaces list to see if there are any to project onto
+    //calls helper methods to handle one of multiple surfaces nearby
+    //disables projections if there are no surfaces found
+    private void CheckForPotentialSurfaces() {
+        //theres at least 1 wall to project to
+        if (potentialProjectionSurfaces.Any()) {
+            if (potentialProjectionSurfaces.Count == 1) {
+                HandleOneSurfaceNearby();
+            }
+            //more than 1 potential surface need to find the closest one to the player
+            else {
+                HandleMultipleSurfacesNearby();
+            }
+        }
+        //no surface was found so disable all projections
+        else {
+            playerDimensionController.DisableProjections();
+        }
+    }
+    private void OnDrawGizmos() {
+        Gizmos.DrawCube(gizmoDrawLoc, Vector3.one * 2f);
+    }
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject.TryGetComponent(out TransferableObject tObject)) {
-                newPlayerScript.AddObjectToInRangeList(tObject);
+                playerBehaviour.AddObjectToInRangeList(tObject);
             }
+        }
+        //tell projection to enable
+        else if (other.gameObject.layer == LayerInfo.WALL) {
+
+            potentialProjectionSurfaces.Add(other);
+
         }
     }
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject.TryGetComponent(out TransferableObject tObject)) {
-                newPlayerScript.RemoveObjectFromRangeList(tObject);
+                playerBehaviour.RemoveObjectFromRangeList(tObject);
             }
         }
+        //tell projection to disasble
+        else if (other.gameObject.layer == LayerInfo.WALL) {
+            potentialProjectionSurfaces.Remove(other);
+        }
     }
+
 }
