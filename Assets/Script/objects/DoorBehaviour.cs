@@ -35,8 +35,7 @@ public class DoorBehaviour : MonoBehaviour {
         closedLocalPosition = door.transform.localPosition;
         openLocalPosition = door.transform.localPosition + Vector3.up * doorHeight;
 
-        Debug.Log(closedLocalPosition);
-        Debug.Log(openLocalPosition);
+        
     }
 
     // Update is called once per frame
@@ -70,6 +69,16 @@ public class DoorBehaviour : MonoBehaviour {
         if (IsAuto && other.CompareTag("InteractRadar")) {
             goalState = DoorState.Closed;
         }
+    }
+
+    public void OpenDoor() {
+        goalState = DoorState.Open;
+    }
+    public void CloseDoor() {
+        goalState = DoorState.Closed;
+    }
+    public bool IsOpen() {
+        return goalState == DoorState.Open;
     }
 
 
