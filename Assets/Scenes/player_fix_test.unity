@@ -5146,7 +5146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2119775931238234732}
   m_Layer: 0
-  m_Name: NestedParentCapsule_Unpack
+  m_Name: PlayerCameraPack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -8,7 +8,7 @@ public class DoorBehaviour : MonoBehaviour
     public bool IsAuto;
     public bool IsLocked;
     //potential future hook up to a button or something to open
-    [SerializeField] private GameObject activator;
+  //  [SerializeField] private GameObject activator;
     //door to move
     [SerializeField] private GameObject door;
     //amount to move
@@ -75,6 +75,12 @@ public class DoorBehaviour : MonoBehaviour
         if (IsAuto && other.CompareTag("InteractRadar")) {
             goalState = DoorState.Closed;
         }
+    }
+    public void OpenDoor() {
+        goalState = DoorState.Open;
+    }
+    public void CloseDoor() {
+        goalState = DoorState.Closed;
     }
 
     //public void OpenOrCloseDoor(bool open) {
