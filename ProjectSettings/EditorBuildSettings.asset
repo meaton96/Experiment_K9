@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MVI_Level_Small.unity
     guid: 68676cb5ad933d6469db7c2284193a50
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/movement_test_genshin.unity
     guid: c052e32b004c37f499fa1b9bfbdec9f1
+  - enabled: 1
+    path: Assets/Scenes/video.unity
+    guid: cb3b21c3f3de5f241b58e6e2b70b3dfc
   m_configObjects: {}
