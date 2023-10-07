@@ -399,7 +399,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1282100498}
   playerControllerScript: {fileID: 1282100499}
   defaultCameraOffset: {x: 3, y: 14, z: -20}
-  rotationSpeed: 2000
+  rotationSpeed: 200
   lockVerticalRotation: 0
 --- !u!1001 &182935586
 PrefabInstance:
