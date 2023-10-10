@@ -11,6 +11,9 @@ public class WallBehaviour : MonoBehaviour {
     public bool IsPassthrough = false;
     //remove from all checks for player movement
     public bool RemoveFromWalkChecks = false;
+    //checks if the wall is a moving wall;
+    public bool MovingWall = false;
+
     // Start is called before the first frame update
     void Start() {
         
