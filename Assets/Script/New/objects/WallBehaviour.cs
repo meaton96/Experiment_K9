@@ -12,13 +12,24 @@ public class WallBehaviour : MonoBehaviour {
     //remove from all checks for player movement
     public bool RemoveFromWalkChecks = false;
 
+    private Rigidbody player;
+    Vector2 WallForce = new Vector2();
+    [SerializeField]
+    public bool IsMovingWall = false;
+
     public float pushForce = 1f;
-
-
+    
+    // This method controls conveyor walls, the walls that move the player in a
+    // certain direction when they are merged into them.
+    private void MovingWall()
+    {
+        WallForce.x = transform.right.x;
+    }
 
     private void OnTriggerStay(Collider other) {
         if (other.gameObject.layer == LayerInfo.PLAYER) {
             var rb = other.GetComponent<Rigidbody>();
+            player = rb;
             //if the wall is walkable just slightly push the player forward out of the wall to prevent weird things
             if (IsWalkThroughEnabled) {
                 rb.AddForce(other.transform.forward * pushForce);
@@ -33,6 +44,14 @@ public class WallBehaviour : MonoBehaviour {
                 rb.AddForce(pushDir * pushForce * 5f);
             }
 
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerInfo.PLAYER)
+        {
+            player = null;
         }
     }
 }
