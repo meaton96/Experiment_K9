@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - InteractRadar
+  - EventTrigger
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - Ground
   - Ignore Ground
   - Player
-  - 
+  - EventTrigger
   - 
   - 
   - 
