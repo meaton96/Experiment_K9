@@ -8,7 +8,7 @@ public class TransferableObject : MonoBehaviour {
     [SerializeField] private ObjectInteractDisplayController interactDisplayController;
     [SerializeField] private SpriteRenderer spriteRenderer2D;
 
-    [SerializeField] private float objectDrawOffset = 3f;
+    [SerializeField] private float objectDrawOffset = 4f;
 
     public bool Is3D = true;
     public bool IsBeingHeld = false;
@@ -135,9 +135,6 @@ public class TransferableObject : MonoBehaviour {
 
         interactDisplayController.SetInteractIndicatorActive(true);
         interactDisplayController.ResetPosition();
-    }
-    public void DisableProjection() {
-        displayObject_2D.SetActive(false);
     }
     private void TogglePhysics(bool disable) {
         displayObject3D_Mesh.GetComponent<Rigidbody>().isKinematic = disable;

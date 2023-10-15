@@ -187,16 +187,7 @@ public class PlayerDimensionController : MonoBehaviour {
     //disable all projections
     public void DisableProjections() {
         if (IsProjecting) {
-            //  projectionEntry.SetActive(false);
-            //  projectionNoEntry.SetActive(false);
-            //   projectionOutOfRange.SetActive(false);
-            Debug.Log("disabling projections");
             player2D.SetActive(false);
-
-            //   Debug.Log("Resetting projections");
-            if (playerController.IsHoldingObject) {
-                playerController.HeldObject.DisableProjection();
-            }
             IsProjecting = false;
         }
 
