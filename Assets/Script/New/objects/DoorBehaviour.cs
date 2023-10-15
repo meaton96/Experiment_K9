@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class DoorBehaviour : MonoBehaviour {
     public bool IsAuto;
     public bool IsLocked;
-    //potential future hook up to a button or something to open
-    [SerializeField] private GameObject activator;
+    ////potential future hook up to a button or something to open
+    //[SerializeField] private GameObject activator;
     //door to move
     [SerializeField] private GameObject door;
     //amount to move
@@ -17,6 +16,9 @@ public class DoorBehaviour : MonoBehaviour {
     [SerializeField]
     private float doorSpeed = 6f;
 
+    [SerializeField] bool is2D;
+    //set this to true if you want the door to move into the wall instead of up for some reason
+    [SerializeField] bool openNegativeRight = false;
     enum DoorState {
         Closed,
         Open,
@@ -33,7 +35,17 @@ public class DoorBehaviour : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         closedLocalPosition = door.transform.localPosition;
-        openLocalPosition = door.transform.localPosition + Vector3.up * doorHeight;
+
+
+        if (openNegativeRight) {
+            openLocalPosition = door.transform.localPosition + -transform.right * doorHeight;
+            return;
+        }
+        else {
+            openLocalPosition = door.transform.localPosition + transform.up * doorHeight;
+
+        }
+
 
 
     }
