@@ -105,6 +105,7 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
+        private Rigidbody _rigidbody;
 
         private const float _threshold = 0.01f;
 
@@ -135,7 +136,7 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+            _rigidbody = GetComponent<Rigidbody>();
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -263,6 +264,17 @@ namespace StarterAssets
                 // rotate to face input direction relative to camera position
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
+
+
+            // Check if Rigidbody has significant external forces applied
+            Vector3 externalForce = _rigidbody.velocity;
+            float externalForceMagnitude = new Vector3(externalForce.x, 0.0f, externalForce.z).magnitude;
+            if (externalForceMagnitude > 0.005f) 
+    {
+                // Let the Rigidbody's forces move the player
+                _controller.Move(externalForce * Time.deltaTime);
+            }
+
 
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;

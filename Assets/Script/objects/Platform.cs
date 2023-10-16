@@ -17,6 +17,7 @@ public class Platform : ActivatablePuzzlePiece {
     public float firstLastWaitTime = 2.0f;
 
     [SerializeField] GameObject player;
+    Rigidbody playerRb;
     private Rigidbody rb;
 
     private int currentTargetIndex = 0;
@@ -98,6 +99,10 @@ public class Platform : ActivatablePuzzlePiece {
                 var moveDirection = (targetPosition - transform.position).normalized;
                 var velocity = platformMovementSpeed * moveDirection;
                 rb.velocity = velocity; // set the Rigidbody's velocity to move the platform
+                if (playerOnPlatform) {
+                   playerRb.velocity = velocity;
+                }
+                Debug.Log(playerRb.GetAccumulatedForce());
 
             }
         }
@@ -131,7 +136,8 @@ public class Platform : ActivatablePuzzlePiece {
             }
             playerOnPlatform = true;
             player = collision.gameObject;
-            player.transform.SetParent(transform);
+            playerRb = player.GetComponent<Rigidbody>();  
+          //  player.transform.SetParent(transform);
         }
         //else if (collision.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
         //    collision.gameObject.transform.SetParent(transform);
@@ -140,7 +146,7 @@ public class Platform : ActivatablePuzzlePiece {
     private void OnCollisionExit(Collision collision) {
         if (collision.gameObject.layer == LayerInfo.PLAYER) {
             playerOnPlatform = false;
-            player.transform.SetParent(null);
+        //   player.transform.SetParent(null);
 
         }
         //else if (collision.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
