@@ -1,75 +1,96 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ButtonBehaviour : MonoBehaviour {
-    Vector3 defaultPosition, pressedPosition;
-    [SerializeField] private GameObject button;
-    [SerializeField] private float pressDistance = .6f;
     public bool IsLocked = false;
     //only supports doors for now
-    [SerializeField] private DoorBehaviour doorToOpen;
+    [SerializeField] private ActivatablePuzzlePiece puzzlePieceToActivate;
 
-    //how long it will take to open
-    [SerializeField]
-    private float doorSpeed = 5f;
+    [SerializeField] private float springForce = 1f;
+    private Rigidbody rb;
+    [SerializeField] private MeshRenderer pawMeshRenderer;
+    //list of 2 to replace both textures on the paw
+    [SerializeField] private List<Material> pressedMaterials;
+    [SerializeField] private List<Material> unPressedMaterials;
+    //the minimum mass the button needs to be in contact with to activate
+    [SerializeField] private float minMassToPress = 5f;
+    //control to make the button not unpress itself if it was successfully pressed
+    [SerializeField] private bool IsPermanentlyPressedOnPress = false;
 
-    enum ButtonState {
-        Pressed,
-        Unpressed,
-        Moving
-    }
-
-    private ButtonState currentState;
-    private ButtonState goalState;
+    private bool unpressed;
+    //keeps track of who or what pressed the button to check its mass against minimum required
+    private GameObject presser;
 
     // Start is called before the first frame update
-    void Start() {
-        currentState = goalState = ButtonState.Unpressed;
-        defaultPosition = button.transform.localPosition;
-        pressedPosition = button.transform.localPosition + Vector3.down * pressDistance;
+    void Awake() {
+
+        rb = GetComponent<Rigidbody>();
 
     }
 
     void Update() {
-        if (!IsLocked && currentState != goalState) {
-            currentState = ButtonState.Moving;
-
-            // Determine the target position based on the goal state
-            Vector3 targetPosition = goalState == ButtonState.Pressed ? pressedPosition : defaultPosition;
-
-            // Move the door towards the target position
-        //    button.transform.localPosition = Vector3.MoveTowards(button.transform.localPosition, targetPosition, doorSpeed * Time.deltaTime);
-
-            // Check if the door has reached the open or closed position
-            if (button.transform.localPosition == pressedPosition) {
-                currentState = ButtonState.Pressed;
-
-            }
-            else if (button.transform.localPosition == defaultPosition) {
-                currentState = ButtonState.Unpressed;
-
-            }
-        }
-    }
-    public void TryToOpenDoor(Collider other) {
-        if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
-            goalState = ButtonState.Pressed;
-            //open door when button is pressed
-            if (doorToOpen != null && !doorToOpen.IsOpen()) {
-                doorToOpen.OpenDoor();
-            }
-        }
+        if (!IsPermanentlyPressedOnPress)
+            UnPress();
     }
 
 
 
-    public void TryToCloseDoor(Collider other) {
-        if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
-            goalState = ButtonState.Unpressed;
-            if (doorToOpen != null) {
-                doorToOpen.CloseDoor();
+    //move the button up if it is not at its starting position
+    void UnPress() {
+        if (transform.localPosition.y < -0.01f) {
+            unpressed = false;
+            rb.AddForce(Vector3.up * springForce);
+        }
+        //clear and reset everything to 0
+        else if (!unpressed) {
+            unpressed = true;
+            var tempVec = transform.localPosition;
+            tempVec.y = 0;
+            transform.localPosition = tempVec;
+            rb.velocity = Vector3.zero;
+        }
+    }
+
+    
+    private void OnCollisionEnter(Collision collision) {
+        //button hit the trigger cube
+        //check if the button can be pressed and open door and swap material if so
+        if (collision.collider.CompareTag("EventTrigger")) {
+            if (CanPressButton()) {
+                puzzlePieceToActivate.Activate();
+                pawMeshRenderer.SetMaterials(pressedMaterials);
             }
         }
+        //otherwise the collision was with something trying to press it so store it as the presser
+        else {
+            presser = collision.gameObject;
+        }
+
+    }
+    private void OnCollisionExit(Collision collision) {
+        if (collision.collider.CompareTag("EventTrigger")) {
+            puzzlePieceToActivate.Deactivate();
+            pawMeshRenderer.SetMaterials(unPressedMaterials);
+
+        }
+        else {
+            //null the presser if they leave the collision with the button
+            if (collision.gameObject == presser)
+                presser = null;
+        }
+
+    }
+    //checks if the button can be pressed by checking presser null then for player presser
+    //then checks for mass on the attached rigid body
+    //if no rigid body is found also return false
+    private bool CanPressButton() {
+        if (presser == null) return false;
+        if (presser.layer == LayerInfo.PLAYER) return true;
+        if (presser.TryGetComponent(out Rigidbody rb)) {
+            return rb.mass > minMassToPress;
+        }
+        return false;
     }
 }
