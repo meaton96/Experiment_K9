@@ -87,22 +87,12 @@ public class Platform : ActivatablePuzzlePiece {
             }
             //move the platform if not at a destination
             else {
-
-                ////calc movement direction
-                //var moveDirection = (targetPosition - transform.position).normalized;
-                //var movement = platformMovementSpeed * Time.deltaTime * moveDirection;
-                ////move the platform
-                //transform.position += movement;
-                ////check if player is no the platform and move them too
-
-
                 var moveDirection = (targetPosition - transform.position).normalized;
                 var velocity = platformMovementSpeed * moveDirection;
                 rb.velocity = velocity; // set the Rigidbody's velocity to move the platform
                 if (playerOnPlatform) {
                    playerRb.velocity = velocity;
                 }
-                Debug.Log(playerRb.GetAccumulatedForce());
 
             }
         }
