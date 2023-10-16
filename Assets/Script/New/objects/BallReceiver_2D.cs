@@ -5,21 +5,20 @@ using UnityEngine;
 public class BallReceiver_2D : MonoBehaviour {
     [SerializeField] GameObject outsideOff;
     [SerializeField] GameObject outsideOn;
-    [SerializeField] DoorBehaviour doorToOpen;
+    [SerializeField] ActivatablePuzzlePiece puzzlePieceToActivate;
     [SerializeField] bool Allow3DActivation = false;
 
     void Activate() {
-        doorToOpen.OpenDoor();
+        puzzlePieceToActivate.Activate();
         outsideOff.SetActive(false);
         outsideOn.SetActive(true);
     }
     void Deactivate() {
-        doorToOpen.CloseDoor();
+        puzzlePieceToActivate.Deactivate();
         outsideOff.SetActive(true);
         outsideOn.SetActive(false);
     }
     private void OnTriggerEnter(Collider other) {
-        Debug.Log("hit something");
         //check object layer
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
 

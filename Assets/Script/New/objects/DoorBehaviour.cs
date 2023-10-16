@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorBehaviour : MonoBehaviour {
+public class DoorBehaviour : ActivatablePuzzlePiece {
     public bool IsAuto;
     public bool IsLocked;
     ////potential future hook up to a button or something to open
@@ -83,16 +83,21 @@ public class DoorBehaviour : MonoBehaviour {
         }
     }
 
-    public void OpenDoor() {
+    private void OpenDoor() {
         goalState = DoorState.Open;
     }
-    public void CloseDoor() {
+    private void CloseDoor() {
         goalState = DoorState.Closed;
     }
     public bool IsOpen() {
         return goalState == DoorState.Open;
     }
 
+    public override void Activate() {
+        OpenDoor();
+    }
 
-
+    public override void Deactivate() {
+        CloseDoor();
+    }
 }

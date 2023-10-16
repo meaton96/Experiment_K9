@@ -6,7 +6,7 @@ using UnityEngine;
 public class ButtonBehaviour : MonoBehaviour {
     public bool IsLocked = false;
     //only supports doors for now
-    [SerializeField] private DoorBehaviour doorToOpen;
+    [SerializeField] private ActivatablePuzzlePiece puzzlePieceToActivate;
 
     [SerializeField] private float springForce = 1f;
     private Rigidbody rb;
@@ -59,7 +59,7 @@ public class ButtonBehaviour : MonoBehaviour {
         //check if the button can be pressed and open door and swap material if so
         if (collision.collider.CompareTag("EventTrigger")) {
             if (CanPressButton()) {
-                doorToOpen.OpenDoor();
+                puzzlePieceToActivate.Activate();
                 pawMeshRenderer.SetMaterials(pressedMaterials);
             }
         }
@@ -71,7 +71,7 @@ public class ButtonBehaviour : MonoBehaviour {
     }
     private void OnCollisionExit(Collision collision) {
         if (collision.collider.CompareTag("EventTrigger")) {
-            doorToOpen.CloseDoor();
+            puzzlePieceToActivate.Deactivate();
             pawMeshRenderer.SetMaterials(unPressedMaterials);
 
         }

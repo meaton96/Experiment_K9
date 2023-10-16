@@ -8,7 +8,7 @@ public class BallReceiver : MonoBehaviour {
 
     bool isOn = false;
 
-    [SerializeField] DoorBehaviour doorToOpen;
+    [SerializeField] ActivatablePuzzlePiece puzzlePieceToActivate;
     
 
     private void OnTriggerEnter(Collider other) {
@@ -16,7 +16,7 @@ public class BallReceiver : MonoBehaviour {
             if (!isOn) {
                 onLeds.SetActive(true);
                 offLeds.SetActive(false);
-                doorToOpen.OpenDoor();
+                puzzlePieceToActivate.Activate();
                 isOn = true;
             }
         }
@@ -26,7 +26,7 @@ public class BallReceiver : MonoBehaviour {
             if (isOn) {
                 onLeds.SetActive(false);
                 offLeds.SetActive(true);
-                doorToOpen.CloseDoor();
+                puzzlePieceToActivate.Deactivate();
                 isOn = false;
             }
         }
