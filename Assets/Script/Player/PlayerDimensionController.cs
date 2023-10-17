@@ -128,6 +128,10 @@ public class PlayerDimensionController : MonoBehaviour {
                         return;
                     }
                 }
+                //door was hit
+                else {
+                    DisableProjections();
+                }
             }
         }
 
@@ -157,7 +161,7 @@ public class PlayerDimensionController : MonoBehaviour {
         Camera2D.SetActive(true);
         //tell the movement controller to lock axes
         movementController_2D.ProcessAxisChange();
-
+        movementController_2D.GetComponent<Rigidbody>().isKinematic = false;
     }
     public void TransitionTo3D() {
        
@@ -174,6 +178,7 @@ public class PlayerDimensionController : MonoBehaviour {
         playerController.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
+        movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
 
     }
     //handle enable/disasble of DOG device while in auto mode
