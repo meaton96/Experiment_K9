@@ -35,7 +35,7 @@ public class MovementController_2D : MonoBehaviour {
     private int dirIn;
 
     [SerializeField] private SpriteRenderer spriteRenderer;
-    
+
 
 
 
@@ -50,7 +50,7 @@ public class MovementController_2D : MonoBehaviour {
         if (!playerController.IsIn3D()) {
             // Move2D();
             if (CanMove)
-                Move2D();   
+                Move2D();
         }
         else {
 
@@ -96,23 +96,23 @@ public class MovementController_2D : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
             if (wallB.IsWalkThroughEnabled) {
-                
+
                 HandleWallCollision(collision.collider, wallB);
             }
         }
     }
-    private void OnCollisionExit(Collision collision)
-    {
-        collision.gameObject.TryGetComponent(out WallBehaviour wallB);
-        
-        if (currentWall ==wallB )
-        {
-            currentWall = null;
+    private void OnCollisionExit(Collision collision) {
+        if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
 
-            playerController.ChangeDimension();
-            playerDimensionController.TransitionTo3D();
+            if (currentWall == wallB) {
+                currentWall = null;
+
+                //playerController.ChangeDimension();
+
+                playerDimensionController.TransitionTo3D();
+            }
         }
-        
+
     }
 
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {
@@ -124,8 +124,8 @@ public class MovementController_2D : MonoBehaviour {
         }
 
         //only if you can walk on the wall and it has a different up transform meaning its on a different axis
-        if (currentWall == null || wallB.transform.up != currentWall.transform.up &&wallB.AllowsDimensionTransition==true)
-           TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
+        if (currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true)
+            TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
         currentWall = wallB;
     }
     public bool IsProjectionSpaceClear(Vector3 position) {
@@ -134,8 +134,8 @@ public class MovementController_2D : MonoBehaviour {
         var boxHits = Physics.OverlapBox(position, dogCollider2D.bounds.extents, Quaternion.identity, LayerMask.GetMask("Walls"));
 
         if (boxHits.Length == 0) return true;
-        
-        
+
+
 
         foreach (var hit in boxHits) {
             if (hit.TryGetComponent(out WallBehaviour wallB)) {
@@ -169,7 +169,7 @@ public class MovementController_2D : MonoBehaviour {
         //move to offset position
         transform.position = newSpritePos;
     }
-    
+
     public int GetDirection(WallBehaviour other) {
         Vector3 toOther = other.transform.position - transform.position;
 

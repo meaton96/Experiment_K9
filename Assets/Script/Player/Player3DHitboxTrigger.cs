@@ -18,7 +18,6 @@ public class Player3DHitboxTrigger : MonoBehaviour
     {
     }
     private void OnCollisionEnter(Collision collision) {
-        print("player3dhitbox");
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
             if (wallB.AllowsDimensionTransition && playerBehaviour.IsIn3D() && playerDimensionController.DOGEnabled) {
                 playerDimensionController.TryTransitionTo2D();
