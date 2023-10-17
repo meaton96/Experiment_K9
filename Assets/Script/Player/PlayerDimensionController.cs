@@ -108,7 +108,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
     public void UpdateProjectionPosition(Collider collider, Vector3 position) {
        // print("this is updating");
-        player2D.SetActive(true);
+        //player2D.SetActive(true);
         position += collider.transform.up * wallDrawOffset;
         
         //perform a physics overlap test to see if the space is free of walls that arent transferable
@@ -161,7 +161,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
     public void TransitionTo3D() {
        
-        print("how many times is this");
+      
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
       //  print(player3D.transform.position);

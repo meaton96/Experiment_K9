@@ -94,28 +94,32 @@ public class MovementController_2D : MonoBehaviour {
         }
     }
     private void OnCollisionEnter(Collision collision) {
-        print("its on wall");
+       // print("its on wall:"+collision);
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
-            print("its on wall2");
-            if (wallB.IsWalkThroughEnabled) {
-                print("its on wall3");
+         
+            //if (wallB.IsWalkThroughEnabled) {
+            
                 HandleWallCollision(collision.collider, wallB);
-            }
+           // }
         }
     }
     private void OnCollisionExit(Collision collision) {
-        //print("trying to exit");
+        //
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
-
+            //print("trying to exit");
             //if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
 
-                if (currentWall == null && !playerController.IsIn3D())
+            if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D())
                 {
                     currentWall = null;
                 //print("test");
                 //playerController.ChangeDimension();
 
                 playerDimensionController.TransitionTo3D();
+            }
+            else if(playerController.IsIn3D())
+            {
+                currentWall = null;
             }
         }
 
@@ -136,6 +140,7 @@ public class MovementController_2D : MonoBehaviour {
         //only if you can walk on the wall and it has a different up transform meaning its on a different axis
         if (currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true)
         {
+            
             //print("its on wall5");
             currentWall = wallB;
             TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
