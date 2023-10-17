@@ -16,7 +16,7 @@ public class MovementController_2D : MonoBehaviour {
     public bool CanMove = true;
 
     private Vector3 gizmoDrawLoc;
-    private WallBehaviour currentWall;
+    public WallBehaviour currentWall;
     Vector3 forward;                                    //used to check which wall object is in the foreground to use that as the movement override
 
     public enum ProjectionState {
@@ -115,9 +115,6 @@ public class MovementController_2D : MonoBehaviour {
             }
         }
 
-    }
-    public void LeaveCurrentWall() {
-        currentWall = null;
     }
 
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {
