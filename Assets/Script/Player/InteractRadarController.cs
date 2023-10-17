@@ -24,7 +24,7 @@ public class InteractRadarController : MonoBehaviour {
         CheckForPotentialSurfaces();
     }
     private void HandleOneSurfaceNearby() {
-        Debug.Log(potentialProjectionSurfaces[0]);
+       // Debug.Log(potentialProjectionSurfaces[0]);
         //if the only surface found is not transferable disable project and quit out
         if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition) {
             playerDimensionController.DisableProjections();
@@ -104,7 +104,7 @@ public class InteractRadarController : MonoBehaviour {
                 playerBehaviour.AddObjectToInRangeList(tObject);
             }
         }
-        //tell projection to enable
+       
         else if (other.gameObject.layer == LayerInfo.WALL) {
             if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition) {
                 print("adding " + other);
@@ -112,8 +112,6 @@ public class InteractRadarController : MonoBehaviour {
                 if (potentialProjectionSurfaces.Contains(other)) return;
                 potentialProjectionSurfaces.Add(other);
             }
-
-            //potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
 
         }
     }

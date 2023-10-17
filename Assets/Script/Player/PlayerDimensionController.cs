@@ -161,7 +161,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
     public void TransitionTo3D() {
        
-        print("how many times is this");
+     //   print("how many times is this");
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
         movementController_2D.LeaveCurrentWall();
