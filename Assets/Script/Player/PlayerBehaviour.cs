@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.Controls;
 
 public class PlayerBehaviour : MonoBehaviour {
 
-    private bool is3D = true;                               //handles checking if the player is in 3d or 2d mode
+    public bool is3D = true;                               //handles checking if the player is in 3d or 2d mode
   //  private bool canMove = true;                            //disable or enable player movement
     private bool canInteract = true;                        //disable or enable player interactions
    
