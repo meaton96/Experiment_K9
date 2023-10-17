@@ -104,11 +104,15 @@ public class MovementController_2D : MonoBehaviour {
         }
     }
     private void OnCollisionExit(Collision collision) {
+        //print("trying to exit");
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
 
-            if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
-                currentWall = null;
+            //if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
 
+                if (currentWall == null && !playerController.IsIn3D())
+                {
+                    currentWall = null;
+                //print("test");
                 //playerController.ChangeDimension();
 
                 playerDimensionController.TransitionTo3D();

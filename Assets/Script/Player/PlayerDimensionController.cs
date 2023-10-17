@@ -110,7 +110,7 @@ public class PlayerDimensionController : MonoBehaviour {
        // print("this is updating");
         player2D.SetActive(true);
         position += collider.transform.up * wallDrawOffset;
-
+        
         //perform a physics overlap test to see if the space is free of walls that arent transferable
         var boxHits = Physics.OverlapBox(position, dog2DHitbox.bounds.extents, Quaternion.identity, LayerMask.GetMask("Walls", "Doors"));
 
@@ -166,6 +166,7 @@ public class PlayerDimensionController : MonoBehaviour {
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
       //  print(player3D.transform.position);
         player2D.SetActive(false);
+        radar.clearsurfaces();
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;
         //radar.potentialProjectionSurfaces.Clear(); <----

@@ -11,7 +11,7 @@ public class InteractRadarController : MonoBehaviour {
     [SerializeField] private PlayerDimensionController playerDimensionController;
     [SerializeField] private GameObject Player3D;
     [SerializeField] private  MovementController_2D movement;
-    private List<Collider> potentialProjectionSurfaces = new();
+    [SerializeField]private List<Collider> potentialProjectionSurfaces = new();
     private Collider currentProjectionSurface;
 
     private Vector3 gizmoDrawLoc;
@@ -129,14 +129,17 @@ public class InteractRadarController : MonoBehaviour {
          //   print("its exiting");
             if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition)
             {
-               // print("exiting " + other);
+                print("exiting " + other);
                 if (movement.currentWall == other)
                 {
-                    movement.currentWall = null;
-                }
+                   movement.currentWall = null;
+               }
                 potentialProjectionSurfaces.Remove(other);
             }
         }
     }
-
+    public void clearsurfaces()
+    {
+        potentialProjectionSurfaces.Clear();
+    }
 }
