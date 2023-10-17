@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6457862746094968266}
   - component: {fileID: 6770489284253721458}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: outsideOn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1760577251805035788}
   - component: {fileID: 4949309398719448001}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: outsideOff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 8625617661726272486}
   - component: {fileID: 8933393621535292960}
   - component: {fileID: 4608381032855897761}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: BallReceiver2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,4 +291,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outsideOff: {fileID: 2349531764526310524}
   outsideOn: {fileID: 2031560528196502430}
-  doorToOpen: {fileID: 0}
+  puzzlePieceToActivate: {fileID: 0}
+  Allow3DActivation: 0

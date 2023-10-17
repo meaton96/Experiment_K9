@@ -11,7 +11,7 @@ using UnityEngine.InputSystem.HID;
 using UnityEngine.UIElements;
 
 public class PlayerDimensionController : MonoBehaviour {
-    public const float WALL_DRAW_OFFSET = .21f;
+    public const float WALL_DRAW_OFFSET = .3f;
 
     [SerializeField] private GameObject player3D;
     [SerializeField] private GameObject player2D;
@@ -40,18 +40,16 @@ public class PlayerDimensionController : MonoBehaviour {
     //flag for if the DOG is toggled on or not
     public bool DOGEnabled = true;
 
-    public float DOGProjectionRange = 25f;
+    private float DOGProjectionRange = 20f;
     [SerializeField] private GameObject projectionOutOfRange;
 
-
-    //3d->2d
-    private Vector3 originalCameraPosition;
-    private Quaternion originalCameraRotation;
 
     private void Start() {
         playerController = GetComponent<PlayerBehaviour>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
         DOGToggleKey = Keyboard.current.fKey;
+
+        
     }
     private void Update() {
 
@@ -78,6 +76,18 @@ public class PlayerDimensionController : MonoBehaviour {
             //handle potentially changing the projection to the other wall
         }
     }
+
+    public bool OutOfProjectionRange() {
+        var vecBetween2Dand3DPlayer = player3D.transform.position - player2D.transform.position;
+
+        var distanceSq = vecBetween2Dand3DPlayer.sqrMagnitude;
+
+        if (distanceSq > Mathf.Pow(DOGProjectionRange, 2)) {
+            return true;
+        }
+        return false;
+    }
+
     void Set2DSprite(Collider collider) {
         if (collider.TryGetComponent(out WallBehaviour wallB)) {
             //player is allowed to transition to the wall
@@ -145,6 +155,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
 
     private void TransitionTo2D() {
+    //    movementController_2D.TogglePhysics(true);
         SetWallProjectionToActive();
         player3D.SetActive(false);
        
@@ -159,6 +170,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
     }
     public void TransitionTo3D() {
+    //    movementController_2D.TogglePhysics(false);
         player2D.SetActive(false);
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;

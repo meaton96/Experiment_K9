@@ -47,13 +47,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38f69b6afd8a5914eb812e5964228e2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayObject_3D: {fileID: 5267620588336022957}
+  displayObject3D_Mesh: {fileID: 5916222978909152376}
   displayObject_2D: {fileID: 3426124303402463909}
   interactDisplayController: {fileID: 2617706958035673109}
+  spriteRenderer2D: {fileID: 0}
   objectDrawOffset: 15
   Is3D: 1
   IsBeingHeld: 0
-  holdOffset: {x: 0, y: -2.5, z: 8}
+  HoldOffset3D: {x: 0, y: -2.5, z: 8}
 --- !u!1 &3426124303402463909
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,3 +373,8 @@ MonoBehaviour:
   interactIndicator_3D: {fileID: 5589621960750868870}
   objectIndicatorOffsetY: 2
   tObject: {fileID: 2908313716723535149}
+--- !u!23 &5916222978909152376 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 25888a0ace8ba174fa3f1547bf60defa, type: 3}
+  m_PrefabInstance: {fileID: 5033670704185260284}
+  m_PrefabAsset: {fileID: 0}

@@ -8,12 +8,12 @@ using UnityEngine.InputSystem;
 public class MovementController_2D : MonoBehaviour {
     [SerializeField] PlayerBehaviour playerController;
     [SerializeField] PlayerDimensionController playerDimensionController;
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private Rigidbody playerRigidBody3D;
+    [SerializeField] private Rigidbody playerRb2D;
+    [SerializeField] private Rigidbody playerRb3D;
     [SerializeField] private float offSetAmount = 5.5f;
     private Collider dogCollider2D;
 
-    public bool CanMove = true;
+    private bool CanMove = true;
 
     private Vector3 gizmoDrawLoc;
     public WallBehaviour currentWall;
@@ -27,12 +27,14 @@ public class MovementController_2D : MonoBehaviour {
     }
     private ProjectionState projectionState;
     public float moveSpeed2D = 15.0f;
+    public float maxSpeed2D = 15f;
+    [SerializeField] private float horizontalMovespeedMultiplier = 2f;
+
     [SerializeField] private List<Sprite> sprites = new();
 
     private Vector3 newSpritePos;
-    private bool[] moveDirEnabled = { true, true, true, true };
 
-    private int dirIn;
+    
 
     [SerializeField] private SpriteRenderer spriteRenderer;
 
@@ -43,6 +45,10 @@ public class MovementController_2D : MonoBehaviour {
     void Awake() {
         // dog2DSprite = GetComponent<SpriteRenderer>();
         dogCollider2D = GetComponent<Collider>();
+    }
+
+    public void TogglePhysics(bool enabled) {
+        playerRb2D.isKinematic = !enabled;
     }
 
     // Update is called once per frame
@@ -61,8 +67,19 @@ public class MovementController_2D : MonoBehaviour {
         var input = GetInput();
         var up = transform.up;
         var left = -transform.right;
-        var direction = up * input.y + left * input.x;
-        rb.velocity = direction * moveSpeed2D;
+        var directionY = (up * input.y).normalized;
+        var directionX = (left * input.x).normalized;
+
+        var direction = directionY + horizontalMovespeedMultiplier * directionX;
+
+
+
+        // Applying force to move the player
+        playerRb2D.AddForce(direction * moveSpeed2D);
+
+        // Clamp the velocity to avoid the player from moving too fast
+        playerRb2D.velocity = Vector2.ClampMagnitude(playerRb2D.velocity, maxSpeed2D);
+
         // Flip the sprite when the dog moves the other way
         if (input.x < 0) {
             spriteRenderer.flipX = true;
@@ -84,19 +101,18 @@ public class MovementController_2D : MonoBehaviour {
 
         //crazy floating point errors
         if (right.x > 0.0001 || right.x < -0.0001) {
-            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            playerRb2D.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
         }
         else if (right.y > 0.0001 || right.y < -0.0001) {
             Debug.LogError("Unsupported behaviour - doggo on floor");
         }
         else if (right.z > 0.0001 || right.z < -0.0001) {
-            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
+            playerRb2D.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
         }
     }
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
             if (wallB.IsWalkThroughEnabled) {
-
                 HandleWallCollision(collision.collider, wallB);
             }
         }
@@ -126,6 +142,7 @@ public class MovementController_2D : MonoBehaviour {
         //only if you can walk on the wall and it has a different up transform meaning its on a different axis
         if (currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true)
             TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
+
         currentWall = wallB;
     }
     public bool IsProjectionSpaceClear(Vector3 position) {

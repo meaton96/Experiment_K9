@@ -13,7 +13,9 @@ public class InteractRadarController : MonoBehaviour {
     private List<Collider> potentialProjectionSurfaces = new();
     private Collider currentProjectionSurface;
 
-    private Vector3 gizmoDrawLoc;
+
+    private void Start() {
+    }
 
     private void Update() {
         if (!playerBehaviour.IsIn3D() || !playerDimensionController.DOGEnabled) {
@@ -32,6 +34,11 @@ public class InteractRadarController : MonoBehaviour {
 
         currentProjectionSurface = potentialProjectionSurfaces[0];
         if (playerDimensionController.IsProjecting) {
+
+            if (playerDimensionController.OutOfProjectionRange()) {
+                playerDimensionController.DisableProjections();
+            }
+
             //update the position if currently projecting
             playerDimensionController.UpdateProjectionPosition(
                 currentProjectionSurface,
@@ -44,6 +51,8 @@ public class InteractRadarController : MonoBehaviour {
                 currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
         }
     }
+    
+
     private void HandleMultipleSurfacesNearby() {
         float distance = float.MaxValue;
         Collider closest = null;
@@ -62,7 +71,6 @@ public class InteractRadarController : MonoBehaviour {
             
             //looking for the closest one to the player
             if (distToCollider < distance) {
-                gizmoDrawLoc = Player3D.transform.position;
                 distance = distToCollider;
                 closest = c;
                 closestPointOnBounds = closePoint;
