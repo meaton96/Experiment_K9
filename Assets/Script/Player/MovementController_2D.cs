@@ -94,14 +94,11 @@ public class MovementController_2D : MonoBehaviour {
         }
     }
     private void OnCollisionEnter(Collision collision) {
-        //cancel out any collision logic if the player isnt actually in 2d mode
-        if (projectionState == ProjectionState.OutOfRange || projectionState == ProjectionState.HoldingObject) return;
-
-     //   print("its on wall");
+        print("its on wall");
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
-          //  print("its on wall2");
+            print("its on wall2");
             if (wallB.IsWalkThroughEnabled) {
-          //      print("its on wall3");
+                print("its on wall3");
                 HandleWallCollision(collision.collider, wallB);
             }
         }
