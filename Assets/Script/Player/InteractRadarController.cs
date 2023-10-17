@@ -11,7 +11,7 @@ public class InteractRadarController : MonoBehaviour {
     [SerializeField] private PlayerDimensionController playerDimensionController;
     [SerializeField] private GameObject Player3D;
     [SerializeField] private  MovementController_2D movement;
-    public List<Collider> potentialProjectionSurfaces = new();
+    private List<Collider> potentialProjectionSurfaces = new();
     private Collider currentProjectionSurface;
 
     private Vector3 gizmoDrawLoc;
@@ -108,8 +108,9 @@ public class InteractRadarController : MonoBehaviour {
         else if (other.gameObject.layer == LayerInfo.WALL) {
             if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition){
                 print("adding " + other);
+
+                if (potentialProjectionSurfaces.Contains(other)) return;
                 potentialProjectionSurfaces.Add(other);
-                potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
             }
             
             //potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
@@ -125,10 +126,10 @@ public class InteractRadarController : MonoBehaviour {
         }
         //tell projection to disasble
         else if (other.gameObject.layer == LayerInfo.WALL) {
-            print("its exiting");
+         //   print("its exiting");
             if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition)
             {
-                print("exiting " + other);
+               // print("exiting " + other);
                 if (movement.currentWall == other)
                 {
                     movement.currentWall = null;

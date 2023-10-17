@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 394373782632521317}
   - component: {fileID: 7253467980512841075}
   - component: {fileID: 7877101801294763875}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 4835048637079389831}
   - component: {fileID: 3601992485981871508}
   - component: {fileID: 9033510172540216881}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,10 +157,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsAuto: 1
   IsLocked: 0
-  activator: {fileID: 0}
   door: {fileID: 8482270819604309625}
   doorHeight: 10
   doorSpeed: 6
+  is2D: 0
+  openNegativeRight: 0
 --- !u!54 &3601992485981871508
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -221,7 +222,7 @@ GameObject:
   - component: {fileID: 682694590366324801}
   - component: {fileID: 2883032785606073171}
   - component: {fileID: 7438105451913209417}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -326,7 +327,7 @@ GameObject:
   - component: {fileID: 265141342738330850}
   - component: {fileID: 6886098236853077030}
   - component: {fileID: 3176977625050333717}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -486,6 +487,10 @@ PrefabInstance:
     - target: {fileID: 8310837404339325246, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
       propertyPath: m_Name
       value: door
+      objectReference: {fileID: 0}
+    - target: {fileID: 8310837404339325246, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

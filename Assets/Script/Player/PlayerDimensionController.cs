@@ -107,12 +107,12 @@ public class PlayerDimensionController : MonoBehaviour {
         }
     }
     public void UpdateProjectionPosition(Collider collider, Vector3 position) {
-        print("this is updating");
+       // print("this is updating");
         player2D.SetActive(true);
         position += collider.transform.up * wallDrawOffset;
 
         //perform a physics overlap test to see if the space is free of walls that arent transferable
-        var boxHits = Physics.OverlapBox(position, dog2DHitbox.bounds.extents, Quaternion.identity, LayerMask.GetMask("Walls"));
+        var boxHits = Physics.OverlapBox(position, dog2DHitbox.bounds.extents, Quaternion.identity, LayerMask.GetMask("Walls", "Doors"));
 
         
         //iterate through anything that was hit
@@ -164,11 +164,11 @@ public class PlayerDimensionController : MonoBehaviour {
         print("how many times is this");
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
-        print(player3D.transform.position);
+      //  print(player3D.transform.position);
         player2D.SetActive(false);
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;
-        radar.potentialProjectionSurfaces.Clear();
+        //radar.potentialProjectionSurfaces.Clear(); <----
         player3D.SetActive(true);
         playerController.ChangeDimension();
         Camera3D.SetActive(true);
@@ -180,12 +180,12 @@ public class PlayerDimensionController : MonoBehaviour {
         if (DOGToggleKey.wasPressedThisFrame) {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
-            print("hitthefbutton");
+          //  print("hitthefbutton");
             if (playerController.IsIn3D())
             {
                 if (IsProjecting)
                 {
-                    print("disabling");
+                 //   print("disabling");
                     DisableProjections();
                 }
                 else
@@ -195,7 +195,7 @@ public class PlayerDimensionController : MonoBehaviour {
             }
             else
             {
-                print("trying to move");
+               // print("trying to move");
                 if (movementController_2D.CanTransitionOutOfCurrentWall())
                 {
                     

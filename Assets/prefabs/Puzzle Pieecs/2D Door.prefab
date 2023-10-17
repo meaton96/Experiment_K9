@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6953499160630588327}
   - component: {fileID: 8233109344985633931}
   - component: {fileID: 1073438731898492262}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,6 +127,12 @@ MonoBehaviour:
   RemoveFromWalkChecks: 0
   IsMovingWall: 0
   pushForce: 1
+  movingWall: 0
+  waitTime: 10
+  MoveSpeed: 5
+  initialposition: {fileID: 0}
+  targetposition: {fileID: 0}
+  stopThreshold: 0
 --- !u!54 &8233109344985633931
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -190,7 +196,7 @@ GameObject:
   - component: {fileID: 8014589314918477486}
   - component: {fileID: 2475922826319931352}
   - component: {fileID: 7591496345353933871}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: doorBottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -302,6 +308,12 @@ MonoBehaviour:
   RemoveFromWalkChecks: 0
   IsMovingWall: 0
   pushForce: 1
+  movingWall: 0
+  waitTime: 10
+  MoveSpeed: 5
+  initialposition: {fileID: 0}
+  targetposition: {fileID: 0}
+  stopThreshold: 0
 --- !u!54 &2475922826319931352
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -361,7 +373,7 @@ GameObject:
   - component: {fileID: 4201315009283416065}
   - component: {fileID: 1656875805664294110}
   - component: {fileID: 253898862585324850}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 2D Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -441,7 +453,7 @@ GameObject:
   - component: {fileID: 7014866490844381278}
   - component: {fileID: 6761247885935422862}
   - component: {fileID: 36874427320132006}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: doorTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -553,6 +565,12 @@ MonoBehaviour:
   RemoveFromWalkChecks: 0
   IsMovingWall: 0
   pushForce: 1
+  movingWall: 0
+  waitTime: 10
+  MoveSpeed: 5
+  initialposition: {fileID: 0}
+  targetposition: {fileID: 0}
+  stopThreshold: 0
 --- !u!54 &6761247885935422862
 Rigidbody:
   m_ObjectHideFlags: 0
