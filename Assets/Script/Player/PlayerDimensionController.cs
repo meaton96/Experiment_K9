@@ -117,7 +117,7 @@ public class PlayerDimensionController : MonoBehaviour {
         //iterate through anything that was hit
         if (boxHits.Length > 0) {
             foreach (var hit in boxHits) {
-              
+                print("playerdimensioncontroller");
                 //make sure its a wall
                 if (hit.TryGetComponent(out WallBehaviour wallB)) {
                     //check if the wall doesnt allow transitioning or walking
@@ -158,7 +158,7 @@ public class PlayerDimensionController : MonoBehaviour {
         movementController_2D.ProcessAxisChange();
 
     }
-    private void TransitionTo3D() {
+    public void TransitionTo3D() {
         player2D.SetActive(false);
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;

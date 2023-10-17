@@ -6,6 +6,7 @@ public class Player3DHitboxTrigger : MonoBehaviour
 {
     [SerializeField] private PlayerDimensionController playerDimensionController;
     [SerializeField] private PlayerBehaviour playerBehaviour;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +18,7 @@ public class Player3DHitboxTrigger : MonoBehaviour
     {
     }
     private void OnCollisionEnter(Collision collision) {
+        print("player3dhitbox");
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
             if (wallB.AllowsDimensionTransition && playerBehaviour.IsIn3D() && playerDimensionController.DOGEnabled) {
                 playerDimensionController.TryTransitionTo2D();
@@ -27,6 +29,14 @@ public class Player3DHitboxTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
     }
     private void OnCollisionExit(Collision collision) {
-        
+        print("this is exiting");
+        if (collision.gameObject.TryGetComponent(out WallBehaviour wallB))
+        {
+            if (!playerBehaviour.IsIn3D() )
+            {
+                playerDimensionController.TransitionTo3D();
+                print("hi!");
+            }
+        }
     }
 }

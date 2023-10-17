@@ -16,7 +16,7 @@ public class MovementController_2D : MonoBehaviour {
     public bool CanMove = true;
 
     private Vector3 gizmoDrawLoc;
-    WallBehaviour currentWall;
+    public WallBehaviour currentWall;
     Vector3 forward;                                    //used to check which wall object is in the foreground to use that as the movement override
 
     public enum ProjectionState {
@@ -96,10 +96,25 @@ public class MovementController_2D : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
             if (wallB.IsWalkThroughEnabled) {
-
+                currentWall = wallB;
                 HandleWallCollision(collision.collider, wallB);
             }
         }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        collision.gameObject.TryGetComponent(out WallBehaviour wallB);
+        print(wallB);
+        print("this is exiting");
+        print(currentWall);
+        if (currentWall ==wallB )
+        {
+            currentWall = null;
+
+            playerController.ChangeDimension();
+            playerDimensionController.TransitionTo3D();
+        }
+        
     }
 
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {

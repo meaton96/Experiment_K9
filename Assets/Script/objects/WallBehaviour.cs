@@ -29,13 +29,16 @@ public class WallBehaviour : MonoBehaviour {
     //the staring and ending points of the wall movement(has to stop at a wall before going back)
     public Transform initialposition;
     public Transform targetposition;
+
     //tracks time
     private float time;
+    public float stopThreshold;
+    private Vector3 stopLocalPosition;
     // This method controls conveyor walls, the walls that move the player in a
     // certain direction when they are merged into them.
     void Start()
     {
-
+        
         
     }
 
@@ -49,7 +52,9 @@ public class WallBehaviour : MonoBehaviour {
             float step = MoveSpeed * Time.deltaTime;
             //this will move the wall at the constant speed towards the target
             transform.position = Vector3.MoveTowards(transform.position, targetposition.position, step);
-            if (transform.position == targetposition.position)
+            Vector3 localPosition = transform.InverseTransformPoint(targetposition.position);
+
+            if (Vector3.Distance(localPosition, stopLocalPosition) <= stopThreshold)
             {
                 //makes the wall wait a few seconds
                 wait = true;
@@ -74,6 +79,10 @@ public class WallBehaviour : MonoBehaviour {
         }
 
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        print(collision);
+    }
     private void MovingWall()
     {
         WallForce.x = transform.right.x;
@@ -83,6 +92,7 @@ public class WallBehaviour : MonoBehaviour {
         if (other.gameObject.layer == LayerInfo.PLAYER) {
             var rb = other.GetComponent<Rigidbody>();
             player = rb;
+           
             //if the wall is walkable just slightly push the player forward out of the wall to prevent weird things
             if (IsWalkThroughEnabled) {
                 rb.AddForce(other.transform.forward * pushForce);
