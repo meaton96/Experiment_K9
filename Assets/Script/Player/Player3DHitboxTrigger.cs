@@ -29,14 +29,6 @@ public class Player3DHitboxTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
     }
     private void OnCollisionExit(Collision collision) {
-        print("this is exiting");
-        if (collision.gameObject.TryGetComponent(out WallBehaviour wallB))
-        {
-            if (!playerBehaviour.IsIn3D() )
-            {
-                playerDimensionController.TransitionTo3D();
-                print("hi!");
-            }
-        }
+       
     }
 }
