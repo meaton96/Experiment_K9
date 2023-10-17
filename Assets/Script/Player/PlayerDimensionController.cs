@@ -21,7 +21,7 @@ public class PlayerDimensionController : MonoBehaviour {
     [SerializeField] private GameObject Camera3D;
     [SerializeField] private GameObject Camera2D;
     [SerializeField] private float playerLeaveWallOffset = 6f;
-
+    [SerializeField] private InteractRadarController radar;
 
     private float wallDrawOffset = WALL_DRAW_OFFSET;
     //flag for Ranged version of device where you hold down space and release to transfer
@@ -107,6 +107,7 @@ public class PlayerDimensionController : MonoBehaviour {
         }
     }
     public void UpdateProjectionPosition(Collider collider, Vector3 position) {
+        print("this is updating");
         player2D.SetActive(true);
         position += collider.transform.up * wallDrawOffset;
 
@@ -159,11 +160,15 @@ public class PlayerDimensionController : MonoBehaviour {
 
     }
     public void TransitionTo3D() {
-        player2D.SetActive(false);
+       
+        print("how many times is this");
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
+        print(player3D.transform.position);
+        player2D.SetActive(false);
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;
+        radar.potentialProjectionSurfaces.Clear();
         player3D.SetActive(true);
         playerController.ChangeDimension();
         Camera3D.SetActive(true);
@@ -183,13 +188,19 @@ public class PlayerDimensionController : MonoBehaviour {
                     print("disabling");
                     DisableProjections();
                 }
+                else
+                {
+                    IsProjecting = true;
+                }
             }
             else
             {
                 print("trying to move");
                 if (movementController_2D.CanTransitionOutOfCurrentWall())
                 {
+                    
                     TransitionTo3D();
+                    movementController_2D.currentWall = null;
                 }
             }
         }
@@ -199,6 +210,7 @@ public class PlayerDimensionController : MonoBehaviour {
         if (IsProjecting) {
             player2D.SetActive(false);
             IsProjecting = false;
+           
         }
 
 

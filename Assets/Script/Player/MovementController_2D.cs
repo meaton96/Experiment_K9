@@ -53,7 +53,7 @@ public class MovementController_2D : MonoBehaviour {
                 Move2D();
         }
         else {
-
+            //HandleWallCollision
         }
     }
     //handles player movement in 2D
@@ -94,9 +94,11 @@ public class MovementController_2D : MonoBehaviour {
         }
     }
     private void OnCollisionEnter(Collision collision) {
+        print("its on wall");
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
+            print("its on wall2");
             if (wallB.IsWalkThroughEnabled) {
-
+                print("its on wall3");
                 HandleWallCollision(collision.collider, wallB);
             }
         }
@@ -104,7 +106,7 @@ public class MovementController_2D : MonoBehaviour {
     private void OnCollisionExit(Collision collision) {
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
 
-            if (currentWall == wallB) {
+            if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
                 currentWall = null;
 
                 //playerController.ChangeDimension();
@@ -117,16 +119,23 @@ public class MovementController_2D : MonoBehaviour {
 
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {
         var closestPoint = collider.ClosestPointOnBounds(transform.position);
-
+        print("its on wall4");
+        print(currentWall);
         //projected space wasnt clear so dont move there
-        if (!IsProjectionSpaceClear(closestPoint)) {
-            return;
-        }
-
+        //if (!IsProjectionSpaceClear(closestPoint)) {
+          // print("this is stopping it");
+          //  return;
+        //}
+        print(currentWall == null);
+        print(currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true);
         //only if you can walk on the wall and it has a different up transform meaning its on a different axis
         if (currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true)
+        {
+            print("its on wall5");
+            currentWall = wallB;
             TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
-        currentWall = wallB;
+            
+        }
     }
     public bool IsProjectionSpaceClear(Vector3 position) {
         if (dogCollider2D == null) { dogCollider2D = GetComponent<Collider>(); }

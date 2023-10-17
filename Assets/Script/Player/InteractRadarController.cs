@@ -10,7 +10,8 @@ public class InteractRadarController : MonoBehaviour {
     [SerializeField] private PlayerBehaviour playerBehaviour;
     [SerializeField] private PlayerDimensionController playerDimensionController;
     [SerializeField] private GameObject Player3D;
-    private List<Collider> potentialProjectionSurfaces = new();
+    [SerializeField] private  MovementController_2D movement;
+    public List<Collider> potentialProjectionSurfaces = new();
     private Collider currentProjectionSurface;
 
     private Vector3 gizmoDrawLoc;
@@ -23,9 +24,9 @@ public class InteractRadarController : MonoBehaviour {
         CheckForPotentialSurfaces();
     }
     private void HandleOneSurfaceNearby() {
-
+        print("handleonesurface is being called");
         //if the only surface found is not transferable disable project and quit out
-        if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition) {
+        if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition ) {
             playerDimensionController.DisableProjections();
             return;
         }
@@ -105,8 +106,12 @@ public class InteractRadarController : MonoBehaviour {
         }
         //tell projection to enable
         else if (other.gameObject.layer == LayerInfo.WALL) {
-            potentialProjectionSurfaces.Add(other);
-            potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
+            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition){
+                print("adding " + other);
+                potentialProjectionSurfaces.Add(other);
+                potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
+            }
+            
             //potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
 
         }
@@ -120,7 +125,16 @@ public class InteractRadarController : MonoBehaviour {
         }
         //tell projection to disasble
         else if (other.gameObject.layer == LayerInfo.WALL) {
-            potentialProjectionSurfaces.Remove(other);
+            print("its exiting");
+            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition)
+            {
+                print("exiting " + other);
+                if (movement.currentWall == other)
+                {
+                    movement.currentWall = null;
+                }
+                potentialProjectionSurfaces.Remove(other);
+            }
         }
     }
 
