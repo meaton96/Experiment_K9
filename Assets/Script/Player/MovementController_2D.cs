@@ -96,7 +96,7 @@ public class MovementController_2D : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
             if (wallB.IsWalkThroughEnabled) {
-                currentWall = wallB;
+                
                 HandleWallCollision(collision.collider, wallB);
             }
         }
@@ -104,9 +104,7 @@ public class MovementController_2D : MonoBehaviour {
     private void OnCollisionExit(Collision collision)
     {
         collision.gameObject.TryGetComponent(out WallBehaviour wallB);
-        print(wallB);
-        print("this is exiting");
-        print(currentWall);
+        
         if (currentWall ==wallB )
         {
             currentWall = null;
@@ -126,8 +124,9 @@ public class MovementController_2D : MonoBehaviour {
         }
 
         //only if you can walk on the wall and it has a different up transform meaning its on a different axis
-        if (currentWall == null || wallB.transform.up != currentWall.transform.up)
-            TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
+        if (currentWall == null || wallB.transform.up != currentWall.transform.up &&wallB.AllowsDimensionTransition==true)
+           TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
+        currentWall = wallB;
     }
     public bool IsProjectionSpaceClear(Vector3 position) {
         if (dogCollider2D == null) { dogCollider2D = GetComponent<Collider>(); }

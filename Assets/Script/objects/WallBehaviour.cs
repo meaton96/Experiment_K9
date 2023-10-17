@@ -81,7 +81,7 @@ public class WallBehaviour : MonoBehaviour {
     }
     private void OnCollisionEnter(Collision collision)
     {
-        print(collision);
+       
     }
     private void MovingWall()
     {

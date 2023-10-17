@@ -117,7 +117,7 @@ public class PlayerDimensionController : MonoBehaviour {
         //iterate through anything that was hit
         if (boxHits.Length > 0) {
             foreach (var hit in boxHits) {
-                print("playerdimensioncontroller");
+                
                 //make sure its a wall
                 if (hit.TryGetComponent(out WallBehaviour wallB)) {
                     //check if the wall doesnt allow transitioning or walking
