@@ -119,19 +119,20 @@ public class MovementController_2D : MonoBehaviour {
 
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {
         var closestPoint = collider.ClosestPointOnBounds(transform.position);
-        print("its on wall4");
-        print(currentWall);
+       // print("its on wall4");
+       // print(currentWall);
         //projected space wasnt clear so dont move there
+        //removed this because it desynced the 2d movement and radar
         //if (!IsProjectionSpaceClear(closestPoint)) {
           // print("this is stopping it");
           //  return;
         //}
-        print(currentWall == null);
-        print(currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true);
+        //print(currentWall == null);
+        //print(currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true);
         //only if you can walk on the wall and it has a different up transform meaning its on a different axis
         if (currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true)
         {
-            print("its on wall5");
+            //print("its on wall5");
             currentWall = wallB;
             TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
             
