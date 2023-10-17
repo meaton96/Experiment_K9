@@ -175,10 +175,20 @@ public class PlayerDimensionController : MonoBehaviour {
         if (DOGToggleKey.wasPressedThisFrame) {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
+            print("hitthefbutton");
             if (playerController.IsIn3D())
-                DisableProjections();
-            else {
-                if (movementController_2D.CanTransitionOutOfCurrentWall()) {
+            {
+                if (IsProjecting)
+                {
+                    print("disabling");
+                    DisableProjections();
+                }
+            }
+            else
+            {
+                print("trying to move");
+                if (movementController_2D.CanTransitionOutOfCurrentWall())
+                {
                     TransitionTo3D();
                 }
             }

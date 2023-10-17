@@ -106,6 +106,8 @@ public class InteractRadarController : MonoBehaviour {
         //tell projection to enable
         else if (other.gameObject.layer == LayerInfo.WALL) {
             potentialProjectionSurfaces.Add(other);
+            potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
+            //potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
 
         }
     }
