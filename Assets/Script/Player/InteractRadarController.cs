@@ -10,7 +10,7 @@ public class InteractRadarController : MonoBehaviour {
     [SerializeField] private PlayerBehaviour playerBehaviour;
     [SerializeField] private PlayerDimensionController playerDimensionController;
     [SerializeField] private GameObject Player3D;
-    private List<Collider> potentialProjectionSurfaces = new();
+    public List<Collider> potentialProjectionSurfaces = new();
     private Collider currentProjectionSurface;
 
 
