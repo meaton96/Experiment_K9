@@ -17,7 +17,7 @@ public class PlayerDimensionController : MonoBehaviour {
     [SerializeField] private GameObject player2D;
     [SerializeField] private MovementController_2D movementController_2D;
     [SerializeField] private Collider dog2DHitbox;
-
+    [SerializeField] private InteractRadarController radar;
     [SerializeField] private GameObject Camera3D;
     [SerializeField] private GameObject Camera2D;
     [SerializeField] private float playerLeaveWallOffset = 6f;
@@ -180,6 +180,7 @@ public class PlayerDimensionController : MonoBehaviour {
         playerController.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
+        radar.potentialProjectionSurfaces.Clear();
 
     }
     //handle enable/disasble of DOG device while in auto mode
@@ -188,7 +189,10 @@ public class PlayerDimensionController : MonoBehaviour {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
             if (playerController.IsIn3D())
-                DisableProjections();
+                if (IsProjecting == true)
+                {
+                    DisableProjections();
+                }
             else {
                 if (movementController_2D.CanTransitionOutOfCurrentWall()) {
                     TransitionTo3D();
