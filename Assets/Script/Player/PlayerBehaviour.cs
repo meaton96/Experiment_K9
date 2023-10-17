@@ -38,6 +38,7 @@ public class PlayerBehaviour : MonoBehaviour {
     [SerializeField] private bool canResetLocation = true;
 
     private void Start() {
+        DontDestroyOnLoad(transform.parent.gameObject);
         interactKey = Keyboard.current.eKey;
         resetKey = Keyboard.current.rKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
