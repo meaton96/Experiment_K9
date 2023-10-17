@@ -10,7 +10,7 @@ public class InteractRadarController : MonoBehaviour {
     [SerializeField] private PlayerBehaviour playerBehaviour;
     [SerializeField] private PlayerDimensionController playerDimensionController;
     [SerializeField] private GameObject Player3D;
-    [SerializeField] private  MovementController_2D movement;
+    [SerializeField] private MovementController_2D movement;
     private List<Collider> potentialProjectionSurfaces = new();
     private Collider currentProjectionSurface;
 
@@ -24,9 +24,9 @@ public class InteractRadarController : MonoBehaviour {
         CheckForPotentialSurfaces();
     }
     private void HandleOneSurfaceNearby() {
-        print("handleonesurface is being called");
+        Debug.Log(potentialProjectionSurfaces[0]);
         //if the only surface found is not transferable disable project and quit out
-        if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition ) {
+        if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition) {
             playerDimensionController.DisableProjections();
             return;
         }
@@ -49,7 +49,7 @@ public class InteractRadarController : MonoBehaviour {
         float distance = float.MaxValue;
         Collider closest = null;
         Vector3 closestPointOnBounds = Vector3.zero;
-        
+
         var transferableSurfaces = potentialProjectionSurfaces.FindAll(collider => {
             if (collider.TryGetComponent(out WallBehaviour wallB)) {
                 return wallB.AllowsDimensionTransition;
@@ -60,7 +60,7 @@ public class InteractRadarController : MonoBehaviour {
         foreach (Collider c in transferableSurfaces) {
             var closePoint = c.ClosestPointOnBounds(Player3D.transform.position);
             var distToCollider = Vector3.Distance(closePoint, Player3D.transform.position);
-            
+
             //looking for the closest one to the player
             if (distToCollider < distance) {
                 gizmoDrawLoc = Player3D.transform.position;
@@ -96,7 +96,7 @@ public class InteractRadarController : MonoBehaviour {
             playerDimensionController.DisableProjections();
         }
     }
-    
+
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
@@ -106,13 +106,13 @@ public class InteractRadarController : MonoBehaviour {
         }
         //tell projection to enable
         else if (other.gameObject.layer == LayerInfo.WALL) {
-            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition){
+            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition) {
                 print("adding " + other);
 
                 if (potentialProjectionSurfaces.Contains(other)) return;
                 potentialProjectionSurfaces.Add(other);
             }
-            
+
             //potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
 
         }
@@ -124,19 +124,18 @@ public class InteractRadarController : MonoBehaviour {
                 playerBehaviour.RemoveObjectFromRangeList(tObject);
             }
         }
-        //tell projection to disasble
+
         else if (other.gameObject.layer == LayerInfo.WALL) {
-         //   print("its exiting");
-            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition)
-            {
-               // print("exiting " + other);
-                if (movement.currentWall == other)
-                {
-                    movement.currentWall = null;
-                }
-                potentialProjectionSurfaces.Remove(other);
+            potentialProjectionSurfaces.Remove(other);
+            //   print("its exiting");
+            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition) {
+                // print("exiting " + other);
+                //if (movement.currentWall == other)
+                //{
+                //    movement.currentWall = null;
+                //}            }
             }
         }
-    }
 
+    }
 }

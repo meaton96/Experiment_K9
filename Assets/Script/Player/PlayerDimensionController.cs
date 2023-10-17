@@ -164,6 +164,7 @@ public class PlayerDimensionController : MonoBehaviour {
         print("how many times is this");
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
+        movementController_2D.LeaveCurrentWall();
       //  print(player3D.transform.position);
         player2D.SetActive(false);
         //set its rotation so its not clipping into the wall hopefully
@@ -200,7 +201,7 @@ public class PlayerDimensionController : MonoBehaviour {
                 {
                     
                     TransitionTo3D();
-                    movementController_2D.currentWall = null;
+                  //  movementController_2D.currentWall = null;
                 }
             }
         }
