@@ -1,3 +1,4 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,22 +17,42 @@ public class PlayerBehaviour : MonoBehaviour {
     public MovementController_2D player2DMovementController;           //holds the 2d depiction of the player
     public GameObject player3D;                             //holds the 3d depiction of the player
 
+    private CharacterController playerController;
+    private ThirdPersonController thirdPersonController;
+
+
     [SerializeField] private float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
     [SerializeField] private GameObject interactRadar;          //holds the game object that has the radar collider on it
 
     private KeyControl interactKey;                             //which key to use for interaction, set in Start()
+    private KeyControl resetKey;                             //which key to use for interaction, set in Start()
 
     private List<TransferableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
 
     [HideInInspector] public bool IsHoldingObject = false;                    //if the player has something in their hands or not
     [HideInInspector] public TransferableObject HeldObject;                   //the object the player is hold
 
+    Vector3 initialPosition;                                            //store the initial position and dimension to reset the player
+    bool initialDimension3D;
 
+    [SerializeField] private bool canResetLocation = true;
 
     private void Start() {
         interactKey = Keyboard.current.eKey;
+        resetKey = Keyboard.current.rKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
         objectsInInteractRange = new();
+
+        initialDimension3D = is3D;
+        initialPosition = player3D.transform.position;
+
+        if (player3D != null) {
+            playerController = player3D.GetComponent<CharacterController>();
+            thirdPersonController = player3D.GetComponent<ThirdPersonController>();
+        }
+        else {
+            Debug.LogError("Missing player 3d when assigning controller scripts");
+        }
     }
 
     void Update() {
@@ -39,9 +60,36 @@ public class PlayerBehaviour : MonoBehaviour {
 
             HandleInteractionInput();
         }
+        if (canResetLocation) {
+            HandleResetInput();
+        }
     }
     
-   
+   private void HandleResetInput() {
+        if (is3D) {
+            if (resetKey.wasPressedThisFrame) {
+                ResetPlayerPosition();
+            }
+        }
+    }
+    private void ResetPlayerPosition() {
+        Debug.Log("resetting player to: " + initialPosition);
+        Move3DPlayerToLocation(initialPosition);
+         
+    }
+
+    public void Move3DPlayerToLocation(Vector3 location) {
+        thirdPersonController.ToggleMovement(false);
+        player3D.transform.position = location;
+        StartCoroutine(EnablePlayerMovementOnNextFrame());
+    }
+    private IEnumerator EnablePlayerMovementOnNextFrame() {
+        for (int x = 0; x < 2; x++) {
+            yield return new WaitForEndOfFrame();
+        }
+        thirdPersonController.ToggleMovement(true);
+        yield return null;
+    }
 
     //swap between dimensions
     public void ChangeDimension() {
@@ -62,8 +110,6 @@ public class PlayerBehaviour : MonoBehaviour {
                 HeldObject.SetHolderAndOffset(player2D, Vector3.zero);
                 HeldObject.Disable3D();
             }
-
-            
         }
 
     }
