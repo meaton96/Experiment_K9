@@ -12,6 +12,7 @@ public class MovementController_2D : MonoBehaviour {
     [SerializeField] private Rigidbody playerRigidBody3D;
     [SerializeField] private float offSetAmount = 5.5f;
     private Collider dogCollider2D;
+    
 
     public bool CanMove = true;
 

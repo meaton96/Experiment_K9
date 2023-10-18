@@ -61,7 +61,7 @@ public class InteractRadarController : MonoBehaviour {
         foreach (Collider c in transferableSurfaces) {
             var closePoint = c.ClosestPointOnBounds(Player3D.transform.position);
             var distToCollider = Vector3.Distance(closePoint, Player3D.transform.position);
-            
+           
             //looking for the closest one to the player
             if (distToCollider < distance) {
                 gizmoDrawLoc = Player3D.transform.position;
@@ -72,10 +72,12 @@ public class InteractRadarController : MonoBehaviour {
         }
         //enable the projection on the closest wall
         closest.TryGetComponent(out WallBehaviour wallB);
+        //print(closest);
         if (closest != null && wallB.AllowsDimensionTransition)
         {
+           // print("projecting");
             currentProjectionSurface = closest;
-
+            movement.currentWall = wallB;
             playerDimensionController.EnableProjection(currentProjectionSurface,
                 closestPointOnBounds);
             playerDimensionController.UpdateProjectionPosition(
@@ -139,8 +141,9 @@ public class InteractRadarController : MonoBehaviour {
          //   print("its exiting");
             if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition)
             {
-                print("exiting " + other.gameObject.GetComponent<WallBehaviour>());
-                if (movement.currentWall == other)
+                //print("exiting " + other.gameObject.GetComponent<WallBehaviour>());
+                
+                if (movement.currentWall == other.gameObject.GetComponent<WallBehaviour>())
                 {
                    movement.currentWall = null;
                }

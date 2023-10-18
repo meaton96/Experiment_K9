@@ -59,7 +59,7 @@ public class PlayerDimensionController : MonoBehaviour {
         HandleAutoModeInput();
     }
     public void EnableProjection(Collider collider, Vector3 position) {
-        if (!IsProjecting) {
+        if (!IsProjecting|| player2D.activeSelf==false) {
             //offset the drawing a bit
             //goal should be to set it just outside the moveable wall collider 
             position += collider.transform.up * wallDrawOffset;
@@ -73,7 +73,7 @@ public class PlayerDimensionController : MonoBehaviour {
             Set2DSprite(collider);
             player2D.SetActive(true);
         }
-        else {
+       else {
 
             //handle potentially changing the projection to the other wall
         }
