@@ -137,12 +137,20 @@ public class MovementController_2D : MonoBehaviour {
         //print(currentWall == null);
         //print(currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true);
         //only if you can walk on the wall and it has a different up transform meaning its on a different axis
-        if (currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true) {
-            //print("its on wall5");
+        //if(wallB.AllowsDimensionTransition)
+        if (wallB.AllowsDimensionTransition)
+        {
+            WallBehaviour pastwall = currentWall;
             currentWall = wallB;
-            TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
+            if (pastwall == null || wallB.transform.up != pastwall.transform.up && wallB.AllowsDimensionTransition == true)
+            {
+                //print("its on wall5");
+                currentWall = wallB;
+                TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
 
+            }
         }
+
     }
     public bool IsProjectionSpaceClear(Vector3 position) {
         if (dogCollider2D == null) { dogCollider2D = GetComponent<Collider>(); }
