@@ -212,6 +212,7 @@ MonoBehaviour:
   playerRigidBody3D: {fileID: 3976565469633831111}
   offSetAmount: 6
   CanMove: 1
+  currentWall: {fileID: 0}
   moveSpeed2D: 15
   sprites:
   - {fileID: 21300000, guid: 2643cbf3a2614bf4fb863e26df2f1921, type: 3}
@@ -1412,6 +1413,7 @@ MonoBehaviour:
   interactRadar: {fileID: 4384154448399022592}
   IsHoldingObject: 0
   HeldObject: {fileID: 0}
+  canResetLocation: 1
 --- !u!114 &5647112630155608246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1431,6 +1433,7 @@ MonoBehaviour:
   Camera3D: {fileID: 2817393637023723959}
   Camera2D: {fileID: 74397854644777205}
   playerLeaveWallOffset: 6
+  radar: {fileID: 632825037184773871}
   RangedDOGEnabled: 0
   interfaceScript: {fileID: 3207466659430935077}
   IsProjecting: 0
@@ -1538,6 +1541,8 @@ MonoBehaviour:
   playerBehaviour: {fileID: 2416929007388417668}
   playerDimensionController: {fileID: 5647112630155608246}
   Player3D: {fileID: 5023980225577663842}
+  movement: {fileID: 0}
+  potentialProjectionSurfaces: []
 --- !u!1 &4532644179058410253
 GameObject:
   m_ObjectHideFlags: 0
