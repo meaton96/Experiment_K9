@@ -1541,7 +1541,7 @@ MonoBehaviour:
   playerBehaviour: {fileID: 2416929007388417668}
   playerDimensionController: {fileID: 5647112630155608246}
   Player3D: {fileID: 5023980225577663842}
-  movement: {fileID: 0}
+  movement: {fileID: 5895966758457165437}
   potentialProjectionSurfaces: []
 --- !u!1 &4532644179058410253
 GameObject:
