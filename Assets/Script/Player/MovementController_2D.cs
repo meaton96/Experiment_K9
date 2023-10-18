@@ -94,17 +94,17 @@ public class MovementController_2D : MonoBehaviour {
         }
     }
     private void OnCollisionEnter(Collision collision) {
-        print("its on wall");
+       
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
-            print("its on wall2");
-            if (wallB.IsWalkThroughEnabled) {
-                print("its on wall3");
+           
+            //if (wallB.IsWalkThroughEnabled) {
+              
                 HandleWallCollision(collision.collider, wallB);
-            }
+            //}
         }
     }
     private void OnCollisionExit(Collision collision) {
-        //print("trying to exit");
+        
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
 
             if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
@@ -115,6 +115,10 @@ public class MovementController_2D : MonoBehaviour {
 
                 playerDimensionController.TransitionTo3D();
 
+            }
+            else if (playerController.IsIn3D())
+            {
+                currentWall = null;
             }
         }
     }

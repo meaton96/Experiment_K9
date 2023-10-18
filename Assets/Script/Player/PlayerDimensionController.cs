@@ -108,7 +108,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
     public void UpdateProjectionPosition(Collider collider, Vector3 position) {
        // print("this is updating");
-        player2D.SetActive(true);
+       // player2D.SetActive(true);
         position += collider.transform.up * wallDrawOffset;
         
         //perform a physics overlap test to see if the space is free of walls that arent transferable
@@ -150,6 +150,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
 
     private void TransitionTo2D() {
+        movementController_2D.GetComponent<Rigidbody>().isKinematic = false;
         SetWallProjectionToActive();
         player3D.SetActive(false);
        
@@ -161,11 +162,11 @@ public class PlayerDimensionController : MonoBehaviour {
         Camera2D.SetActive(true);
         //tell the movement controller to lock axes
         movementController_2D.ProcessAxisChange();
-        movementController_2D.GetComponent<Rigidbody>().isKinematic = false;
+        
     }
     public void TransitionTo3D() {
        
-        print("how many times is this");
+        
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
       //  print(player3D.transform.position);
@@ -178,7 +179,7 @@ public class PlayerDimensionController : MonoBehaviour {
         playerController.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
-        movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
+        //movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
 
     }
     //handle enable/disasble of DOG device while in auto mode

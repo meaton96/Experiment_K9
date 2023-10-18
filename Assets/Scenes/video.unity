@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -454,7 +454,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -61.21
+      value: -59.26
       objectReference: {fileID: 0}
     - target: {fileID: 7033518516474956368, guid: cc7781a88adc483428de7d7279fd81bc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -924,7 +924,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5030094346641154242, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: m_IsKinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5647112630155608246, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: radar

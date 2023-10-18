@@ -24,7 +24,7 @@ public class InteractRadarController : MonoBehaviour {
         CheckForPotentialSurfaces();
     }
     private void HandleOneSurfaceNearby() {
-        print("handleonesurface is being called");
+       // print("handleonesurface is being called");
         //if the only surface found is not transferable disable project and quit out
         if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition ) {
             playerDimensionController.DisableProjections();
@@ -52,7 +52,8 @@ public class InteractRadarController : MonoBehaviour {
         
         var transferableSurfaces = potentialProjectionSurfaces.FindAll(collider => {
             if (collider.TryGetComponent(out WallBehaviour wallB)) {
-                return wallB.AllowsDimensionTransition;
+                //return wallB.AllowsDimensionTransition;
+                return wallB;
             }
             return false;
         });
@@ -70,11 +71,20 @@ public class InteractRadarController : MonoBehaviour {
             }
         }
         //enable the projection on the closest wall
-        if (closest != null) {
+        closest.TryGetComponent(out WallBehaviour wallB);
+        if (closest != null && wallB.AllowsDimensionTransition)
+        {
             currentProjectionSurface = closest;
+
+            playerDimensionController.EnableProjection(currentProjectionSurface,
+                closestPointOnBounds);
             playerDimensionController.UpdateProjectionPosition(
                 currentProjectionSurface,
                 closestPointOnBounds);
+        }
+        else
+        {
+            playerDimensionController.DisableProjections();
         }
     }
     //Checks through potentialSurfaces list to see if there are any to project onto
@@ -106,8 +116,8 @@ public class InteractRadarController : MonoBehaviour {
         }
         //tell projection to enable
         else if (other.gameObject.layer == LayerInfo.WALL) {
-            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition){
-                print("adding " + other);
+           // if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition){
+                //print("adding " + other);
 
                 if (potentialProjectionSurfaces.Contains(other)) return;
                 potentialProjectionSurfaces.Add(other);
@@ -115,7 +125,7 @@ public class InteractRadarController : MonoBehaviour {
             
             //potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
 
-        }
+        //}
     }
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
@@ -129,7 +139,7 @@ public class InteractRadarController : MonoBehaviour {
          //   print("its exiting");
             if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition)
             {
-                print("exiting " + other);
+                print("exiting " + other.gameObject.GetComponent<WallBehaviour>());
                 if (movement.currentWall == other)
                 {
                    movement.currentWall = null;
