@@ -29,7 +29,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private List<TransferableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
 
-    [HideInInspector] public bool IsHoldingObject = false;                    //if the player has something in their hands or not
+    //[HideInInspector] public bool IsHoldingObject = false;       
+    public bool IsHoldingObject = false;       //if the player has something in their hands or not
     [HideInInspector] public TransferableObject HeldObject;                   //the object the player is hold
 
     Vector3 initialPosition;                                            //store the initial position and dimension to reset the player

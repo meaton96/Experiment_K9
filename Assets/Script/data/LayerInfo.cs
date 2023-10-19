@@ -6,4 +6,5 @@ public static class LayerInfo
     public const int IGNORE_GROUND = 9;
     public const int PLAYER = 10;
     public const int EVENT_TRIGGER = 11;
+    public const int DOORS = 12;
 }

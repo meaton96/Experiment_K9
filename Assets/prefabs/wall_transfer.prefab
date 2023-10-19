@@ -109,7 +109,7 @@ MonoBehaviour:
   MoveSpeed: 5
   initialposition: {fileID: 0}
   targetposition: {fileID: 0}
-  stopThreshold: 0
+  stopThreshold: 0.65
 --- !u!54 &3460354804257265962
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -70,41 +70,12 @@ public class WallBehaviour : MonoBehaviour {
         }
 
     }
+    private void OnCollisionEnter(Collision collision) {
 
+    }
     private void MovingWall() {
         WallForce.x = transform.right.x;
     }
-    private void OnCollisionStay(Collision collision) {
-        // Debug.Log(name + " + " + collision.gameObject.name);
-        if (collision.gameObject.layer == LayerInfo.PLAYER) {
-            var player2DTransform = collision.gameObject.transform;
-            var rb = player2DTransform.GetComponent<Rigidbody>();
-            player = rb;
-
-            //if the wall is walkable just slightly push the player forward out of the wall to prevent weird things
-            if (IsWalkThroughEnabled) {
-                rb.AddForce(player2DTransform.forward * pushForce);
-                //  Debug.Log(collision.transform.forward * pushForce);
-                //  Debug.Log(rb.GetAccumulatedForce());
-            }
-            else {
-                // Calculate the closest point on the wall's collider to the player's transform
-                Vector3 closestPoint = GetComponent<Collider>().ClosestPoint(player2DTransform.position);
-
-                // Calculate the direction from the closest point on the wall to the player's transform
-                Vector3 pushDirection = (player2DTransform.position - closestPoint).normalized;
-
-                // Push the player out of the wall in the calculated direction
-                rb.AddForceAtPosition(pushDirection * pushForce, player2DTransform.position, ForceMode.Impulse);
-
-            }
-
-        }
-    }
-    
-
-
-
 
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.layer == LayerInfo.PLAYER) {
