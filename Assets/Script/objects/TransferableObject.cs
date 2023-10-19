@@ -42,6 +42,7 @@ public class TransferableObject : MonoBehaviour {
 
     }
     public void Enable3D() {
+        Set3DDisplayMode(true);
         displayObject3D_Mesh.enabled = true;
     }
     public void Enable2D() {

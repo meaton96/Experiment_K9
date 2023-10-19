@@ -101,6 +101,7 @@ public class PlayerBehaviour : MonoBehaviour {
         //when leaving with a ball reset its local position
 
         if (IsHoldingObject) {
+            print(is3D);
             HeldObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity); 
             //swap parent and add offset when moving back to 3D with object
             if (is3D) {
