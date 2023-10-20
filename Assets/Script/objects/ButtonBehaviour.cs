@@ -7,6 +7,10 @@ public class ButtonBehaviour : MonoBehaviour {
     //only supports doors for now
     [SerializeField] private ActivatablePuzzlePiece puzzlePieceToActivate;
 
+    // visual path of the button
+    [SerializeField] private GameObject glowPath;
+    private MeshRenderer[] glowPathRenderers;
+
     [SerializeField] private float springForce = 1f;
     private Rigidbody rb;
     [SerializeField] private MeshRenderer pawMeshRenderer;
@@ -26,7 +30,7 @@ public class ButtonBehaviour : MonoBehaviour {
     void Awake() {
 
         rb = GetComponent<Rigidbody>();
-
+        glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
     }
 
     void Update() {
@@ -60,6 +64,10 @@ public class ButtonBehaviour : MonoBehaviour {
             if (CanPressButton()) {
                 puzzlePieceToActivate.Activate();
                 pawMeshRenderer.SetMaterials(pressedMaterials);
+                foreach (MeshRenderer path in glowPathRenderers)
+                {
+                    path.SetMaterials(pressedMaterials);
+                }
             }
         }
         //otherwise the collision was with something trying to press it so store it as the presser
@@ -72,7 +80,10 @@ public class ButtonBehaviour : MonoBehaviour {
         if (collision.collider.CompareTag("EventTrigger")) {
             puzzlePieceToActivate.Deactivate();
             pawMeshRenderer.SetMaterials(unPressedMaterials);
-
+            foreach (MeshRenderer path in glowPathRenderers)
+            {
+                path.SetMaterials(unPressedMaterials);
+            }
         }
         else {
             //null the presser if they leave the collision with the button
@@ -87,6 +98,7 @@ public class ButtonBehaviour : MonoBehaviour {
     private bool CanPressButton() {
         if (presser == null) return false;
         if (presser.layer == LayerInfo.PLAYER) return true;
+        if (presser.layer == 13) return true;
         if (presser.TryGetComponent(out Rigidbody rb)) {
             return rb.mass > minMassToPress;
         }

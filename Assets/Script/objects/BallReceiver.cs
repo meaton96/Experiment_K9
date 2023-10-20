@@ -6,10 +6,21 @@ public class BallReceiver : MonoBehaviour {
     [SerializeField] GameObject onLeds;
     [SerializeField] GameObject offLeds;
 
+    [SerializeField] GameObject glowPath;
+    [SerializeField] private List<Material> pressedMaterials;
+    [SerializeField] private List<Material> unPressedMaterials;
+    private MeshRenderer[] glowPathRenderers;
+
     bool isOn = false;
 
     [SerializeField] ActivatablePuzzlePiece puzzlePieceToActivate;
-    
+
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
+    }
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
@@ -18,6 +29,10 @@ public class BallReceiver : MonoBehaviour {
                 offLeds.SetActive(false);
                 puzzlePieceToActivate.Activate();
                 isOn = true;
+                foreach (MeshRenderer path in glowPathRenderers)
+                {
+                    path.SetMaterials(pressedMaterials);
+                }
             }
         }
     }
@@ -28,6 +43,10 @@ public class BallReceiver : MonoBehaviour {
                 offLeds.SetActive(true);
                 puzzlePieceToActivate.Deactivate();
                 isOn = false;
+                foreach (MeshRenderer path in glowPathRenderers)
+                {
+                    path.SetMaterials(unPressedMaterials);
+                }
             }
         }
     }
