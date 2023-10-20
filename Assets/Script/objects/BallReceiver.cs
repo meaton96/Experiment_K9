@@ -29,10 +29,11 @@ public class BallReceiver : MonoBehaviour {
                 offLeds.SetActive(false);
                 puzzlePieceToActivate.Activate();
                 isOn = true;
-                foreach (MeshRenderer path in glowPathRenderers)
-                {
-                    path.SetMaterials(pressedMaterials);
-                }
+                if (glowPathRenderers != null)
+                    foreach (MeshRenderer path in glowPathRenderers)
+                    {
+                        path.SetMaterials(pressedMaterials);
+                    }
             }
         }
     }

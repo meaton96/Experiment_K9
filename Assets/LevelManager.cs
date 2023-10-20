@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 public class LevelManager : MonoBehaviour
 {
     private int lvlNum = 0;
+    GameObject dog;
+    bool teleported;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -14,16 +16,23 @@ public class LevelManager : MonoBehaviour
     void Update()
     {
         TestChange();
+        if (SceneManager.GetActiveScene().name == "Level1" && !teleported)
+        {
+            teleported = true;
+            Debug.Log("teleporting ");
+            dog.transform.parent.transform.parent.GetComponentInChildren<PlayerBehaviour>().Move3DPlayerToLocation(new Vector3(-180, 5, -302));
+        }
     }
 
     //Modifier is a bool that represents whether the int, level, should be added to the current level number
     //or if the level should be set to int level.
     //Default is a modifier of 1 (AKA Next level)
-    public void ChangeLevel(int level = 1, bool Modifier = true)
+    public void ChangeLevel(int level = 1, bool Modifier = true, GameObject dog = null)
     {
         lvlNum = Modifier ? lvlNum += level : level;
         string sceneName = "Level" + lvlNum;
-        SceneManager.LoadScene(sceneName);
+        this.dog = dog;
+        SceneManager.LoadScene(sceneName);            
     }
 
     private void TestChange()
@@ -33,6 +42,8 @@ public class LevelManager : MonoBehaviour
         if (Keyboard.current.pageDownKey.wasPressedThisFrame)
             ChangeLevel(-1);
         if (Keyboard.current.homeKey.wasPressedThisFrame)
+            ChangeLevel(0, false);
+        if (SceneManager.GetActiveScene().name == "LevelNull")
             ChangeLevel(0, false);
     }
 }

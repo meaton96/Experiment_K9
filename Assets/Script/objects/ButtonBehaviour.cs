@@ -61,6 +61,7 @@ public class ButtonBehaviour : MonoBehaviour {
         //button hit the trigger cube
         //check if the button can be pressed and open door and swap material if so
         if (collision.collider.CompareTag("EventTrigger")) {
+            presser = collision.gameObject;
             if (CanPressButton()) {
                 puzzlePieceToActivate.Activate();
                 pawMeshRenderer.SetMaterials(pressedMaterials);
