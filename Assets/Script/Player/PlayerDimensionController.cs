@@ -207,7 +207,7 @@ public class PlayerDimensionController : MonoBehaviour {
                 {
                     
                     TransitionTo3D();
-                    movementController_2D.currentWall = null;
+                    //movementController_2D.currentWall = null;
                 }
             }
         }

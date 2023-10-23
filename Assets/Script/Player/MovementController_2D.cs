@@ -110,7 +110,7 @@ public class MovementController_2D : MonoBehaviour {
 
             if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
                 Debug.Log("leaving wall");
-                currentWall = null;
+                //currentWall = null;
                 //print("test");
                 //playerController.ChangeDimension();
 
@@ -119,7 +119,7 @@ public class MovementController_2D : MonoBehaviour {
             }
             else if (playerController.IsIn3D())
             {
-                currentWall = null;
+                //currentWall = null;
             }
         }
     }

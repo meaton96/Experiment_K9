@@ -33,7 +33,9 @@ public class InteractRadarController : MonoBehaviour {
 
         currentProjectionSurface = potentialProjectionSurfaces[0];
         if (playerDimensionController.IsProjecting) {
-            //update the position if currently projecting
+            //update the position if currently projecting\
+            playerDimensionController.EnableProjection(currentProjectionSurface,
+                currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
             playerDimensionController.UpdateProjectionPosition(
                 currentProjectionSurface,
                 currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
@@ -145,7 +147,7 @@ public class InteractRadarController : MonoBehaviour {
                 
                 if (movement.currentWall == other.gameObject.GetComponent<WallBehaviour>())
                 {
-                   movement.currentWall = null;
+                   //movement.currentWall = null;
                }
                 potentialProjectionSurfaces.Remove(other);
             }
