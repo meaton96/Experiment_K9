@@ -53,7 +53,7 @@ MonoBehaviour:
   spriteRenderer2D: {fileID: 0}
   objectDrawOffset: 15
   Is3D: 1
-  IsBeingHeld: 1
+  IsBeingHeld: 0
   HoldOffset3D: {x: 0, y: -2.5, z: 8}
 --- !u!1 &3426124303402463909
 GameObject:

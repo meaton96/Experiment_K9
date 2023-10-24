@@ -47,10 +47,10 @@ public class ObjectInteractDisplayController : MonoBehaviour
             return;
         if (other.gameObject.CompareTag("InteractRadar")) {
             
-            var player = GameObject.FindWithTag("Player");
-            
+            var player = GameObject.FindWithTag("PlayerBehavior");
+           // print(player);
             if (player.TryGetComponent(out PlayerBehaviour playerBehaviourScript)) {
-                
+               // print("worked");
                 //make sure both objects are in the same dimension before displaying the indicator
                 if ((tObject.Is3D && playerBehaviourScript.IsIn3D()) ||
                     (!tObject.Is3D && !playerBehaviourScript.IsIn3D())) {

@@ -20,6 +20,7 @@ public class TransferableObject : MonoBehaviour {
     private void Awake() {
         spriteRenderer2D = displayObject_2D.GetComponent<SpriteRenderer>();
         //turn off the physics if the object starts as 2D
+        //interactDisplayController.SetInteractIndicatorActive(true);
         if (!Is3D) { 
             
             Disable3D();

@@ -7,6 +7,7 @@ TagManager:
   - CinemachineTarget
   - InteractRadar
   - EventTrigger
+  - PlayerBehavior
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - EventTrigger
   - Doors
   - Cube
-  - 
+  - PlayerBehavior
   - 
   - 
   - 

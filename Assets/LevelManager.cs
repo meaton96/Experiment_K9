@@ -29,6 +29,10 @@ public class LevelManager : MonoBehaviour
     //Default is a modifier of 1 (AKA Next level)
     public void ChangeLevel(int level = 1, bool Modifier = true, GameObject dog = null)
     {
+        if (dog != null)
+        {
+            dog.GetComponentInChildren<InteractRadarController>().clearsurfaces();
+        }
         lvlNum = Modifier ? lvlNum += level : level;
         string sceneName = "Level" + lvlNum;
         this.dog = dog;

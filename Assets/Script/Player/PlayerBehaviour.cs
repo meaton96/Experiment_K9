@@ -242,7 +242,10 @@ public class PlayerBehaviour : MonoBehaviour {
     }
 
     
-
+    public void ClearList()
+    {
+        objectsInInteractRange.Clear();
+    }
 
 
 }

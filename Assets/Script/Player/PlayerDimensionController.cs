@@ -171,6 +171,7 @@ public class PlayerDimensionController : MonoBehaviour {
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
       //  print(player3D.transform.position);
         player2D.SetActive(false);
+        playerController.ClearList();
         radar.clearsurfaces();
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;

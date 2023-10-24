@@ -60,6 +60,7 @@ public class ButtonBehaviour : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
         //button hit the trigger cube
         //check if the button can be pressed and open door and swap material if so
+       // print(collision);
         if (collision.collider.CompareTag("EventTrigger")) {
             presser = collision.gameObject;
             if (CanPressButton()) {
