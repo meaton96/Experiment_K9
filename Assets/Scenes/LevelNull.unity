@@ -253,7 +253,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCameraWrapper
       objectReference: {fileID: 0}
-<<<<<<< HEAD
     - target: {fileID: 62177792511501584, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -270,8 +269,6 @@ PrefabInstance:
       propertyPath: CameraCollisionFilter.m_Bits
       value: 65
       objectReference: {fileID: 0}
-=======
->>>>>>> 04bfbe1b46855a08e0afc2b2a1e9c33a8b0f8622
     - target: {fileID: 1750328265095541324, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: m_LocalPosition.x
       value: 64.299995
@@ -286,7 +283,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4976584202734474264, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: m_LocalPosition.x
-<<<<<<< HEAD
       value: -2.1091805
       objectReference: {fileID: 0}
     - target: {fileID: 4976584202734474264, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
@@ -296,17 +292,6 @@ PrefabInstance:
     - target: {fileID: 4976584202734474264, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: m_LocalPosition.z
       value: 80.63581
-=======
-      value: 64.299995
-      objectReference: {fileID: 0}
-    - target: {fileID: 4976584202734474264, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 36.575
-      objectReference: {fileID: 0}
-    - target: {fileID: 4976584202734474264, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -130.7
->>>>>>> 04bfbe1b46855a08e0afc2b2a1e9c33a8b0f8622
       objectReference: {fileID: 0}
     - target: {fileID: 4976584202734474264, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: m_LocalRotation.w
