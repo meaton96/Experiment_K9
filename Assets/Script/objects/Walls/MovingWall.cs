@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class MovingWall : MonoBehaviour
+public class MovingWall : WallBehaviour
 {
-    [SerializeField]
     public bool isMoving = false;
     //waiting for a bit before moving
     private bool wait = false;
