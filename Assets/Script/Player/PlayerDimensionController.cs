@@ -163,8 +163,8 @@ public class PlayerDimensionController : MonoBehaviour {
         Camera2D.SetActive(true);
         //tell the movement controller to lock axes
         movementController_2D.ProcessAxisChange();
-        if (player3D.TryGetComponent(out StarterAssetsInputs sAssests)) {
-            sAssests.ClearInput();
+        if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
+            sAssetsInput.ClearInput();
         }
         
     }
@@ -184,8 +184,8 @@ public class PlayerDimensionController : MonoBehaviour {
         playerController.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
-        if (player3D.TryGetComponent(out StarterAssetsInputs sAssests)) {
-            sAssests.ClearInput();
+        if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
+            sAssetsInput.ClearInput();
         }
         //movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
 
