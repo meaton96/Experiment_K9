@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using static Cinemachine.DocumentationSortingAttribute;
 
 public class LevelManager : MonoBehaviour
 {
@@ -20,7 +21,8 @@ public class LevelManager : MonoBehaviour
         {
             teleported = true;
             Debug.Log("teleporting ");
-            dog.transform.parent.transform.parent.GetComponentInChildren<PlayerBehaviour>().Move3DPlayerToLocation(new Vector3(-180, 5, -302));
+            dog.transform.parent.transform.parent.GetComponentInChildren<PlayerBehaviour>().
+                Move3DPlayerToLocation(new Vector3(-180, 5, -302));
             
         }
     }
@@ -28,7 +30,7 @@ public class LevelManager : MonoBehaviour
     //Modifier is a bool that represents whether the int, level, should be added to the current level number
     //or if the level should be set to int level.
     //Default is a modifier of 1 (AKA Next level)
-    public void ChangeLevel(int level = 1, bool Modifier = true, GameObject dog = null)
+    private void ChangeLevel(int level = 1, bool Modifier = true, GameObject dog = null)
     {
         if (dog != null)
         {
@@ -38,6 +40,12 @@ public class LevelManager : MonoBehaviour
         string sceneName = "Level" + lvlNum;
         this.dog = dog;
         SceneManager.LoadScene(sceneName);            
+    }
+    public void SetLevel(int level, GameObject dog) {
+        ChangeLevel(level, false, dog);
+    }
+    public void IncremementLevel(GameObject dog) {
+        ChangeLevel(1, true, dog);
     }
 
     private void TestChange()
