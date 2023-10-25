@@ -10,7 +10,7 @@ public class ObjectInteractDisplayController : MonoBehaviour
 
 
     private bool isDisplayingInteractIndicator = false;
-    [SerializeField] private TransferableObject tObject;
+    [SerializeField] private GrabbableObject tObject;
     
     // Update is called once per frame
     void Update()

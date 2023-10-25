@@ -27,11 +27,11 @@ public class PlayerBehaviour : MonoBehaviour {
     private KeyControl interactKey;                             //which key to use for interaction, set in Start()
     private KeyControl resetKey;                             //which key to use for interaction, set in Start()
 
-    private List<TransferableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
+    private List<GrabbableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
 
     //[HideInInspector] public bool IsHoldingObject = false;       
     public bool IsHoldingObject = false;       //if the player has something in their hands or not
-    [HideInInspector] public TransferableObject HeldObject;                   //the object the player is hold
+    [HideInInspector] public GrabbableObject HeldObject;                   //the object the player is hold
 
     Vector3 initialPosition;                                            //store the initial position and dimension to reset the player
     bool initialDimension3D;
@@ -100,19 +100,23 @@ public class PlayerBehaviour : MonoBehaviour {
         // rigidBody.isKinematic = !is3D;
         //when leaving with a ball reset its local position
 
-        if (IsHoldingObject) {
+        if (IsHoldingObject && HeldObject is TransferableObject) {
+            var tObject = HeldObject as TransferableObject;
             print(is3D);
             HeldObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity); 
             //swap parent and add offset when moving back to 3D with object
             if (is3D) {
-                HeldObject.SetHolderAndOffset(player3D, HeldObject.HoldOffset3D);
-                
-                HeldObject.Enable3D();
+                tObject.SetHolderAndOffset(player3D, HeldObject.HoldOffset3D);
+
+                tObject.Enable3D();
             }
             else {
-                HeldObject.SetHolderAndOffset(player2D, Vector3.zero);
-                HeldObject.Disable3D();
+                tObject.SetHolderAndOffset(player2D, Vector3.zero);
+                tObject.Disable3D();
             }
+        }
+        else if (IsHoldingObject) {
+            DropHeldObject();
         }
 
     }
@@ -122,7 +126,8 @@ public class PlayerBehaviour : MonoBehaviour {
     public bool IsIn3D() { return is3D; }
 
     //only allows one copy of each object
-    public void AddObjectToInRangeList(TransferableObject tObject) {
+    public void AddObjectToInRangeList(GrabbableObject tObject) {
+        
         
         if (objectsInInteractRange.Contains(tObject)) return;
         
@@ -132,11 +137,20 @@ public class PlayerBehaviour : MonoBehaviour {
     private void OnDrawGizmos() {
         Gizmos.DrawWireSphere(player2D.transform.position, interactDisplayRadius);
     }
-    public void RemoveObjectFromRangeList(TransferableObject tObject) {
+    public void RemoveObjectFromRangeList(GrabbableObject tObject) {
         
         objectsInInteractRange.Remove(tObject);
     }
+    private void DropHeldObject() {
+        HeldObject.DropObject();
+        IsHoldingObject = false;
+        HeldObject = null;
 
+        //set the sprite to not holding the object
+        if (!is3D) {
+            player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2D);
+        }
+    }
     //handles player interaction with interactable objects
     private void HandleInteractionInput() {
 
@@ -144,14 +158,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
             //if the player is already holding something then drop it
             if (IsHoldingObject) {
-                HeldObject.DropObject();
-                IsHoldingObject = false;
-                HeldObject = null;
-
-                //set the sprite to not holding the object
-                if (!is3D) {
-                    player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2D);
-                }
+                DropHeldObject();
 
             }
             //only process interact press if theres something to interact with
@@ -176,7 +183,7 @@ public class PlayerBehaviour : MonoBehaviour {
         if (tObject != null && !tObject.Is3D) {
             HeldObject = tObject;
             //pick up the object that was found to be the closest
-            HeldObject.Pickup2D(player2D);
+            (HeldObject as TransferableObject).Pickup2D(player2D);
             IsHoldingObject = true;
             player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2DHoldingObject);
             
@@ -194,12 +201,12 @@ public class PlayerBehaviour : MonoBehaviour {
         }
     }
     //returns the interactable object closest to where the player is looking at with the camera
-    private TransferableObject GetObjectClosestToCameraLookAt() {
+    private GrabbableObject GetObjectClosestToCameraLookAt() {
         if (!objectsInInteractRange.Any()) {
             return null;
         }
         float closestToCameraLookDirection = float.MaxValue;
-        TransferableObject tObject = null;
+        GrabbableObject gObject = null;
         //iterate each object
         foreach (var obj in objectsInInteractRange) {
             //get the vector from the object to the main camera
@@ -212,10 +219,10 @@ public class PlayerBehaviour : MonoBehaviour {
             //compare the distance to camera and find the smallest one
             if (dist < closestToCameraLookDirection) {
                 closestToCameraLookDirection = dist;
-                tObject = obj;
+                gObject = obj;
             }
         }
-        return tObject;
+        return gObject;
     }
     //returns the object to pick up that is closest to the player transform
     //this behaviour might want to be changed later

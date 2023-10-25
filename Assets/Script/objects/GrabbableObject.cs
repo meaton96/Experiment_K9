@@ -9,18 +9,18 @@ public class GrabbableObject : MonoBehaviour
     public Vector3 HoldOffset3D = new(0, -2.5f, 8);
 
     public bool IsBeingHeld = false;
-
+    public bool Is3D = true;
     protected GameObject holder;
     // Start is called before the first frame update
     void Start()
     {
+        Is3D = true;
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
     public void Pickup3D(GameObject holder) {
         //disable physics for rigid body
@@ -42,8 +42,18 @@ public class GrabbableObject : MonoBehaviour
 
 
     }
+    public virtual void DropObject() {
+        Drop3D();
+    }
     protected void TogglePhysics(bool disable) {
         displayObject3D_Mesh.GetComponent<Rigidbody>().isKinematic = disable;
         displayObject3D_Mesh.GetComponent<Collider>().isTrigger = disable;
+    }
+    protected void Drop3D() {
+        TogglePhysics(disable: false);
+        interactDisplayController.SetInteractIndicatorActive(true);
+        holder = null;
+        IsBeingHeld = false;
+        transform.parent = null;
     }
 }

@@ -114,8 +114,11 @@ public class InteractRadarController : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
-            if (tGObject.TryGetComponent(out TransferableObject tObject)) {
-                playerBehaviour.AddObjectToInRangeList(tObject);
+            if (tGObject == null) {
+                tGObject = other.transform;
+            }
+            if (tGObject.TryGetComponent(out GrabbableObject grabbableObject)) {
+                playerBehaviour.AddObjectToInRangeList(grabbableObject);
             }
         }
         //tell projection to enable
@@ -134,7 +137,11 @@ public class InteractRadarController : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
-            if (tGObject.TryGetComponent(out TransferableObject tObject)) {
+            if (tGObject == null) {
+                tGObject = other.transform;
+            }
+            Debug.Log(tGObject.name);
+            if (tGObject.TryGetComponent(out GrabbableObject tObject)) {
                 playerBehaviour.RemoveObjectFromRangeList(tObject);
             }
         }

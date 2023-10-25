@@ -8,7 +8,7 @@ public class TransferableObject : GrabbableObject {
     [SerializeField] private SpriteRenderer spriteRenderer2D;
     [SerializeField] private float objectDrawOffset = 4f;
 
-    public bool Is3D = true;
+    
     
 
     private void Awake() {
@@ -76,22 +76,15 @@ public class TransferableObject : GrabbableObject {
 
         IsBeingHeld = true;
     }
-    public void DropObject() {
-        if (Is3D) {
+    public override void DropObject() {
+        if (Is3D) 
             Drop3D();
-        }
         else
             Drop2D();
     }
     
 
-    public void Drop3D() {
-        TogglePhysics(disable: false);
-        interactDisplayController.SetInteractIndicatorActive(true);
-        holder = null;
-        IsBeingHeld = false;
-        transform.parent = null;    
-    }
+    
     public void Drop2D() {
         Debug.Log("Dropping 2d object");
         
@@ -105,7 +98,6 @@ public class TransferableObject : GrabbableObject {
         spriteRenderer2D.enabled = true;
 
         
-
 
         holder = null;
         IsBeingHeld = false;
