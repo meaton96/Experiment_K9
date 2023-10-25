@@ -44,7 +44,9 @@ namespace StarterAssets
 			SprintInput(value.isPressed);
 		}
 #endif
-
+		public void ClearInput() {
+			move = Vector2.zero;
+		}
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
