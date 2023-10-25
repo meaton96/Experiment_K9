@@ -53,7 +53,11 @@ public class ButtonBehaviour : MonoBehaviour {
             var tempVec = transform.localPosition;
             tempVec.y = 0;
             transform.localPosition = tempVec;
+<<<<<<< HEAD
             //rb.velocity = Vector3.zero;
+=======
+            rb.velocity = Vector3.zero;
+>>>>>>> 7e317a91b64a7d99f5d1c4318b788a16513f757a
         }
     }
 
