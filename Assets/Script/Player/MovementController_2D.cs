@@ -12,6 +12,8 @@ public class MovementController_2D : MonoBehaviour {
     [SerializeField] private Rigidbody playerRigidBody3D;
     [SerializeField] private float offSetAmount = 5.5f;
     private Collider dogCollider2D;
+
+    public bool Is2DPlayerActive = false;
     
 
     public bool CanMove = true;
@@ -126,18 +128,7 @@ public class MovementController_2D : MonoBehaviour {
 
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {
         var closestPoint = collider.ClosestPointOnBounds(transform.position);
-        // print("its on wall4");
-        // print(currentWall);
-        //projected space wasnt clear so dont move there
-        //removed this because it desynced the 2d movement and radar
-        //if (!IsProjectionSpaceClear(closestPoint)) {
-        // print("this is stopping it");
-        //  return;
-        //}
-        //print(currentWall == null);
-        //print(currentWall == null || wallB.transform.up != currentWall.transform.up && wallB.AllowsDimensionTransition == true);
-        //only if you can walk on the wall and it has a different up transform meaning its on a different axis
-        //if(wallB.AllowsDimensionTransition)
+        
         if (wallB.AllowsDimensionTransition)
         {
             WallBehaviour pastwall = currentWall;
@@ -213,13 +204,21 @@ public class MovementController_2D : MonoBehaviour {
         projectionState = state;
         switch (projectionState) {
             case ProjectionState.OutOfRange:
-                spriteRenderer.sprite = sprites[1]; break;
+                spriteRenderer.sprite = sprites[1]; 
+                Is2DPlayerActive = false;
+                break;
             case ProjectionState.HoldingObject:
-                spriteRenderer.sprite = sprites[2]; break;
+                spriteRenderer.sprite = sprites[2]; 
+                Is2DPlayerActive = false;
+                break;
             case ProjectionState.In2D:
-                spriteRenderer.sprite = sprites[3]; break;
+                spriteRenderer.sprite = sprites[3]; 
+                Is2DPlayerActive = true;
+                break;
             case ProjectionState.In2DHoldingObject:
-                spriteRenderer.sprite = sprites[4]; break;
+                spriteRenderer.sprite = sprites[4]; 
+                Is2DPlayerActive = true;
+                break;
 
         }
     }
