@@ -30,7 +30,8 @@ public class ButtonBehaviour : MonoBehaviour {
     void Awake() {
 
         rb = GetComponent<Rigidbody>();
-        glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
+        if (glowPath != null)
+            glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
     }
 
     void Update() {
@@ -52,22 +53,21 @@ public class ButtonBehaviour : MonoBehaviour {
             var tempVec = transform.localPosition;
             tempVec.y = 0;
             transform.localPosition = tempVec;
-            rb.velocity = Vector3.zero;
+           // rb.velocity = Vector3.zero;
         }
     }
 
-    
+
     private void OnCollisionEnter(Collision collision) {
         //button hit the trigger cube
         //check if the button can be pressed and open door and swap material if so
-       // print(collision);
+        // print(collision);
         if (collision.collider.CompareTag("EventTrigger")) {
             presser = collision.gameObject;
             if (CanPressButton()) {
                 puzzlePieceToActivate.Activate();
                 pawMeshRenderer.SetMaterials(pressedMaterials);
-                foreach (MeshRenderer path in glowPathRenderers)
-                {
+                foreach (MeshRenderer path in glowPathRenderers) {
                     path.SetMaterials(pressedMaterials);
                 }
             }
@@ -82,8 +82,7 @@ public class ButtonBehaviour : MonoBehaviour {
         if (collision.collider.CompareTag("EventTrigger")) {
             puzzlePieceToActivate.Deactivate();
             pawMeshRenderer.SetMaterials(unPressedMaterials);
-            foreach (MeshRenderer path in glowPathRenderers)
-            {
+            foreach (MeshRenderer path in glowPathRenderers) {
                 path.SetMaterials(unPressedMaterials);
             }
         }

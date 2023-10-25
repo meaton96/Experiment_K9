@@ -21,6 +21,7 @@ public class LevelManager : MonoBehaviour
             teleported = true;
             Debug.Log("teleporting ");
             dog.transform.parent.transform.parent.GetComponentInChildren<PlayerBehaviour>().Move3DPlayerToLocation(new Vector3(-180, 5, -302));
+            
         }
     }
 

@@ -19,7 +19,8 @@ public class BallReceiver : MonoBehaviour {
     // Start is called before the first frame update
     void Awake()
     {
-        glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
+        if (glowPath != null)
+            glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
     }
 
     private void OnTriggerEnter(Collider other) {
