@@ -4,6 +4,7 @@ using System.Collections.Generic;
 //using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public class MovementController_2D : MonoBehaviour {
     [SerializeField] PlayerBehaviour playerController;
@@ -14,14 +15,15 @@ public class MovementController_2D : MonoBehaviour {
     private Collider dogCollider2D;
 
     public bool Is2DPlayerActive = false;
-    
+
+    private KeyControl jumpKey1, jumpKey2;
 
     public bool CanMove = true;
 
     private Vector3 gizmoDrawLoc;
     public WallBehaviour currentWall;
     Vector3 forward;                                    //used to check which wall object is in the foreground to use that as the movement override
-
+   
     public enum ProjectionState {
         OutOfRange,
         HoldingObject,
@@ -30,12 +32,15 @@ public class MovementController_2D : MonoBehaviour {
     }
     private ProjectionState projectionState;
     public float moveSpeed2D = 15.0f;
+    public float jumpPower2D = 20f;
     [SerializeField] private List<Sprite> sprites = new();
 
     private Vector3 newSpritePos;
     private bool[] moveDirEnabled = { true, true, true, true };
 
     private int dirIn;
+    bool gravityEnabled = false;
+    public bool grounded = false;
 
     [SerializeField] private SpriteRenderer spriteRenderer;
 
@@ -46,6 +51,8 @@ public class MovementController_2D : MonoBehaviour {
     void Awake() {
         // dog2DSprite = GetComponent<SpriteRenderer>();
         dogCollider2D = GetComponent<Collider>();
+        jumpKey1 = Keyboard.current.spaceKey;
+        jumpKey2 = Keyboard.current.wKey;
     }
 
     // Update is called once per frame
@@ -54,6 +61,12 @@ public class MovementController_2D : MonoBehaviour {
             // Move2D();
             if (CanMove)
                 Move2D();
+            if (Mathf.Abs(rb.velocity.y) > .001) {
+                grounded = false;
+            }
+            else {
+                grounded = true;
+            }
         }
         else {
             //HandleWallCollision
@@ -64,7 +77,16 @@ public class MovementController_2D : MonoBehaviour {
         var input = GetInput();
         var up = transform.up;
         var left = -transform.right;
-        var direction = up * input.y + left * input.x;
+        Vector3 direction;
+        if (!gravityEnabled)
+            direction = up * input.y + left * input.x;
+        else {
+            direction = left * input.x;
+            if (jumpKey1.wasPressedThisFrame || jumpKey2.wasPressedThisFrame) {
+                Jump2D();
+            }
+         
+        }
         rb.velocity = direction * moveSpeed2D;
         // Flip the sprite when the dog moves the other way
         if (input.x < 0) {
@@ -73,6 +95,11 @@ public class MovementController_2D : MonoBehaviour {
         else if (input.x > 0) {
             spriteRenderer.flipX = false;
         }
+    }
+    void Jump2D() {
+        Debug.Log("jumping");
+        if (grounded)
+            rb.AddForce(transform.up * jumpPower2D, ForceMode.VelocityChange);
     }
     public Vector2 GetInput() {
         var keyboard = Keyboard.current;
@@ -97,17 +124,17 @@ public class MovementController_2D : MonoBehaviour {
         }
     }
     private void OnCollisionEnter(Collision collision) {
-       
+
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
-           
+
             //if (wallB.IsWalkThroughEnabled) {
-              
-                HandleWallCollision(collision.collider, wallB);
+
+            HandleWallCollision(collision.collider, wallB);
             //}
         }
     }
     private void OnCollisionExit(Collision collision) {
-        
+
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
 
             if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
@@ -119,8 +146,7 @@ public class MovementController_2D : MonoBehaviour {
                 playerDimensionController.TransitionTo3D();
 
             }
-            else if (playerController.IsIn3D())
-            {
+            else if (playerController.IsIn3D()) {
                 //currentWall = null;
             }
         }
@@ -128,15 +154,13 @@ public class MovementController_2D : MonoBehaviour {
 
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {
         var closestPoint = collider.ClosestPointOnBounds(transform.position);
-        
-        if (wallB.AllowsDimensionTransition)
-        {
+
+        if (wallB.AllowsDimensionTransition) {
             WallBehaviour pastwall = currentWall;
-            currentWall = wallB;
-            if (pastwall == null || wallB.transform.up != pastwall.transform.up && wallB.AllowsDimensionTransition == true)
-            {
+            UpdateCurrentWall(wallB);
+            if (pastwall == null || wallB.transform.up != pastwall.transform.up && wallB.AllowsDimensionTransition == true) {
                 //print("its on wall5");
-                currentWall = wallB;
+                UpdateCurrentWall(wallB);
                 TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
 
             }
@@ -173,7 +197,7 @@ public class MovementController_2D : MonoBehaviour {
         transform.forward = wall.transform.up;
 
         ProcessAxisChange();
-        currentWall = wall;
+        UpdateCurrentWall(wall);
 
 
         //only supports changing x/z plane not y (ceiling/floor)
@@ -183,6 +207,15 @@ public class MovementController_2D : MonoBehaviour {
 
         //move to offset position
         transform.position = newSpritePos;
+    }
+    void UpdateCurrentWall(WallBehaviour wall) {
+        currentWall = wall;
+        if (currentWall is GravityWall) {
+            gravityEnabled = true;
+        }
+        else {
+            gravityEnabled = false;
+        }
     }
 
     public int GetDirection(WallBehaviour other) {
@@ -204,19 +237,19 @@ public class MovementController_2D : MonoBehaviour {
         projectionState = state;
         switch (projectionState) {
             case ProjectionState.OutOfRange:
-                spriteRenderer.sprite = sprites[1]; 
+                spriteRenderer.sprite = sprites[1];
                 Is2DPlayerActive = false;
                 break;
             case ProjectionState.HoldingObject:
-                spriteRenderer.sprite = sprites[2]; 
+                spriteRenderer.sprite = sprites[2];
                 Is2DPlayerActive = false;
                 break;
             case ProjectionState.In2D:
-                spriteRenderer.sprite = sprites[3]; 
+                spriteRenderer.sprite = sprites[3];
                 Is2DPlayerActive = true;
                 break;
             case ProjectionState.In2DHoldingObject:
-                spriteRenderer.sprite = sprites[4]; 
+                spriteRenderer.sprite = sprites[4];
                 Is2DPlayerActive = true;
                 break;
 

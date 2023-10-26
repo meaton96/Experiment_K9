@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ConveyerWall : WallBehaviour {
-    Rigidbody playerRb;
-    MovementController_2D player2D;
-    public float playerMoveForceAmount = 1f;
+    protected Rigidbody playerRb;
+    protected MovementController_2D player2D;
+    public float playerMoveForceAmount = 20f;
 
     private void Update() {
+        MovePlayer();
+    }
+    protected virtual void MovePlayer() {
         if (playerRb != null) {
 
             if (player2D.Is2DPlayerActive) {
