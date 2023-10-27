@@ -99,7 +99,7 @@ public class MovementController_2D : MonoBehaviour {
     void Jump2D() {
         Debug.Log("jumping");
         if (grounded)
-            rb.AddForce(transform.up * jumpPower2D, ForceMode.VelocityChange);
+            rb.AddForce(transform.up * jumpPower2D);
     }
     public Vector2 GetInput() {
         var keyboard = Keyboard.current;

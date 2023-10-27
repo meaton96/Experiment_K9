@@ -211,15 +211,18 @@ MonoBehaviour:
   rb: {fileID: 5030094346641154242}
   playerRigidBody3D: {fileID: 3976565469633831111}
   offSetAmount: 6
+  Is2DPlayerActive: 0
   CanMove: 1
   currentWall: {fileID: 0}
   moveSpeed2D: 15
+  jumpPower2D: 20
   sprites:
   - {fileID: 21300000, guid: 2643cbf3a2614bf4fb863e26df2f1921, type: 3}
   - {fileID: 21300000, guid: a60c095fa53280448994615b855e8aa2, type: 3}
   - {fileID: 21300000, guid: 32d9befca69c6a740ad0d95084087f20, type: 3}
   - {fileID: 21300000, guid: 7e187630eaff06e4b9d0a594fa2afa6e, type: 3}
   - {fileID: 21300000, guid: 842905a4efc4f4e4cb807f8e9531ebd1, type: 3}
+  grounded: 0
   spriteRenderer: {fileID: 641710048873724522}
 --- !u!65 &7203371137855413276
 BoxCollider:
@@ -1898,16 +1901,16 @@ MonoBehaviour:
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
-  JumpHeight: 1.2
-  Gravity: -15
-  JumpTimeout: 0.5
-  FallTimeout: 0.15
+  JumpHeight: 4.5
+  Gravity: -60
+  JumpTimeout: 0.3
+  FallTimeout: 0.05
   Grounded: 1
-  GroundedOffset: -0.14
-  GroundedRadius: 0.28
+  GroundedOffset: 3.5
+  GroundedRadius: 4.5
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 257
   CinemachineCameraTarget: {fileID: 3784293241610158376}
   TopClamp: 70
   BottomClamp: -30
