@@ -7,6 +7,6 @@ public class GoalBehavior : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerInfo.PLAYER)
-            GameObject.Find("LevelManager").GetComponent<LevelManager>().IncremementLevel(collision.gameObject);
+            GameObject.Find("LevelManager").GetComponent<LevelManager>().ChangeLevel(1, true, collision.gameObject);
     }
 }
