@@ -1,51 +1,57 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using static Cinemachine.DocumentationSortingAttribute;
+using System.IO;
 
 public class LevelManager : MonoBehaviour
 {
-    private int lvlNum = 0;
-    GameObject dog;
-    bool teleported;
+    private int lvlNum = 1;
+    [SerializeField]
+    PlayerBehaviour player;
+    string[] sceneArray;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        InitializeCatelog();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
     void Update()
     {
-        TestChange();
-        if (SceneManager.GetActiveScene().name == "Level1" && !teleported)
+        //LevelNull is just an empty level with the Level Manager and the PlayerWrapper in it.
+        if (SceneManager.GetActiveScene().name == "LevelNull")
+            ChangeLevel(0, false);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode load)
+    {
+        Debug.Log("teleporting in: " + SceneManager.GetActiveScene().name);
+        player.Move3DPlayerToLocation(GameObject.Find("Spawnpoint").transform.position);
+    }
+
+    private void InitializeCatelog()
+    {
+        //Grabs all levels in the 'levels' asset bundle and loads them to an array of strings to be accessed by ChangeLevel
+        AssetBundle myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "levels"));
+        if (myLoadedAssetBundle == null)
         {
-            teleported = true;
-            Debug.Log("teleporting ");
-            dog.transform.parent.transform.parent.GetComponentInChildren<PlayerBehaviour>().
-                Move3DPlayerToLocation(new Vector3(-180, 5, -302));
-            
+            Debug.Log("Failed to load AssetBundle!");
+            return;
         }
+        sceneArray = myLoadedAssetBundle.GetAllScenePaths();
     }
 
     //Modifier is a bool that represents whether the int, level, should be added to the current level number
     //or if the level should be set to int level.
     //Default is a modifier of 1 (AKA Next level)
-    private void ChangeLevel(int level = 1, bool Modifier = true, GameObject dog = null)
+    public void ChangeLevel(int level = 1, bool Modifier = true, GameObject dog = null)
     {
         if (dog != null)
         {
             dog.GetComponentInChildren<InteractRadarController>().clearsurfaces();
         }
         lvlNum = Modifier ? lvlNum += level : level;
-        string sceneName = "Level" + lvlNum;
-        this.dog = dog;
-        SceneManager.LoadScene(sceneName);            
-    }
-    public void SetLevel(int level, GameObject dog) {
-        ChangeLevel(level, false, dog);
-    }
-    public void IncremementLevel(GameObject dog) {
-        ChangeLevel(1, true, dog);
+        SceneManager.LoadScene(sceneArray[lvlNum].ToString()); 
     }
 
     private void TestChange()
@@ -55,8 +61,6 @@ public class LevelManager : MonoBehaviour
         if (Keyboard.current.pageDownKey.wasPressedThisFrame)
             ChangeLevel(-1);
         if (Keyboard.current.homeKey.wasPressedThisFrame)
-            ChangeLevel(0, false);
-        if (SceneManager.GetActiveScene().name == "LevelNull")
             ChangeLevel(0, false);
     }
 }
