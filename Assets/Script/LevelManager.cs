@@ -25,8 +25,9 @@ public class LevelManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode load)
     {
-        Debug.Log("teleporting in: " + SceneManager.GetActiveScene().name);
-        player.Move3DPlayerToLocation(GameObject.Find("Spawnpoint").transform.position);
+        //Debug.Log("teleporting in: " + SceneManager.GetActiveScene().name);
+        if (SceneManager.GetActiveScene().name != "LevelNull")
+            player.Move3DPlayerToLocation(GameObject.Find("Spawnpoint").transform.position);
     }
 
     private void InitializeCatelog()
