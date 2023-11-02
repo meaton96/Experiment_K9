@@ -50,7 +50,7 @@ public class PlayerDimensionController : MonoBehaviour {
     private Vector3 originalCameraPosition;
     private Quaternion originalCameraRotation;
 
-    private void Start() {
+    private void Awake() {
         playerController = GetComponent<PlayerBehaviour>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
         DOGToggleKey = Keyboard.current.fKey;
@@ -62,7 +62,7 @@ public class PlayerDimensionController : MonoBehaviour {
         HandleAutoModeInput();
     }
     public void EnableProjection(Collider collider, Vector3 position) {
-        if (!IsProjecting|| player2D.activeSelf==false) {
+        if (!IsProjecting || player2D.activeSelf == false) {
             //offset the drawing a bit
             //goal should be to set it just outside the moveable wall collider 
             position += collider.transform.up * wallDrawOffset;
@@ -76,7 +76,7 @@ public class PlayerDimensionController : MonoBehaviour {
             Set2DSprite(collider);
             player2D.SetActive(true);
         }
-       else {
+        else {
 
             //handle potentially changing the projection to the other wall
         }
@@ -110,18 +110,18 @@ public class PlayerDimensionController : MonoBehaviour {
         }
     }
     public void UpdateProjectionPosition(Collider collider, Vector3 position) {
-       // print("this is updating");
-       // player2D.SetActive(true);
+        // print("this is updating");
+        // player2D.SetActive(true);
         position += collider.transform.up * wallDrawOffset;
-        
+
         //perform a physics overlap test to see if the space is free of walls that arent transferable
         var boxHits = Physics.OverlapBox(position, dog2DHitbox.bounds.extents, Quaternion.identity, LayerMask.GetMask("Walls", "Doors"));
 
-        
+
         //iterate through anything that was hit
         if (boxHits.Length > 0) {
             foreach (var hit in boxHits) {
-                
+
                 //make sure its a wall
                 if (hit.TryGetComponent(out WallBehaviour wallB)) {
                     //check if the wall doesnt allow transitioning or walking
@@ -156,7 +156,7 @@ public class PlayerDimensionController : MonoBehaviour {
         movementController_2D.GetComponent<Rigidbody>().isKinematic = false;
         SetWallProjectionToActive();
         player3D.SetActive(false);
-       
+
         playerController.ChangeDimension();
 
         //  Camera2D.transform.position = player2D.transform.position + player2D.transform.forward * cameraOffset2D;
@@ -168,14 +168,14 @@ public class PlayerDimensionController : MonoBehaviour {
         if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
             sAssetsInput.ClearInput();
         }
-        
+
     }
     public void TransitionTo3D() {
-       
-        
+
+
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
-      //  print(player3D.transform.position);
+        //  print(player3D.transform.position);
         player2D.SetActive(false);
         playerController.ClearList();
         radar.clearsurfaces();
@@ -192,13 +192,12 @@ public class PlayerDimensionController : MonoBehaviour {
         //movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
 
     }
-    public void TransitionTo3DLaunch()
-    {
+    public void TransitionTo3DLaunch() {
         Vector3 launchDirection = player2D.transform.forward;
 
         //adjust the player 3d model to be in front of the wall offset by a small amount
-        Vector3 launchPosition= player2D.transform.position + launchDirection * playerLeaveWallOffset;
-       
+        Vector3 launchPosition = player2D.transform.position + launchDirection * playerLeaveWallOffset;
+
         //  print(player3D.transform.position);
         player2D.SetActive(false);
         playerController.ClearList();
@@ -211,8 +210,7 @@ public class PlayerDimensionController : MonoBehaviour {
         playerController.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
-        if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput))
-        {
+        if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
             sAssetsInput.ClearInput();
         }
         Rigidbody player3DRigidbody = player3D.GetComponent<Rigidbody>();
@@ -225,16 +223,12 @@ public class PlayerDimensionController : MonoBehaviour {
     }
     //handle enable/disasble of DOG device while in auto mode
     private void HandleAutoModeInput() {
-        if (DOGLeaveKey.wasPressedThisFrame==true)
-        {
-            if (playerController.IsIn3D())
-            {
+        if (DOGLeaveKey.wasPressedThisFrame) {
+            if (playerController.IsIn3D()) {
                 Debug.Log("oof");
             }
-            else
-            {
-                if (movementController_2D.CanTransitionOutOfCurrentWall())
-                {
+            else {
+                if (movementController_2D.CanTransitionOutOfCurrentWall()) {
                     DOGEnabled = !DOGEnabled;
                     TransitionTo3DLaunch();
                     //movementController_2D.currentWall = null;
@@ -245,25 +239,20 @@ public class PlayerDimensionController : MonoBehaviour {
         if (DOGToggleKey.wasPressedThisFrame) {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
-          //  print("hitthefbutton");
-            if (playerController.IsIn3D())
-            {
-                if (IsProjecting)
-                {
-                 //   print("disabling");
+            //  print("hitthefbutton");
+            if (playerController.IsIn3D()) {
+                if (IsProjecting) {
+                    //   print("disabling");
                     DisableProjections();
                 }
-                else
-                {
+                else {
                     IsProjecting = true;
                 }
             }
-            else
-            {
-               // print("trying to move");
-                if (movementController_2D.CanTransitionOutOfCurrentWall())
-                {
-                    
+            else {
+                // print("trying to move");
+                if (movementController_2D.CanTransitionOutOfCurrentWall()) {
+
                     TransitionTo3D();
                     //movementController_2D.currentWall = null;
                 }
@@ -275,7 +264,7 @@ public class PlayerDimensionController : MonoBehaviour {
         if (IsProjecting) {
             player2D.SetActive(false);
             IsProjecting = false;
-           
+
         }
 
 
