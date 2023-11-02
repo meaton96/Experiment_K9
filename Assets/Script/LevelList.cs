@@ -10,21 +10,21 @@ public class LevelList : ScriptableObject
 
     int index = 0;
 
-    private string Next() {
+    public string Next() {
         index++;
         if (index >= levelNames.Count) {
             index = 0;
         }
         return levelNames[index];
     }
-    private string Previous() {
+    public string Previous() {
         index--;
         if (index < 0) {
             index = levelNames.Count - 1;
         }
         return levelNames[index];
     }
-    private string Current() {
+    public string Current() {
         return levelNames[index];
     }   
 }
