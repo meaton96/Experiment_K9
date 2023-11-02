@@ -112,6 +112,7 @@ namespace StarterAssets
         private bool canMove = true;
 
         private bool _hasAnimator;
+        private bool paused = false;
 
         private bool IsCurrentDeviceMouse
         {
@@ -125,6 +126,7 @@ namespace StarterAssets
             }
         }
 
+        public void SetPaused(bool paused) { this.paused = paused; }
 
         private void Awake()
         {
@@ -157,17 +159,20 @@ namespace StarterAssets
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
+            if (!paused) {
+                _hasAnimator = TryGetComponent(out _animator);
 
-            JumpAndGravity();
-            GroundedCheck();
-            if (canMove)
-                Move();
+                JumpAndGravity();
+                GroundedCheck();
+                if (canMove)
+                    Move();
+            }
         }
 
         private void LateUpdate()
         {
-            CameraRotation();
+            if (!paused)
+                CameraRotation();
         }
         public void ToggleMovement(bool enable) {
             canMove = enable;

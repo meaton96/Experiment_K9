@@ -19,13 +19,14 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private CharacterController playerController;
     private ThirdPersonController thirdPersonController;
-
+    [SerializeField] private InterfaceBehaviour interfaceScript;
 
     [SerializeField] private float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
     [SerializeField] private GameObject interactRadar;          //holds the game object that has the radar collider on it
 
     private KeyControl interactKey;                             //which key to use for interaction, set in Start()
     private KeyControl resetKey;                             //which key to use for interaction, set in Start()
+   
 
     private List<GrabbableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
 
@@ -35,6 +36,7 @@ public class PlayerBehaviour : MonoBehaviour {
 
     Vector3 initialPosition;                                            //store the initial position and dimension to reset the player
     bool initialDimension3D;
+    bool paused = false;
 
     [SerializeField] private bool canResetLocation = true;
 
@@ -56,14 +58,21 @@ public class PlayerBehaviour : MonoBehaviour {
             Debug.LogError("Missing player 3d when assigning controller scripts");
         }
     }
+    
+    public void SetPaused(bool paused) {
+        this.paused = paused;
+    }
 
     void Update() {
-        if (canInteract) {
+        
+        if (!paused) {
+            if (canInteract) {
 
-            HandleInteractionInput();
-        }
-        if (canResetLocation) {
-            HandleResetInput();
+                HandleInteractionInput();
+            }
+            if (canResetLocation) {
+                HandleResetInput();
+            }
         }
     }
     

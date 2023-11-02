@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -18,6 +19,7 @@ public class PlayerDimensionController : MonoBehaviour {
     [SerializeField] private GameObject player2D;
     [SerializeField] private MovementController_2D movementController_2D;
     [SerializeField] private Collider dog2DHitbox;
+    [SerializeField] private ThirdPersonController controller3D;
 
     [SerializeField] private GameObject Camera3D;
     [SerializeField] private GameObject Camera2D;
@@ -28,12 +30,13 @@ public class PlayerDimensionController : MonoBehaviour {
     //flag for Ranged version of device where you hold down space and release to transfer
     public bool RangedDOGEnabled = false;
 
-    private PlayerBehaviour playerController;
+    private PlayerBehaviour playerBehaviour;
     [SerializeField] private InterfaceBehaviour interfaceScript;
 
 
     private KeyControl DOGToggleKey;
     private KeyControl DOGLeaveKey;
+    private KeyControl pauseKey;
 
     public bool IsProjecting = false;
 
@@ -44,6 +47,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
     public float DOGProjectionRange = 25f;
     [SerializeField] private GameObject projectionOutOfRange;
+    private bool paused = false;
 
 
     //3d->2d
@@ -51,15 +55,35 @@ public class PlayerDimensionController : MonoBehaviour {
     private Quaternion originalCameraRotation;
 
     private void Awake() {
-        playerController = GetComponent<PlayerBehaviour>();
+        playerBehaviour = GetComponent<PlayerBehaviour>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
         DOGToggleKey = Keyboard.current.fKey;
         DOGLeaveKey = Keyboard.current.spaceKey;
+        pauseKey = Keyboard.current.escapeKey;
+
     }
     private void Update() {
 
-
+        HandlePauseInput();
         HandleAutoModeInput();
+    }
+    private void HandlePauseInput() {
+        if (pauseKey.wasPressedThisFrame) {
+            paused = !paused;
+            playerBehaviour.SetPaused(paused);
+            controller3D.SetPaused(paused);
+            if (paused) {
+                Time.timeScale = 0;
+            }
+            else {
+                Time.timeScale = 1;
+            }
+            
+            if (paused)
+                interfaceScript.Pause();
+            else
+                interfaceScript.UnPause();
+        }
     }
     public void EnableProjection(Collider collider, Vector3 position) {
         if (!IsProjecting || player2D.activeSelf == false) {
@@ -86,7 +110,7 @@ public class PlayerDimensionController : MonoBehaviour {
             //player is allowed to transition to the wall
             if (wallB.AllowsDimensionTransition) {
                 //player can transition and is holding an object
-                if (playerController.IsHoldingObject) {
+                if (playerBehaviour.IsHoldingObject) {
                     movementController_2D.SetProjectionState(MovementController_2D.ProjectionState.HoldingObject);
                 }
                 else {
@@ -102,7 +126,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
     //activate the 2d player
     void SetWallProjectionToActive() {
-        if (playerController.IsHoldingObject) {
+        if (playerBehaviour.IsHoldingObject) {
             movementController_2D.SetProjectionState(MovementController_2D.ProjectionState.In2DHoldingObject);
         }
         else {
@@ -157,7 +181,7 @@ public class PlayerDimensionController : MonoBehaviour {
         SetWallProjectionToActive();
         player3D.SetActive(false);
 
-        playerController.ChangeDimension();
+        playerBehaviour.ChangeDimension();
 
         //  Camera2D.transform.position = player2D.transform.position + player2D.transform.forward * cameraOffset2D;
 
@@ -177,13 +201,13 @@ public class PlayerDimensionController : MonoBehaviour {
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
         //  print(player3D.transform.position);
         player2D.SetActive(false);
-        playerController.ClearList();
+        playerBehaviour.ClearList();
         radar.clearsurfaces();
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;
         //radar.potentialProjectionSurfaces.Clear(); <----
         player3D.SetActive(true);
-        playerController.ChangeDimension();
+        playerBehaviour.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
         if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
@@ -200,14 +224,14 @@ public class PlayerDimensionController : MonoBehaviour {
 
         //  print(player3D.transform.position);
         player2D.SetActive(false);
-        playerController.ClearList();
+        playerBehaviour.ClearList();
         radar.clearsurfaces();
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.position = launchPosition;
         player3D.transform.forward = player2D.transform.right;
         //radar.potentialProjectionSurfaces.Clear(); <----
         player3D.SetActive(true);
-        playerController.ChangeDimension();
+        playerBehaviour.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
         if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
@@ -224,7 +248,7 @@ public class PlayerDimensionController : MonoBehaviour {
     //handle enable/disasble of DOG device while in auto mode
     private void HandleAutoModeInput() {
         if (DOGLeaveKey.wasPressedThisFrame) {
-            if (playerController.IsIn3D()) {
+            if (playerBehaviour.IsIn3D()) {
                 Debug.Log("oof");
             }
             else {
@@ -240,7 +264,7 @@ public class PlayerDimensionController : MonoBehaviour {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
             //  print("hitthefbutton");
-            if (playerController.IsIn3D()) {
+            if (playerBehaviour.IsIn3D()) {
                 if (IsProjecting) {
                     //   print("disabling");
                     DisableProjections();
