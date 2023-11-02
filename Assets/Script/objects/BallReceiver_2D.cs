@@ -2,18 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BallReceiver_2D : MonoBehaviour {
+public class BallReceiver_2D : ReceivableParent {
     [SerializeField] GameObject outsideOff;
     [SerializeField] GameObject outsideOn;
     [SerializeField] ActivatablePuzzlePiece puzzlePieceToActivate;
     [SerializeField] bool Allow3DActivation = false;
 
-    void Activate() {
+    protected override void Activate() {
+        base.Activate();
         puzzlePieceToActivate.Activate();
         outsideOff.SetActive(false);
         outsideOn.SetActive(true);
     }
-    void Deactivate() {
+    protected override void Deactivate() {
+        base.Deactivate();
         puzzlePieceToActivate.Deactivate();
         outsideOff.SetActive(true);
         outsideOn.SetActive(false);
@@ -55,4 +57,5 @@ public class BallReceiver_2D : MonoBehaviour {
         return false;
 
     }
+
 }
