@@ -1461,7 +1461,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 82f3b755628ea27418c4cd2e984a6758, type: 2}
+  - {fileID: 2100000, guid: a52836a8ba85e644d95f01abd699f733, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3569,7 +3569,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 82f3b755628ea27418c4cd2e984a6758, type: 2}
+  - {fileID: 2100000, guid: a52836a8ba85e644d95f01abd699f733, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6293,7 +6293,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1255690797
 Transform:
   m_ObjectHideFlags: 0
@@ -9181,7 +9181,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 82f3b755628ea27418c4cd2e984a6758, type: 2}
+  - {fileID: 2100000, guid: a52836a8ba85e644d95f01abd699f733, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9364,7 +9364,7 @@ PrefabInstance:
     - target: {fileID: 55013569138097356, guid: 93719739f4fb3fd4cb4a98f97441f21d, type: 3}
       propertyPath: glowPath
       value: 
-      objectReference: {fileID: 1803570357}
+      objectReference: {fileID: 1803570359}
     - target: {fileID: 55013569138097356, guid: 93719739f4fb3fd4cb4a98f97441f21d, type: 3}
       propertyPath: springForce
       value: 1
