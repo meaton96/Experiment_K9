@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1a8b5b2829da9a479177e2ceaa5eee5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  glowPath: {fileID: 0}
   IsLocked: 0
   puzzlePieceToActivate: {fileID: 0}
-  glowPath: {fileID: 0}
   springForce: 1
   pawMeshRenderer: {fileID: 4610327570201250561}
   pressedMaterials:
@@ -135,7 +135,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
