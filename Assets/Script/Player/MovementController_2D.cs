@@ -12,6 +12,7 @@ public class MovementController_2D : MonoBehaviour {
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Rigidbody playerRigidBody3D;
     [SerializeField] private float offSetAmount = 5.5f;
+    [SerializeField] float wallCheckDistance = 0.8f;
     private Collider dogCollider2D;
 
     public bool Is2DPlayerActive = false;
@@ -61,11 +62,14 @@ public class MovementController_2D : MonoBehaviour {
             // Move2D();
             if (CanMove)
                 Move2D();
-            if (Mathf.Abs(rb.velocity.y) > .001) {
-                grounded = false;
-            }
-            else {
-                grounded = true;
+            //if (Mathf.Abs(rb.velocity.y) > .001) {
+            //    grounded = false;
+            //}
+            //else {
+            //    grounded = true;
+            //}
+            if (currentWall.AllowsDimensionTransition && !playerDimensionController.DOGEnabled) {
+                playerDimensionController.TransitionTo3D();
             }
         }
         else {
@@ -138,12 +142,13 @@ public class MovementController_2D : MonoBehaviour {
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
 
             if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
-                Debug.Log("leaving wall");
+              //  Debug.Log("leaving wall");
                 //currentWall = null;
                 //print("test");
                 //playerController.ChangeDimension();
 
-                playerDimensionController.TransitionTo3D();
+                 playerDimensionController.TransitionTo3D();
+               // UpdateWallStatus();
 
             }
             else if (playerController.IsIn3D()) {
@@ -152,13 +157,40 @@ public class MovementController_2D : MonoBehaviour {
         }
     }
 
+    private void UpdateWallStatus() {
+        if (CheckIfInCurrentWall()) {
+            //do nothing still in the wall
+        }
+        else {
+            Debug.Log("leaving wall");
+            playerDimensionController.TransitionTo3D();
+        }
+    }
+    bool CheckIfInCurrentWall() {
+        if (currentWall == null) {
+
+            return false;
+        }
+
+        if (Physics.Raycast(transform.position, -transform.forward, out var hit, wallCheckDistance, LayerMask.GetMask("Walls"))) {
+            if (hit.collider.gameObject == currentWall.gameObject) {
+                return true;
+            }
+            else {
+
+                return false;
+            }
+        }
+        return false;
+    }
+
     private void HandleWallCollision(Collider collider, WallBehaviour wallB) {
         var closestPoint = collider.ClosestPointOnBounds(transform.position);
 
-        if (wallB.AllowsDimensionTransition) {
+        if (wallB.IsWalkThroughEnabled) {
             WallBehaviour pastwall = currentWall;
             UpdateCurrentWall(wallB);
-            if (pastwall == null || wallB.transform.up != pastwall.transform.up && wallB.AllowsDimensionTransition == true) {
+            if (pastwall == null || wallB.transform.up != pastwall.transform.up) {
                 //print("its on wall5");
                 UpdateCurrentWall(wallB);
                 TransitionToNewAxis(collider.ClosestPointOnBounds(transform.position), wallB);
