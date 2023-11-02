@@ -243,10 +243,10 @@ public class MovementController_2D : MonoBehaviour {
     void UpdateCurrentWall(WallBehaviour wall) {
         currentWall = wall;
         if (currentWall is GravityWall) {
-            gravityEnabled = true;
+            EnableGravity();
         }
         else {
-            gravityEnabled = false;
+            DisableGravity();
         }
     }
 
@@ -292,6 +292,14 @@ public class MovementController_2D : MonoBehaviour {
     }
     public bool IsFlipped() {
         return spriteRenderer.flipX;
+    }
+    public void EnableGravity() {
+        rb.useGravity = true;
+        gravityEnabled = true;
+    }
+    public void DisableGravity() {
+        rb.useGravity = false;
+        gravityEnabled = false;
     }
 
 
