@@ -8,6 +8,6 @@ public class GoalBehavior : MonoBehaviour
     {
         Debug.Log("Its working");
         if (collision.gameObject.layer == LayerInfo.PLAYER)
-            GameObject.Find("LevelManager").GetComponent<LevelManager>().ChangeLevel(1, true, collision.gameObject);
+            GameObject.Find("LevelManager").GetComponent<LevelManager>().ChangeLevel(1, collision.gameObject);
     }
 }
