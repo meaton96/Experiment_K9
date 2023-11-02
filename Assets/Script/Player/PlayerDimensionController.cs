@@ -33,6 +33,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
 
     private KeyControl DOGToggleKey;
+    private KeyControl DOGLeaveKey;
 
     public bool IsProjecting = false;
 
@@ -53,6 +54,7 @@ public class PlayerDimensionController : MonoBehaviour {
         playerController = GetComponent<PlayerBehaviour>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
         DOGToggleKey = Keyboard.current.fKey;
+        DOGLeaveKey = Keyboard.current.spaceKey;
     }
     private void Update() {
 
@@ -190,8 +192,56 @@ public class PlayerDimensionController : MonoBehaviour {
         //movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
 
     }
+    public void TransitionTo3DLaunch()
+    {
+        Vector3 launchDirection = player2D.transform.forward;
+
+        //adjust the player 3d model to be in front of the wall offset by a small amount
+        Vector3 launchPosition= player2D.transform.position + launchDirection * playerLeaveWallOffset;
+       
+        //  print(player3D.transform.position);
+        player2D.SetActive(false);
+        playerController.ClearList();
+        radar.clearsurfaces();
+        //set its rotation so its not clipping into the wall hopefully
+        player3D.transform.position = launchPosition;
+        player3D.transform.forward = player2D.transform.right;
+        //radar.potentialProjectionSurfaces.Clear(); <----
+        player3D.SetActive(true);
+        playerController.ChangeDimension();
+        Camera3D.SetActive(true);
+        Camera2D.SetActive(false);
+        if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput))
+        {
+            sAssetsInput.ClearInput();
+        }
+        Rigidbody player3DRigidbody = player3D.GetComponent<Rigidbody>();
+        float launchForce = 10f;
+
+        player3DRigidbody.AddForce(launchDirection * launchForce, ForceMode.Impulse);
+        //movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
+        DOGEnabled = !DOGEnabled;
+        player3DRigidbody.AddForce(launchDirection * 0, ForceMode.Impulse);
+    }
     //handle enable/disasble of DOG device while in auto mode
     private void HandleAutoModeInput() {
+        if (DOGLeaveKey.wasPressedThisFrame==true)
+        {
+            if (playerController.IsIn3D())
+            {
+                Debug.Log("oof");
+            }
+            else
+            {
+                if (movementController_2D.CanTransitionOutOfCurrentWall())
+                {
+                    DOGEnabled = !DOGEnabled;
+                    TransitionTo3DLaunch();
+                    //movementController_2D.currentWall = null;
+                }
+            }
+
+        }
         if (DOGToggleKey.wasPressedThisFrame) {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
