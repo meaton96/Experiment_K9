@@ -5,13 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
 public class Platform : ActivatablePuzzlePiece {
-    public override void Activate() {
-        unlocked = true;
-    }
-
-    public override void Deactivate() {
-        unlocked = false;
-    }
+   
     public List<Vector3> travelLocations;
     public float platformMovementSpeed = 5f;
     public float firstLastWaitTime = 2.0f;
@@ -22,11 +16,12 @@ public class Platform : ActivatablePuzzlePiece {
 
     private int currentTargetIndex = 0;
     private bool isMovingForward = true;
-    private bool playerOnPlatform = false;
+    [SerializeField] private bool playerOnPlatform = false;
     private float distanceToCheck = .05f;
     [SerializeField] private bool unlocked = false;
 
     [SerializeField] private bool unlockedByPlayerCollision = true;
+    [SerializeField] private bool dontMoveWithoutPlayer = true;
 
     public enum PlatformState {
         First,
@@ -39,6 +34,13 @@ public class Platform : ActivatablePuzzlePiece {
         state = PlatformState.First;
         rb = GetComponent<Rigidbody>();
     }
+    public override void Activate() {
+        unlocked = true;
+    }
+
+    public override void Deactivate() {
+        unlocked = false;
+    }
 
     private void Update() {
         if (travelLocations == null || travelLocations.Count < 2) {
@@ -46,7 +48,14 @@ public class Platform : ActivatablePuzzlePiece {
             return;
         }
         if (unlocked) {
-            MovePlatform();
+            if (!dontMoveWithoutPlayer) {
+                MovePlatform();
+            }
+            else {
+                if (playerOnPlatform) {
+                    MovePlatform();
+                }
+            }
         }
     }
 
@@ -71,6 +80,7 @@ public class Platform : ActivatablePuzzlePiece {
                         //swap to moving backward
                         isMovingForward = false;
                         state = PlatformState.Last;
+                        Debug.Log("reached end");
                         StartCoroutine(WaitThenMove());
                     }
                 }
@@ -114,6 +124,7 @@ public class Platform : ActivatablePuzzlePiece {
     private IEnumerator WaitThenMove() {
         for (int x = 0; x < 2; x++) {
             yield return new WaitForSeconds(firstLastWaitTime / 2f);
+            
         }
         state = PlatformState.Moving;
         yield return null;

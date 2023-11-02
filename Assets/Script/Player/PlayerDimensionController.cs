@@ -50,9 +50,6 @@ public class PlayerDimensionController : MonoBehaviour {
     private bool paused = false;
 
 
-    //3d->2d
-    private Vector3 originalCameraPosition;
-    private Quaternion originalCameraRotation;
 
     private void Awake() {
         playerBehaviour = GetComponent<PlayerBehaviour>();
@@ -134,8 +131,6 @@ public class PlayerDimensionController : MonoBehaviour {
         }
     }
     public void UpdateProjectionPosition(Collider collider, Vector3 position) {
-        // print("this is updating");
-        // player2D.SetActive(true);
         position += collider.transform.up * wallDrawOffset;
 
         //perform a physics overlap test to see if the space is free of walls that arent transferable
@@ -183,7 +178,6 @@ public class PlayerDimensionController : MonoBehaviour {
 
         playerBehaviour.ChangeDimension();
 
-        //  Camera2D.transform.position = player2D.transform.position + player2D.transform.forward * cameraOffset2D;
 
         Camera3D.SetActive(false);
         Camera2D.SetActive(true);
@@ -199,13 +193,11 @@ public class PlayerDimensionController : MonoBehaviour {
 
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
-        //  print(player3D.transform.position);
         player2D.SetActive(false);
         playerBehaviour.ClearList();
         radar.clearsurfaces();
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;
-        //radar.potentialProjectionSurfaces.Clear(); <----
         player3D.SetActive(true);
         playerBehaviour.ChangeDimension();
         Camera3D.SetActive(true);
@@ -213,7 +205,6 @@ public class PlayerDimensionController : MonoBehaviour {
         if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
             sAssetsInput.ClearInput();
         }
-        //movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
 
     }
     public void TransitionTo3DLaunch() {
@@ -229,7 +220,6 @@ public class PlayerDimensionController : MonoBehaviour {
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.position = launchPosition;
         player3D.transform.forward = player2D.transform.right;
-        //radar.potentialProjectionSurfaces.Clear(); <----
         player3D.SetActive(true);
         playerBehaviour.ChangeDimension();
         Camera3D.SetActive(true);
@@ -241,7 +231,6 @@ public class PlayerDimensionController : MonoBehaviour {
         float launchForce = 10f;
 
         player3DRigidbody.AddForce(launchDirection * launchForce, ForceMode.Impulse);
-        //movementController_2D.GetComponent<Rigidbody>().isKinematic = true;
         DOGEnabled = !DOGEnabled;
         player3DRigidbody.AddForce(launchDirection * 0, ForceMode.Impulse);
     }
@@ -255,7 +244,6 @@ public class PlayerDimensionController : MonoBehaviour {
                 if (movementController_2D.CanTransitionOutOfCurrentWall()) {
                     DOGEnabled = !DOGEnabled;
                     TransitionTo3DLaunch();
-                    //movementController_2D.currentWall = null;
                 }
             }
 
@@ -263,10 +251,8 @@ public class PlayerDimensionController : MonoBehaviour {
         if (DOGToggleKey.wasPressedThisFrame) {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
-            //  print("hitthefbutton");
             if (playerBehaviour.IsIn3D()) {
                 if (IsProjecting) {
-                    //   print("disabling");
                     DisableProjections();
                 }
                 else {
@@ -274,11 +260,9 @@ public class PlayerDimensionController : MonoBehaviour {
                 }
             }
             else {
-                // print("trying to move");
                 if (movementController_2D.CanTransitionOutOfCurrentWall()) {
 
                     TransitionTo3D();
-                    //movementController_2D.currentWall = null;
                 }
             }
         }

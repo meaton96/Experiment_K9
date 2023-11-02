@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using System.IO;
+using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour {
     private int lvlNum = 1;
@@ -9,7 +10,27 @@ public class LevelManager : MonoBehaviour {
     PlayerBehaviour player;
     string[] sceneArray;
     [SerializeField]
-    LevelList levelList;
+    List<string> levelNames = new();
+
+    int index = 0;
+
+    public string Next() {
+        index++;
+        if (index >= levelNames.Count) {
+            index = 0;
+        }
+        return levelNames[index];
+    }
+    public string Previous() {
+        index--;
+        if (index < 0) {
+            index = levelNames.Count - 1;
+        }
+        return levelNames[index];
+    }
+    public string Current() {
+        return levelNames[index];
+    }
 
     private void Awake() {
         DontDestroyOnLoad(gameObject);
@@ -47,9 +68,9 @@ public class LevelManager : MonoBehaviour {
         }
         //lvlNum = Modifier ? lvlNum += level : level;
         if (level == 1)
-            SceneManager.LoadScene(levelList.Next());
+            SceneManager.LoadScene(Next());
         else if (level == -1)
-            SceneManager.LoadScene(levelList.Previous());
+            SceneManager.LoadScene(Previous());
     }
 
     private void TestChange() {

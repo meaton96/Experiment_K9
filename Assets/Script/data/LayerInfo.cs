@@ -9,4 +9,5 @@ public static class LayerInfo
     public const int DOORS = 12;
     public const int CUBE = 13;
     public const int PLAYER_BEHAVIOR = 14;
+    public const int TRIGGERS = 14;
 }

@@ -6,6 +6,7 @@ using System.IO;
 
 public class CreateAssetBundles
 {
+#if UNITY_EDITOR
     [MenuItem("Assets/Build AssetBundles")]
     static void BuildAllAssetBundles()
     {
@@ -18,4 +19,6 @@ public class CreateAssetBundles
                                         BuildAssetBundleOptions.None,
                                         BuildTarget.StandaloneWindows);
     }
+#endif
 }
+

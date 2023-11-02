@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ButtonBehaviour : ReceivableParent {
     public bool IsLocked = false;
-    //only supports doors for now
     [SerializeField] private ActivatablePuzzlePiece puzzlePieceToActivate;
 
     //// visual path of the button
@@ -66,7 +65,7 @@ public class ButtonBehaviour : ReceivableParent {
         if (collision.collider.CompareTag("EventTrigger")) {
             presser = collision.gameObject;
             if (CanPressButton()) {
-                puzzlePieceToActivate.Activate();
+                
                 Activate();
              //   pawMeshRenderer.SetMaterials(pressedMaterials);
                 //foreach (MeshRenderer path in glowPathRenderers) {
@@ -83,6 +82,7 @@ public class ButtonBehaviour : ReceivableParent {
     protected override void Activate() {
         base.Activate();
         pawMeshRenderer.SetMaterials(pressedMaterials);
+        puzzlePieceToActivate.Activate();
         //foreach (MeshRenderer path in glowPathRenderers) {
         //    path.SetMaterials(pressedMaterials);
         //}
@@ -92,12 +92,13 @@ public class ButtonBehaviour : ReceivableParent {
         //foreach (MeshRenderer path in glowPathRenderers) {
         //    path.SetMaterials(unPressedMaterials);
         //}
+        puzzlePieceToActivate.Deactivate();
+
         base.Deactivate();
     }
 
     private void OnCollisionExit(Collision collision) {
         if (collision.collider.CompareTag("EventTrigger")) {
-            puzzlePieceToActivate.Deactivate();
             Deactivate();
         }
         else {
