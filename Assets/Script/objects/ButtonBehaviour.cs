@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ButtonBehaviour : MonoBehaviour {
+public class ButtonBehaviour : ReceivableParent {
     public bool IsLocked = false;
     //only supports doors for now
     [SerializeField] private ActivatablePuzzlePiece puzzlePieceToActivate;
 
-    // visual path of the button
-    [SerializeField] private GameObject glowPath;
-    private MeshRenderer[] glowPathRenderers;
+    //// visual path of the button
+    //[SerializeField] private GameObject glowPath;
+    //private MeshRenderer[] glowPathRenderers;
 
     [SerializeField] private float springForce = 1f;
     private Rigidbody rb;
@@ -30,8 +30,8 @@ public class ButtonBehaviour : MonoBehaviour {
     void Awake() {
 
         rb = GetComponent<Rigidbody>();
-        if (glowPath != null)
-            glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
+        //if (glowPath != null)
+        //    glowPathRenderers = glowPath.GetComponentsInChildren<MeshRenderer>();
     }
 
     void Update() {
@@ -67,10 +67,11 @@ public class ButtonBehaviour : MonoBehaviour {
             presser = collision.gameObject;
             if (CanPressButton()) {
                 puzzlePieceToActivate.Activate();
-                pawMeshRenderer.SetMaterials(pressedMaterials);
-                foreach (MeshRenderer path in glowPathRenderers) {
-                    path.SetMaterials(pressedMaterials);
-                }
+                Activate();
+             //   pawMeshRenderer.SetMaterials(pressedMaterials);
+                //foreach (MeshRenderer path in glowPathRenderers) {
+                //    path.SetMaterials(pressedMaterials);
+                //}
             }
         }
         //otherwise the collision was with something trying to press it so store it as the presser
@@ -79,13 +80,25 @@ public class ButtonBehaviour : MonoBehaviour {
         }
 
     }
+    protected override void Activate() {
+        base.Activate();
+        pawMeshRenderer.SetMaterials(pressedMaterials);
+        //foreach (MeshRenderer path in glowPathRenderers) {
+        //    path.SetMaterials(pressedMaterials);
+        //}
+    }
+    protected override void Deactivate() {
+        pawMeshRenderer.SetMaterials(unPressedMaterials);
+        //foreach (MeshRenderer path in glowPathRenderers) {
+        //    path.SetMaterials(unPressedMaterials);
+        //}
+        base.Deactivate();
+    }
+
     private void OnCollisionExit(Collision collision) {
         if (collision.collider.CompareTag("EventTrigger")) {
             puzzlePieceToActivate.Deactivate();
-            pawMeshRenderer.SetMaterials(unPressedMaterials);
-            foreach (MeshRenderer path in glowPathRenderers) {
-                path.SetMaterials(unPressedMaterials);
-            }
+            Deactivate();
         }
         else {
             //null the presser if they leave the collision with the button
