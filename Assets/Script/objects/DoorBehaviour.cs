@@ -6,7 +6,7 @@ public class DoorBehaviour : ActivatablePuzzlePiece {
     public bool IsAuto;
     public bool IsLocked;
     ////potential future hook up to a button or something to open
-    [SerializeField] private List<GameObject> activator;
+    [SerializeField] private List<GameObject> activators;
     //door to move
     [SerializeField] private GameObject door;
     //amount to move
@@ -46,8 +46,16 @@ public class DoorBehaviour : ActivatablePuzzlePiece {
 
         }
 
-
-
+        // The door will be locked at the start if there are any activators
+        // tied to it.
+        if (activators.Count > 0)
+        {
+            IsLocked = true;
+        }
+        else
+        {
+            IsLocked = false;
+        }
     }
 
     // Update is called once per frame
@@ -69,6 +77,36 @@ public class DoorBehaviour : ActivatablePuzzlePiece {
                 currentState = DoorState.Closed;
             }
         }
+
+        if (CheckActivators() == true)
+        {
+            IsLocked = true;
+        }
+        else
+        {
+            IsLocked = false;
+        }
+    }
+
+    // Returns a bool based on whether all the associated activators are
+    // activated.
+    private bool CheckActivators()
+    {
+        bool allOn = true;
+
+        for (int i = 0; i < activators.Count; i++)
+        {
+            if (activators[i] is BallReceiver)
+            {
+                if (activators[i].active == false)
+                {
+                    allOn = false;
+                    break;
+                }
+            }
+        }
+
+        return allOn;
     }
 
     private void OnTriggerEnter(Collider other) {
