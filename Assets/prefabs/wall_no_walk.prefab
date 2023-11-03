@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -2813467912831258332, guid: e7564a9d4e37478439be182cd6065b78, type: 3}
+  - {fileID: 2100000, guid: ac90cc59c1da4ea43a074d99e5e1a89d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101,15 +101,7 @@ MonoBehaviour:
   AllowsDimensionTransition: 0
   IsWalkThroughEnabled: 0
   IsPassthrough: 0
-  RemoveFromWalkChecks: 0
-  IsMovingWall: 0
   pushForce: 15
-  movingWall: 0
-  waitTime: 10
-  MoveSpeed: 5
-  initialposition: {fileID: 0}
-  targetposition: {fileID: 0}
-  stopThreshold: 0
 --- !u!54 &3460354804257265962
 Rigidbody:
   m_ObjectHideFlags: 0
