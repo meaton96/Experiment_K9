@@ -8,10 +8,12 @@ public class TutorialBehaviour : MonoBehaviour {
     [SerializeField] PlayerDimensionController playerDimensionController;
     [SerializeField] PlayerBehaviour playerBehaviour;
     [SerializeField] private bool tutorialEnabled = true;
+
+
     int index = -1;
     // Start is called before the first frame update
     void Start() {
-
+        DontDestroyOnLoad(this);
     }
 
     // Update is called once per frame
@@ -29,6 +31,9 @@ public class TutorialBehaviour : MonoBehaviour {
                     break;
                 case 3:
                     HandleThirdTrigger();
+                    break;
+                default:
+                    interfaceBehaviour.DisableActiveTutorials();
                     break;
             }
         }

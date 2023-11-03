@@ -1,16 +1,7 @@
 using StarterAssets;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.Burst.CompilerServices;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem.HID;
-using UnityEngine.UIElements;
 
 public class PlayerDimensionController : MonoBehaviour {
     public const float WALL_DRAW_OFFSET = .21f;
@@ -67,6 +58,7 @@ public class PlayerDimensionController : MonoBehaviour {
     private void HandlePauseInput() {
         if (pauseKey.wasPressedThisFrame) {
             paused = !paused;
+
             playerBehaviour.SetPaused(paused);
             controller3D.SetPaused(paused);
             if (paused) {
@@ -75,11 +67,15 @@ public class PlayerDimensionController : MonoBehaviour {
             else {
                 Time.timeScale = 1;
             }
-            
-            if (paused)
+
+            if (paused) {
                 interfaceScript.Pause();
-            else
+
+            }
+            else {
                 interfaceScript.UnPause();
+                
+            }
         }
     }
     public void EnableProjection(Collider collider, Vector3 position) {
