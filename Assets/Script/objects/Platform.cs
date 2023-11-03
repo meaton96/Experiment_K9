@@ -23,6 +23,7 @@ public class Platform : ActivatablePuzzlePiece {
     [SerializeField] private bool unlockedByPlayerCollision = true;
     [SerializeField] private bool dontMoveWithoutPlayer = true;
 
+    private Vector3 lastPos, firstPos;
     public enum PlatformState {
         First,
         Moving,
@@ -31,6 +32,14 @@ public class Platform : ActivatablePuzzlePiece {
     [SerializeField] private PlatformState state;
 
     private void Start() {
+        if (travelLocations == null || travelLocations.Count < 2) {
+            Debug.LogWarning("Insufficient travel locations provided.");
+            return;
+        }
+        else {
+            lastPos = travelLocations[^1];
+            firstPos = travelLocations[0];
+        }
         state = PlatformState.First;
         rb = GetComponent<Rigidbody>();
     }
@@ -123,6 +132,7 @@ public class Platform : ActivatablePuzzlePiece {
 
     private IEnumerator WaitThenMove() {
         for (int x = 0; x < 2; x++) {
+            Debug.Log("waiting to move " + x);
             yield return new WaitForSeconds(firstLastWaitTime / 2f);
             
         }
