@@ -53,7 +53,7 @@ public class ButtonBehaviour : ReceivableParent {
             tempVec.y = 0;
             transform.localPosition = tempVec;
             //rb.velocity = Vector3.zero;
-            rb.velocity = Vector3.zero;
+            //rb.velocity = Vector3.zero;
         }
     }
 

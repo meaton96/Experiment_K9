@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
 public class Platform : ActivatablePuzzlePiece {
-   
+
     public List<Vector3> travelLocations;
     public float platformMovementSpeed = 5f;
     public float firstLastWaitTime = 2.0f;
@@ -25,9 +25,8 @@ public class Platform : ActivatablePuzzlePiece {
 
     private Vector3 lastPos, firstPos;
     public enum PlatformState {
-        First,
+        Waiting,
         Moving,
-        Last
     }
     [SerializeField] private PlatformState state;
 
@@ -40,7 +39,7 @@ public class Platform : ActivatablePuzzlePiece {
             lastPos = travelLocations[^1];
             firstPos = travelLocations[0];
         }
-        state = PlatformState.First;
+        state = PlatformState.Waiting;
         rb = GetComponent<Rigidbody>();
     }
     public override void Activate() {
@@ -56,21 +55,21 @@ public class Platform : ActivatablePuzzlePiece {
             Debug.LogWarning("Insufficient travel locations provided.");
             return;
         }
-        if (unlocked) {
-            if (!dontMoveWithoutPlayer) {
-                MovePlatform();
-            }
-            else {
-                if (playerOnPlatform) {
-                    MovePlatform();
-                }
-            }
-        }
+
+        MovePlatform();
+
+
     }
 
+    public void StartMoving() {
+        if (unlocked) {
+            state = PlatformState.Moving;
+        }
 
+    }
 
     private void MovePlatform() {
+
         //if the platform is moving
         if (state == PlatformState.Moving) {
             var targetPosition = travelLocations[currentTargetIndex];
@@ -78,30 +77,24 @@ public class Platform : ActivatablePuzzlePiece {
             var distSquaredToTarget = (targetPosition - transform.position).sqrMagnitude;
             //reached a destination
             if (distSquaredToTarget <= distanceToCheck) {
-                //check which direction its moving and change the current target 
-                if (isMovingForward) {
-                    //moving forward so increase the target index
-                    currentTargetIndex++;
-                    //if the target index is now >= to the count then we reached the end so we need to reverse direction
-                    if (currentTargetIndex >= travelLocations.Count) {
-                        //set target as the 2nd to last one
-                        currentTargetIndex -= 2;
-                        //swap to moving backward
-                        isMovingForward = false;
-                        state = PlatformState.Last;
-                        Debug.Log("reached end");
-                        StartCoroutine(WaitThenMove());
-                    }
-                }
-                //platform was moving backward so ssame as above except start the platform moving forward again
-                else {
+                //end pos
+                if (Vector3.Distance(targetPosition, lastPos) < .01f) {
+                    StartCoroutine(WaitThenMove());
+                    isMovingForward = false;
                     currentTargetIndex--;
-                    if (currentTargetIndex < 0) {
-                        currentTargetIndex = 1;
-                        isMovingForward = true;
-                        state = PlatformState.First;
-                        StartCoroutine(WaitThenMove());
-                    }
+                }
+                //start pos
+                else if (Vector3.Distance(targetPosition, firstPos) < .01f) {
+                    StartCoroutine(WaitThenMove());
+                    isMovingForward = true;
+                    currentTargetIndex++;
+                }
+                //middle point
+                else {
+                    if (isMovingForward)
+                        currentTargetIndex++;
+                    else
+                        currentTargetIndex--;
                 }
             }
             //move the platform if not at a destination
@@ -110,31 +103,23 @@ public class Platform : ActivatablePuzzlePiece {
                 var velocity = platformMovementSpeed * moveDirection;
                 rb.velocity = velocity; // set the Rigidbody's velocity to move the platform
                 if (playerOnPlatform) {
-                   playerRb.velocity = velocity;
+                    playerRb.velocity = velocity;
                 }
+                //transform.position = Vector3.MoveTowards(transform.position, targetPosition, platformMovementSpeed * Time.deltaTime);
+                //var velocity = (targetPosition - transform.position) * (platformMovementSpeed * Time.deltaTime);
+
 
             }
-        }
-        //platform is not in a movement state
-        //this will be the case on level load or potentially when unlocking or something
-        else {
-            if (state == PlatformState.First) {
-                isMovingForward = true;
-
-            }
-            else if (state == PlatformState.Last) {
-                isMovingForward = false;
-            }
-            state = PlatformState.Moving;
         }
     }
 
 
+
     private IEnumerator WaitThenMove() {
+        state = PlatformState.Waiting;
+        rb.velocity = Vector3.zero;
         for (int x = 0; x < 2; x++) {
-            Debug.Log("waiting to move " + x);
             yield return new WaitForSeconds(firstLastWaitTime / 2f);
-            
         }
         state = PlatformState.Moving;
         yield return null;
@@ -147,22 +132,15 @@ public class Platform : ActivatablePuzzlePiece {
             }
             playerOnPlatform = true;
             player = collision.gameObject;
-            playerRb = player.GetComponent<Rigidbody>();  
-          //  player.transform.SetParent(transform);
+            playerRb = player.GetComponent<Rigidbody>();
+            StartMoving();
         }
-        //else if (collision.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
-        //    collision.gameObject.transform.SetParent(transform);
-        //}
     }
     private void OnCollisionExit(Collision collision) {
         if (collision.gameObject.layer == LayerInfo.PLAYER) {
             playerOnPlatform = false;
-        //   player.transform.SetParent(null);
 
         }
-        //else if (collision.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
-        //    collision.gameObject.transform.SetParent(null);
-        //}
     }
 }
 

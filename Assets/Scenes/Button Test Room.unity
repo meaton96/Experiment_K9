@@ -1572,6 +1572,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: MovingPlatform
       objectReference: {fileID: 0}
+    - target: {fileID: 3175625927259798549, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
+      propertyPath: travelLocations.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175625927259798549, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
+      propertyPath: travelLocations.Array.data[0].x
+      value: 26.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175625927259798549, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
+      propertyPath: travelLocations.Array.data[0].y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175625927259798549, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
+      propertyPath: travelLocations.Array.data[0].z
+      value: -181.72
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175625927259798549, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
+      propertyPath: travelLocations.Array.data[1].x
+      value: 57.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175625927259798549, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
+      propertyPath: travelLocations.Array.data[1].y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175625927259798549, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
+      propertyPath: travelLocations.Array.data[1].z
+      value: -181.72
+      objectReference: {fileID: 0}
     - target: {fileID: 6300958636735612736, guid: 18163ca32688bb548af87b61bb00954c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 26.06

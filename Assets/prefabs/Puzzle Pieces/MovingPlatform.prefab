@@ -148,8 +148,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   travelLocations: []
   platformMovementSpeed: 5
-  firstLastWaitTime: 5
+  firstLastWaitTime: 2
   player: {fileID: 0}
+  playerOnPlatform: 0
   unlocked: 0
   unlockedByPlayerCollision: 1
+  dontMoveWithoutPlayer: 1
   state: 0
