@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour {
     private int lvlNum = 1;
-    [SerializeField] private GameObject player3D;
     [SerializeField]
     PlayerBehaviour player;
     string[] sceneArray;
@@ -45,11 +44,9 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode load) {
-        player3D.SetActive(false);
         //Debug.Log("teleporting in: " + SceneManager.GetActiveScene().name);
         if (SceneManager.GetActiveScene().name != "LevelNull")
             player.Move3DPlayerToLocation(GameObject.Find("Spawnpoint").transform.position);
-        player3D.SetActive(true);   
     }
 
     //private void InitializeCatelog() {
