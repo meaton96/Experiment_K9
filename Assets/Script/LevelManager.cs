@@ -13,6 +13,7 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     List<string> levelNames = new();
 
+
     int index = 0;
 
     public string Next() {
@@ -49,7 +50,7 @@ public class LevelManager : MonoBehaviour {
         //Debug.Log("teleporting in: " + SceneManager.GetActiveScene().name);
         if (SceneManager.GetActiveScene().name != "LevelNull")
             player.Move3DPlayerToLocation(GameObject.Find("Spawnpoint").transform.position);
-        player3D.SetActive(true);   
+        player3D.SetActive(true);
     }
 
     //private void InitializeCatelog() {
