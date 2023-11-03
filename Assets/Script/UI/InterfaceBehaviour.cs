@@ -22,12 +22,13 @@ public class InterfaceBehaviour : MonoBehaviour {
     }
 
     public void Pause() {
-        Cursor.lockState = CursorLockMode.None;
+        
         pauseMenu.SetActive(true);
     }
     public void UnPause() {
         pauseMenu.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
+        
     }
     public void DisplayTutorialMessageByIndex(int index) {
         

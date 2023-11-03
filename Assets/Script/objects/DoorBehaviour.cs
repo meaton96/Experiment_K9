@@ -6,7 +6,7 @@ public class DoorBehaviour : ActivatablePuzzlePiece {
     public bool IsAuto;
     public bool IsLocked;
     ////potential future hook up to a button or something to open
-    //[SerializeField] private GameObject activator;
+    [SerializeField] private List<GameObject> activator;
     //door to move
     [SerializeField] private GameObject door;
     //amount to move
