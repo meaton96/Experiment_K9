@@ -27,6 +27,9 @@ public class TutorialBehaviour : MonoBehaviour {
                 case 2:
                     HandleThirdTrigger();
                     break;
+                case 3:
+                    HandleThirdTrigger();
+                    break;
             }
         }
     }
@@ -56,4 +59,5 @@ public class TutorialBehaviour : MonoBehaviour {
             interfaceBehaviour.DisableActiveTutorials();
         }
     }
+
 }

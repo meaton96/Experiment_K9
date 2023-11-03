@@ -21,6 +21,7 @@ public class BallReceiver_2D : ReceivableParent {
         outsideOn.SetActive(false);
     }
     private void OnTriggerEnter(Collider other) {
+        // Debug.Log("2d ball receive hit " + other.name);
         //check object layer
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
 
@@ -28,6 +29,7 @@ public class BallReceiver_2D : ReceivableParent {
             if (TryGetTransferableObjectScript(other.gameObject, out TransferableObject tObject)) {
                 //check if its 3d 
                 if (tObject != null) {
+                    Debug.Log("2d ball receive hit interactable object " + tObject.name);
                     //only activate if it is 3d and 3d activation is enabled or the object is 2d
                     if ((tObject.Is3D && Allow3DActivation) || !tObject.Is3D) {
                         Activate();
@@ -51,6 +53,10 @@ public class BallReceiver_2D : ReceivableParent {
         }
         if (interactableObject.TryGetComponent(out TransferableObject component)) {
             tObject = component;
+            return true;
+        }
+        else if (interactableObject.transform.parent.TryGetComponent(out TransferableObject compontent1)) {
+            tObject = compontent1;
             return true;
         }
         tObject = null;
