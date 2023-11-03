@@ -8,6 +8,7 @@ TagManager:
   - InteractRadar
   - EventTrigger
   - PlayerBehavior
+  - TutorialBehaviour
   layers:
   - Default
   - TransparentFX
