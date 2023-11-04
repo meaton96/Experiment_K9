@@ -9,6 +9,8 @@ TagManager:
   - EventTrigger
   - PlayerBehavior
   - TutorialBehaviour
+  - PlayerWrapper
+  - PlayerSpawnPoint
   layers:
   - Default
   - TransparentFX

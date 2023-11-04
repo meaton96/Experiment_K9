@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,65 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &293436077 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2416929007388417668, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
-  m_PrefabInstance: {fileID: 795599498}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 086d66af4b1e4dd4781784f30bbfdd80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &428792356
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 428792358}
-  - component: {fileID: 428792357}
-  m_Layer: 0
-  m_Name: TutorialBehaviour
-  m_TagString: TutorialBehaviour
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &428792357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 428792356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1182049499b39940b30ab572fcc52d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interfaceBehaviour: {fileID: 795599500}
-  playerDimensionController: {fileID: 795599499}
-  playerBehaviour: {fileID: 293436077}
-  tutorialEnabled: 1
---- !u!4 &428792358
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 428792356}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 135.35078, y: -19.491203, z: -236.5751}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &446243558
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,17 +399,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
---- !u!114 &795599499 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5647112630155608246, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
-  m_PrefabInstance: {fileID: 795599498}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b45b6a0808652c54cae59de3ce00ee9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &795599500 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7519763555194715254, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
@@ -586,11 +516,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1020133046 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5023980225577663842, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
-  m_PrefabInstance: {fileID: 795599498}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1462766589
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,8 +650,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f849e8c7162a82439bb5f31dbcf9d03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player3D: {fileID: 1020133046}
-  player: {fileID: 293436077}
+  sceneArray: []
   levelNames:
   - LevelNull
   - Tutorial
@@ -1000,4 +924,3 @@ SceneRoots:
   - {fileID: 446243561}
   - {fileID: 795599498}
   - {fileID: 2013020447}
-  - {fileID: 428792358}

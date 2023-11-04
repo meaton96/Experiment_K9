@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6750392927762893480}
   m_Layer: 0
   m_Name: PlayerCameraWrapper
-  m_TagString: Untagged
+  m_TagString: PlayerWrapper
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1277,9 +1277,10 @@ MonoBehaviour:
   player2D: {fileID: 266677610665238099}
   player2DMovementController: {fileID: 5895966758457165437}
   player3D: {fileID: 5023980225577663842}
-  interfaceScript: {fileID: 0}
+  interfaceScript: {fileID: 7519763555194715254}
   interactDisplayRadius: 20
   interactRadar: {fileID: 4384154448399022592}
+  spawnPoint: {fileID: 0}
   IsHoldingObject: 0
   HeldObject: {fileID: 0}
   canResetLocation: 1
@@ -3573,6 +3574,10 @@ PrefabInstance:
     - target: {fileID: 2606557874445328026, guid: e70ebb95f1603a347ade9fb1bb0c3501, type: 3}
       propertyPath: m_Name
       value: TutorialCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6768711235060410883, guid: e70ebb95f1603a347ade9fb1bb0c3501, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8400497174328679795, guid: e70ebb95f1603a347ade9fb1bb0c3501, type: 3}
       propertyPath: m_Pivot.x

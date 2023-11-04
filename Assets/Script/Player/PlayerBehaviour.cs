@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour {
 
@@ -18,7 +19,7 @@ public class PlayerBehaviour : MonoBehaviour {
     public GameObject player3D;                             //holds the 3d depiction of the player
 
     private CharacterController playerController;
-    private ThirdPersonController thirdPersonController;
+    [SerializeField] private ThirdPersonController thirdPersonController;
     [SerializeField] private InterfaceBehaviour interfaceScript;
 
     [SerializeField] private float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
@@ -26,7 +27,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
     private KeyControl interactKey;                             //which key to use for interaction, set in Start()
     private KeyControl resetKey;                             //which key to use for interaction, set in Start()
-   
+
+    [SerializeField] private GameObject spawnPoint;
 
     private List<GrabbableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
 
@@ -34,21 +36,21 @@ public class PlayerBehaviour : MonoBehaviour {
     public bool IsHoldingObject = false;       //if the player has something in their hands or not
     [HideInInspector] public GrabbableObject HeldObject;                   //the object the player is hold
 
-    Vector3 initialPosition;                                            //store the initial position and dimension to reset the player
-    bool initialDimension3D;
+  //  Vector3 initialPosition;                                            //store the initial position and dimension to reset the player
+ //   bool initialDimension3D;
     bool paused = false;
 
     [SerializeField] private bool canResetLocation = true;
 
     private void Start() {
-        DontDestroyOnLoad(transform.parent.gameObject);
+        //DontDestroyOnLoad(transform.parent.gameObject);
         interactKey = Keyboard.current.eKey;
         resetKey = Keyboard.current.rKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
         objectsInInteractRange = new();
 
-        initialDimension3D = is3D;
-        initialPosition = player3D.transform.position;
+     //   initialDimension3D = is3D;
+       // initialPosition = player3D.transform.position;
 
         if (player3D != null) {
             playerController = player3D.GetComponent<CharacterController>();
@@ -84,14 +86,32 @@ public class PlayerBehaviour : MonoBehaviour {
         }
     }
     private void ResetPlayerPosition() {
-        Debug.Log("resetting player to: " + initialPosition);
-        Move3DPlayerToLocation(initialPosition);
-         
+        Debug.Log("resetting player to: " + spawnPoint.transform.position);
+        Spawn();
+
+
+    }
+    public void Spawn() {
+        if (spawnPoint != null) {
+            Move3DPlayerToLocation(spawnPoint.transform.position);
+        }
+        else {
+            Debug.LogWarning("Missing spawn point");
+            var spawn = GameObject.FindWithTag("PlayerSpawnPoint");
+            if (spawn == null) {
+                throw new System.Exception("Missing spawn point in level " + SceneManager.GetActiveScene().name);
+            }
+            Move3DPlayerToLocation(spawn.transform.position);
+
+        }
     }
 
     public void Move3DPlayerToLocation(Vector3 location) {
-        thirdPersonController.ToggleMovement(false);
+        Debug.Log(thirdPersonController == null);
+      //  thirdPersonController.ToggleMovement(false);
+        player3D.SetActive(false);
         player3D.transform.position = location;
+        player3D.SetActive(true);
         StartCoroutine(EnablePlayerMovementOnNextFrame());
     }
     private IEnumerator EnablePlayerMovementOnNextFrame() {
