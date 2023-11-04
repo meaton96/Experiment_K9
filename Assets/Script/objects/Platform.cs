@@ -23,6 +23,8 @@ public class Platform : ActivatablePuzzlePiece {
     [SerializeField] private bool unlockedByPlayerCollision = true;
     [SerializeField] private bool dontMoveWithoutPlayer = true;
 
+    private Vector3 currentTravelTarget;
+
     private Vector3 lastPos, firstPos;
     public enum PlatformState {
         Waiting,
@@ -63,7 +65,7 @@ public class Platform : ActivatablePuzzlePiece {
 
     public void StartMoving() {
         if (unlocked) {
-            state = PlatformState.Moving;
+            GetNextTargetLocation();
         }
 
     }
@@ -72,19 +74,19 @@ public class Platform : ActivatablePuzzlePiece {
 
         //if the platform is moving
         if (state == PlatformState.Moving) {
-            var targetPosition = travelLocations[currentTargetIndex];
+           // var targetPosition = travelLocations[currentTargetIndex];
             //check how close it is to the target
-            var distSquaredToTarget = (targetPosition - transform.position).sqrMagnitude;
+            var distSquaredToTarget = (currentTravelTarget - transform.position).sqrMagnitude;
             //reached a destination
             if (distSquaredToTarget <= distanceToCheck) {
                 //end pos
-                if (Vector3.Distance(targetPosition, lastPos) < .01f) {
+                if (Vector3.Distance(currentTravelTarget, lastPos) < .01f) {
                     StartCoroutine(WaitThenMove());
                     isMovingForward = false;
                     currentTargetIndex--;
                 }
                 //start pos
-                else if (Vector3.Distance(targetPosition, firstPos) < .01f) {
+                else if (Vector3.Distance(currentTravelTarget, firstPos) < .01f) {
                     StartCoroutine(WaitThenMove());
                     isMovingForward = true;
                     currentTargetIndex++;
@@ -95,16 +97,15 @@ public class Platform : ActivatablePuzzlePiece {
                         currentTargetIndex++;
                     else
                         currentTargetIndex--;
+                    GetNextTargetLocation();
                 }
             }
             //move the platform if not at a destination
             else {
-                var moveDirection = (targetPosition - transform.position).normalized;
-                var velocity = platformMovementSpeed * moveDirection;
-                rb.velocity = velocity; // set the Rigidbody's velocity to move the platform
-                if (playerOnPlatform) {
-                    playerRb.velocity = velocity;
-                }
+                
+                //if (playerOnPlatform) {
+                //    playerRb.velocity = rb.velocity;
+                //}
                 //transform.position = Vector3.MoveTowards(transform.position, targetPosition, platformMovementSpeed * Time.deltaTime);
                 //var velocity = (targetPosition - transform.position) * (platformMovementSpeed * Time.deltaTime);
 
@@ -113,7 +114,14 @@ public class Platform : ActivatablePuzzlePiece {
         }
     }
 
+    private void GetNextTargetLocation() {
+        currentTravelTarget = travelLocations[currentTargetIndex];
 
+        var moveDirection = (currentTravelTarget - transform.position).normalized;
+        var velocity = platformMovementSpeed * moveDirection;
+        rb.velocity = velocity; // set the Rigidbody's velocity to move the platform
+        state = PlatformState.Moving;
+    }
 
     private IEnumerator WaitThenMove() {
         state = PlatformState.Waiting;
@@ -121,7 +129,7 @@ public class Platform : ActivatablePuzzlePiece {
         for (int x = 0; x < 2; x++) {
             yield return new WaitForSeconds(firstLastWaitTime / 2f);
         }
-        state = PlatformState.Moving;
+        GetNextTargetLocation();
         yield return null;
     }
 
