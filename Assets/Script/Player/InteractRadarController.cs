@@ -6,53 +6,46 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 public class InteractRadarController : MonoBehaviour {
-    //  [SerializeField] private PlayerControllerBeta playerScript;
-    [SerializeField] private PlayerBehaviour playerBehaviour;
-    [SerializeField] private PickupController pickupController;
-    [SerializeField] private PlayerDimensionController playerDimensionController;
-    [SerializeField] private GameObject Player3D;
-    [SerializeField] private  MovementController_2D movement;
-    [SerializeField]private List<Collider> potentialProjectionSurfaces = new();
+    [SerializeField] private List<Collider> potentialProjectionSurfaces = new();
     private Collider currentProjectionSurface;
 
     private Vector3 gizmoDrawLoc;
 
     private void Update() {
-        if (!playerBehaviour.IsIn3D() || !playerDimensionController.DOGEnabled) {
-            playerDimensionController.DisableProjections();
+        if (!PlayerBehaviour.Instance.IsIn3D() || !PlayerBehaviour.Instance.playerDimensionController.DOGEnabled) {
+            PlayerBehaviour.Instance.playerDimensionController.DisableProjections();
             return;
         }
         CheckForPotentialSurfaces();
     }
     private void HandleOneSurfaceNearby() {
-       // print("handleonesurface is being called");
         //if the only surface found is not transferable disable project and quit out
-        if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition ) {
-            playerDimensionController.DisableProjections();
+        if (!potentialProjectionSurfaces[0].GetComponent<WallBehaviour>().AllowsDimensionTransition) {
+            PlayerBehaviour.Instance.playerDimensionController.DisableProjections();
             return;
         }
 
         currentProjectionSurface = potentialProjectionSurfaces[0];
-        if (playerDimensionController.IsProjecting) {
+        if (PlayerBehaviour.Instance.playerDimensionController.IsProjecting) {
             //update the position if currently projecting\
-            playerDimensionController.EnableProjection(currentProjectionSurface,
-                currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
-            playerDimensionController.UpdateProjectionPosition(
+            PlayerBehaviour.Instance.playerDimensionController.EnableProjection(currentProjectionSurface,
+                currentProjectionSurface.ClosestPointOnBounds(PlayerBehaviour.Instance.player3D.transform.position));
+            PlayerBehaviour.Instance.playerDimensionController.UpdateProjectionPosition(
                 currentProjectionSurface,
-                currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
+                currentProjectionSurface.ClosestPointOnBounds(PlayerBehaviour.Instance.player3D.transform.position));
         }
         //found a surface and wasnt projecting before
         else {
             //so enable the projection at the closest point
-            playerDimensionController.EnableProjection(currentProjectionSurface,
-                currentProjectionSurface.ClosestPointOnBounds(Player3D.transform.position));
+            PlayerBehaviour.Instance.playerDimensionController.EnableProjection(currentProjectionSurface,
+                currentProjectionSurface.ClosestPointOnBounds(PlayerBehaviour.Instance.player3D.transform.position));
         }
     }
     private void HandleMultipleSurfacesNearby() {
         float distance = float.MaxValue;
         Collider closest = null;
         Vector3 closestPointOnBounds = Vector3.zero;
-        
+
         var transferableSurfaces = potentialProjectionSurfaces.FindAll(collider => {
             if (collider.TryGetComponent(out WallBehaviour wallB)) {
                 //return wallB.AllowsDimensionTransition;
@@ -62,12 +55,12 @@ public class InteractRadarController : MonoBehaviour {
         });
         //iterate colliders that are currently in range of the player's interaction range
         foreach (Collider c in transferableSurfaces) {
-            var closePoint = c.ClosestPointOnBounds(Player3D.transform.position);
-            var distToCollider = Vector3.Distance(closePoint, Player3D.transform.position);
-           
+            var closePoint = c.ClosestPointOnBounds(PlayerBehaviour.Instance.player3D.transform.position);
+            var distToCollider = Vector3.Distance(closePoint, PlayerBehaviour.Instance.player3D.transform.position);
+
             //looking for the closest one to the player
             if (distToCollider < distance) {
-                gizmoDrawLoc = Player3D.transform.position;
+                gizmoDrawLoc = PlayerBehaviour.Instance.player3D.transform.position;
                 distance = distToCollider;
                 closest = c;
                 closestPointOnBounds = closePoint;
@@ -75,21 +68,17 @@ public class InteractRadarController : MonoBehaviour {
         }
         //enable the projection on the closest wall
         closest.TryGetComponent(out WallBehaviour wallB);
-        //print(closest);
-        if (closest != null && wallB.AllowsDimensionTransition)
-        {
-           // print("projecting");
+        if (closest != null && wallB.AllowsDimensionTransition) {
             currentProjectionSurface = closest;
-            movement.currentWall = wallB;
-            playerDimensionController.EnableProjection(currentProjectionSurface,
+            PlayerBehaviour.Instance.player2DMovementController.currentWall = wallB;
+            PlayerBehaviour.Instance.playerDimensionController.EnableProjection(currentProjectionSurface,
                 closestPointOnBounds);
-            playerDimensionController.UpdateProjectionPosition(
+            PlayerBehaviour.Instance.playerDimensionController.UpdateProjectionPosition(
                 currentProjectionSurface,
                 closestPointOnBounds);
         }
-        else
-        {
-            playerDimensionController.DisableProjections();
+        else {
+            PlayerBehaviour.Instance.playerDimensionController.DisableProjections();
         }
     }
     //Checks through potentialSurfaces list to see if there are any to project onto
@@ -108,34 +97,30 @@ public class InteractRadarController : MonoBehaviour {
         }
         //no surface was found so disable all projections
         else {
-            playerDimensionController.DisableProjections();
+            PlayerBehaviour.Instance.playerDimensionController.DisableProjections();
         }
     }
-    
+
     private void OnTriggerEnter(Collider other) {
+        //found an object the player can interact with so add it to the pickupController list
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject == null) {
                 tGObject = other.transform;
             }
             if (tGObject.TryGetComponent(out GrabbableObject grabbableObject)) {
-                pickupController.AddObjectToInRangeList(grabbableObject);
+                PlayerBehaviour.Instance.pickupController.AddObjectToInRangeList(grabbableObject);
             }
         }
         //tell projection to enable
         else if (other.gameObject.layer == LayerInfo.WALL) {
-           // if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition){
-                //print("adding " + other);
 
-                if (potentialProjectionSurfaces.Contains(other)) return;
-                potentialProjectionSurfaces.Add(other);
-            }
-            
-            //potentialProjectionSurfaces = potentialProjectionSurfaces.Distinct().ToList();
-
-        //}
+            if (potentialProjectionSurfaces.Contains(other)) return;
+            potentialProjectionSurfaces.Add(other);
+        }
     }
     private void OnTriggerExit(Collider other) {
+        //found an object the player can interact with so remove it from pickupController list
         if (other.gameObject.layer == LayerInfo.INTERACTABLE_OBJECT) {
             var tGObject = other.transform.parent;
             if (tGObject == null) {
@@ -143,27 +128,18 @@ public class InteractRadarController : MonoBehaviour {
             }
             Debug.Log(tGObject.name);
             if (tGObject.TryGetComponent(out GrabbableObject tObject)) {
-                pickupController.RemoveObjectFromRangeList(tObject);
+                PlayerBehaviour.Instance.pickupController.RemoveObjectFromRangeList(tObject);
             }
         }
         //tell projection to disasble
         else if (other.gameObject.layer == LayerInfo.WALL) {
-         //   print("its exiting");
-            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition)
-            {
-                //print("exiting " + other.gameObject.GetComponent<WallBehaviour>());
-                
-                if (movement.currentWall == other.gameObject.GetComponent<WallBehaviour>())
-                {
-                   //movement.currentWall = null;
-               }
+            if (other.gameObject.GetComponent<WallBehaviour>().AllowsDimensionTransition) {
                 potentialProjectionSurfaces.Remove(other);
             }
         }
     }
-    public void clearsurfaces()
-    {
+    public void clearsurfaces() {
         potentialProjectionSurfaces.Clear();
     }
-    
+
 }

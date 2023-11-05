@@ -17,14 +17,9 @@ public class GrabbableObject : MonoBehaviour {
         Is3D = true;
 
     }
-
-    // Update is called once per frame
-    void Update() {
-    }
+    //handles picking up the object when in 3d
     public void Pickup3D(GameObject holder, Transform holdArea) {
-    //    Debug.Log(holder.name + " is picking up " + gameObject.name);
-        //transform.position = displayObject3D_Mesh.transform.position;
-        //displayObject3D_Mesh.transform.localPosition = Vector3.zero;
+        //get the rigid body, disable gravity, set drag to 10, freeze rotation, set parent to the hold area
         var rb3D = displayObject3D_Mesh.GetComponent<Rigidbody>();
         rb3D.useGravity = false;
         rb3D.drag = 10;
@@ -32,45 +27,16 @@ public class GrabbableObject : MonoBehaviour {
         IsBeingHeld = true;
         displayObject3D_Mesh.transform.parent = holdArea;
 
-        //disable physics for rigid body
-        // TogglePhysics(disable: true);
-
-        //  transform.SetParent(holder.transform);
-        //  transform.localPosition =  HoldOffset3D;
-          
-        //   ToggleGravity(false);
-        //  TogglePhysics(disable: true);
-
-
         //disable interaction indicator
         interactDisplayController.SetInteractIndicatorActive(false);
         this.holder = holder;
-
-        //set the holder as the parent to carry it around
-        // transform.SetParent(holder.transform);
-        // //set offset to be infront of the player at all times
-        //   transform.localPosition = HoldOffset3D;
-
-        //reset the position of the 3d transform to 0
-        //this is an alternative to updating the position of the entire transferable object at all times instead of leaving it in one spot and just moving it when required 
-
-        // IsBeingHeld = true;
-
 
     }
     public virtual void DropObject() {
         Drop3D();
     }
-    //protected void TogglePhysics(bool disable) {
-    //    displayObject3D_Mesh.GetComponent<Rigidbody>().isKinematic = disable;
-    //    //displayObject3D_Mesh.GetComponent<Rigidbody>().useGravity = !disable;
-    //    displayObject3D_Mesh.GetComponent<Collider>().isTrigger = disable;
-    //}
-    protected void ToggleGravity(bool enable) {
-        displayObject3D_Mesh.GetComponent<Rigidbody>().useGravity = enable;
-    }
     protected void Drop3D() {
-       
+       //reset the rigid body, enable gravity, set drag to 1, unfreeze rotation, set parent to null
         var rb3D = displayObject3D_Mesh.GetComponent<Rigidbody>();
         displayObject3D_Mesh.transform.parent = transform;
         transform.position = displayObject3D_Mesh.transform.position;

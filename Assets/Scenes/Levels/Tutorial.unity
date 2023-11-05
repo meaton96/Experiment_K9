@@ -2708,7 +2708,7 @@ PrefabInstance:
     - target: {fileID: 2416929007388417668, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: spawnPoint
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1980919717}
     - target: {fileID: 2416929007388417668, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: playerDimensionController
       value: 
@@ -2739,6 +2739,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5647112630155608246, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
       propertyPath: DOGEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647112630155608246, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
+      propertyPath: IsProjecting
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5647112630155608246, guid: 10b144c380968504d935c9e3949f6f80, type: 3}
@@ -5506,6 +5510,11 @@ PrefabInstance:
       addedObject: {fileID: 1488524411}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7370252f16e5aa443a34820de5b70a6e, type: 3}
+--- !u!1 &1980919717 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4176238577097866971, guid: 0d529d04f4cef29439a65726798a4c14, type: 3}
+  m_PrefabInstance: {fileID: 264983470}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2004489235
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -63,24 +63,15 @@ public class PickupController : MonoBehaviour {
         }
     }
     private void MoveObject() {
-        //if (Vector3.Distance(HeldObject.transform.position, holdArea.position) > 0.1f) {
-        //    var moveDirection = holdArea.position - HeldObject.transform.position;
-        //    forceDir = moveDirection * pickupForce;
-        //    heldObjectRigidbody.AddForce(moveDirection * pickupForce);
-        //}
         if (transform.localPosition.magnitude > 0.2f && !HeldObject.isColliding) {
 
             var moveDirection = holdArea.position - heldObjectRigidbody.transform.position;
             heldObjectRigidbody.AddForce(moveDirection * pickupForce);
-            Debug.Log("adding force " + moveDirection * pickupForce);
-        }
-        else if (HeldObject.isColliding) {
-            Debug.Log("colliding so no force applied");
         }
     }
 
     private void DropHeldObject() {
-
+        Debug.Log("pickupController Drop Object");
         HeldObject.DropObject();
         HeldObject = null;
         heldObjectRigidbody = null;
@@ -113,6 +104,7 @@ public class PickupController : MonoBehaviour {
 
     //handle picking up objects while in 2d
     private void Pickup2DObject() {
+        Debug.Log("trying to drop 2d");
         var tObject = GetObjectClosestTo2DPlayer();
 
         if (tObject != null && !tObject.Is3D) {

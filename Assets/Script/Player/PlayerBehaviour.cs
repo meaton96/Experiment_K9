@@ -10,58 +10,52 @@ using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour {
 
-    public bool is3D = true;                               //handles checking if the player is in 3d or 2d mode
-  //  private bool canMove = true;                            //disable or enable player movement
     
-   
+                                                           //  private bool canMove = true;                            //disable or enable player movement
+
+    [Header("Player References")]
     public GameObject player2D;                             //holds the 2d depiction of the player
     public MovementController_2D player2DMovementController;           //holds the 2d depiction of the player
     public GameObject player3D;                             //holds the 3d depiction of the player
+    public CharacterController playerController;
+    public ThirdPersonController thirdPersonController;
+    public GameObject interactRadarGameObject;          //holds the game object that has the radar collider on it
+    public InteractRadarController interactRadar;          //holds the game object that has the radar collider on it
 
-    private CharacterController playerController;
-    [SerializeField] public ThirdPersonController thirdPersonController;
-    [SerializeField] public InterfaceBehaviour interfaceScript;
-    [SerializeField] public PickupController pickupController;
-    [SerializeField] public PlayerDimensionController playerDimensionController;
+    public PickupController pickupController;
+    public PlayerDimensionController playerDimensionController;
 
+    [Header("Interface")]
+    public InterfaceBehaviour interfaceScript;
+
+    [Header("Settings")]
     public float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
-    [SerializeField] public GameObject interactRadar;          //holds the game object that has the radar collider on it
+    [SerializeField] private bool canResetLocation = true;
+    public bool is3D = true;                               //handles checking if the player is in 3d or 2d mode
 
-  //  private KeyControl interactKey;                             //which key to use for interaction, set in Start()
     private KeyControl resetKey;                             //which key to use for interaction, set in Start()
-
+    [Header("Spawn")]
     [SerializeField] private GameObject spawnPoint;
 
     public static PlayerBehaviour Instance;
 
-    
-
-    //[HideInInspector] public bool IsHoldingObject = false;       
-   // public bool IsHoldingObject = false;       //if the player has something in their hands or not
-  //  [HideInInspector] public GrabbableObject HeldObject;                   //the object the player is hold
-
-  //  Vector3 initialPosition;                                            //store the initial position and dimension to reset the player
- //   bool initialDimension3D;
     bool paused = false;
 
-    [SerializeField] private bool canResetLocation = true;
+    
 
     private void Start() {
+        //set singleton
         if (Instance == null) {
             Instance = this;
         }
         else {
             Destroy(this);
         }
-        //DontDestroyOnLoad(transform.parent.gameObject);
-        
+        //set reset key to R key and set the radius of the interact radar
         resetKey = Keyboard.current.rKey;
-        interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
-       // objectsInInteractRange = new();
+        interactRadarGameObject.GetComponent<SphereCollider>().radius = interactDisplayRadius;
 
-     //   initialDimension3D = is3D;
-       // initialPosition = player3D.transform.position;
-
+        //grab the controller scripts from the 3d player object
         if (player3D != null) {
             playerController = player3D.GetComponent<CharacterController>();
             thirdPersonController = player3D.GetComponent<ThirdPersonController>();
@@ -72,6 +66,7 @@ public class PlayerBehaviour : MonoBehaviour {
     }
     
     public void SetPaused(bool paused) {
+        thirdPersonController.SetPaused(paused);
         this.paused = paused;
     }
 
@@ -98,6 +93,9 @@ public class PlayerBehaviour : MonoBehaviour {
 
 
     }
+    //attempts to spawn the player at the spawn point in the secne
+    //will try and find a spawn point if one is not set
+    //throws an error if no spawn point was set and none was found
     public void Spawn() {
         if (spawnPoint != null) {
             Move3DPlayerToLocation(spawnPoint.transform.position);
@@ -112,15 +110,15 @@ public class PlayerBehaviour : MonoBehaviour {
 
         }
     }
-
+    //moves the 3d player to the given location
     public void Move3DPlayerToLocation(Vector3 location) {
         Debug.Log(thirdPersonController == null);
-      //  thirdPersonController.ToggleMovement(false);
         player3D.SetActive(false);
         player3D.transform.position = location;
         player3D.SetActive(true);
         StartCoroutine(EnablePlayerMovementOnNextFrame());
     }
+    //enables player movement after 2 frames
     private IEnumerator EnablePlayerMovementOnNextFrame() {
         for (int x = 0; x < 2; x++) {
             yield return new WaitForEndOfFrame();
@@ -131,75 +129,13 @@ public class PlayerBehaviour : MonoBehaviour {
 
     //swap between dimensions
     public void ChangeDimension() {
-        //TODO
         is3D = !is3D;
-        // rigidBody.isKinematic = !is3D;
-        
         //handle changing the held object dimension
         pickupController.ChangeDimension();
 
     }
-   
-
     //returns true if the game is in 3d mode
     public bool IsIn3D() { return is3D; }
-
-    
-
-    //handles player interaction with interactable objects
-    //private void HandleInteractionInput() {
-
-    //    if (interactKey.wasPressedThisFrame) {
-
-    //        //if the player is already holding something then drop it
-    //        if (IsHoldingObject) {
-    //            DropHeldObject();
-
-    //        }
-    //        //only process interact press if theres something to interact with
-    //        else {
-    //            PickupObject();
-
-
-    //        }
-
-    //    }
-    //}
-    //private void PickupObject() {
-    //    if (IsIn3D()) {
-    //        Handle3DInteractions();
-    //    }
-    //    else {
-    //        Pickup2DObject();
-    //    }
-    //}
-
-    ////handle picking up objects while in 2d
-    //private void Pickup2DObject() {
-    //    var tObject = GetObjectClosestTo2DPlayer();
-
-    //    if (tObject != null && !tObject.Is3D) {
-    //        HeldObject = tObject;
-    //        //pick up the object that was found to be the closest
-    //        (HeldObject as TransferableObject).Pickup2D(player2D);
-    //        IsHoldingObject = true;
-    //        player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2DHoldingObject);
-
-    //    }
-    //}
-    ////handle picking up 3d objects while in 3d 
-    //private void Handle3DInteractions() {
-    //    var tObject = GetObjectClosestToCameraLookAt();
-    //    //only process interactions with 3d objects while in 3d
-    //    if (tObject != null && tObject.Is3D) {
-    //        HeldObject = tObject;
-    //        //pick up the object that was found to be the closest
-    //        HeldObject.Pickup3D(player3D);
-    //        IsHoldingObject = true;
-    //    }
-    //}
-
-
 
 }
 

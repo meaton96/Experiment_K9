@@ -207,8 +207,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9e22e08519ed54f977fd95f1ffd4dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 2416929007388417668}
-  playerDimensionController: {fileID: 5647112630155608246}
   rb: {fileID: 5030094346641154242}
   playerRigidBody3D: {fileID: 3976565469633831111}
   offSetAmount: 6
@@ -1271,6 +1269,7 @@ GameObject:
   - component: {fileID: 8424500464638468376}
   - component: {fileID: 2416929007388417668}
   - component: {fileID: 5647112630155608246}
+  - component: {fileID: 8754400608702510881}
   m_Layer: 0
   m_Name: NewPlayer
   m_TagString: PlayerBehavior
@@ -1305,18 +1304,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 086d66af4b1e4dd4781784f30bbfdd80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  is3D: 1
   player2D: {fileID: 266677610665238099}
   player2DMovementController: {fileID: 5895966758457165437}
   player3D: {fileID: 5023980225577663842}
+  playerController: {fileID: 0}
   thirdPersonController: {fileID: 4271325807188534916}
-  interfaceScript: {fileID: 7519763555194715254}
-  pickupController: {fileID: 5470232485815951827}
+  interactRadarGameObject: {fileID: 4384154448399022592}
+  interactRadar: {fileID: 632825037184773871}
+  pickupController: {fileID: 8754400608702510881}
   playerDimensionController: {fileID: 5647112630155608246}
+  interfaceScript: {fileID: 7519763555194715254}
   interactDisplayRadius: 20
-  interactRadar: {fileID: 4384154448399022592}
-  spawnPoint: {fileID: 0}
   canResetLocation: 1
+  is3D: 1
+  spawnPoint: {fileID: 0}
 --- !u!114 &5647112630155608246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1330,21 +1331,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player3D: {fileID: 5023980225577663842}
+  controller3D: {fileID: 4271325807188534916}
   player2D: {fileID: 266677610665238099}
   movementController_2D: {fileID: 5895966758457165437}
   dog2DHitbox: {fileID: 7203371137855413276}
-  controller3D: {fileID: 4271325807188534916}
   Camera3D: {fileID: 2817393637023723959}
   Camera2D: {fileID: 74397854644777205}
   playerLeaveWallOffset: 6
-  radar: {fileID: 632825037184773871}
-  RangedDOGEnabled: 0
-  pickupController: {fileID: 5470232485815951827}
-  interfaceScript: {fileID: 7519763555194715254}
+  launchForce: 10
   IsProjecting: 0
   DOGEnabled: 0
-  DOGProjectionRange: 25
-  projectionOutOfRange: {fileID: 0}
+--- !u!114 &8754400608702510881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3973961944444345345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2020bab56e5eaf43855817a4eff0b29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holdArea: {fileID: 8413178250063108687}
+  HeldObject: {fileID: 0}
+  pickupRange: 5
+  pickupForce: 10
 --- !u!1 &4155157953602829011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1443,11 +1455,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2601295727ca480449baeeac47e46d58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBehaviour: {fileID: 2416929007388417668}
-  pickupController: {fileID: 5470232485815951827}
-  playerDimensionController: {fileID: 5647112630155608246}
-  Player3D: {fileID: 5023980225577663842}
-  movement: {fileID: 5895966758457165437}
   potentialProjectionSurfaces: []
 --- !u!1 &4532644179058410253
 GameObject:
@@ -1752,7 +1759,6 @@ GameObject:
   - component: {fileID: 7577174382562056574}
   - component: {fileID: 3976565469633831111}
   - component: {fileID: 492798257549359658}
-  - component: {fileID: 5470232485815951827}
   m_Layer: 10
   m_Name: Player3D
   m_TagString: Player
@@ -2013,22 +2019,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerDimensionController: {fileID: 5647112630155608246}
   playerBehaviour: {fileID: 2416929007388417668}
---- !u!114 &5470232485815951827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5023980225577663842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2020bab56e5eaf43855817a4eff0b29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  holdArea: {fileID: 8413178250063108687}
-  HeldObject: {fileID: 0}
-  pickupRange: 5
-  pickupForce: 10
 --- !u!1 &5127300399538757959
 GameObject:
   m_ObjectHideFlags: 0
@@ -2553,8 +2543,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6774737294069508098}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -28.75, y: 3.375, z: -3.6000004}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 71.84166, y: 4.7909327, z: -273.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2594,7 +2584,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 40
+  field of view: 60
   orthographic: 0
   orthographic size: 10
   m_Depth: -1

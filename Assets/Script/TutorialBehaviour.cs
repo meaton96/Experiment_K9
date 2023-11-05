@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class TutorialBehaviour : MonoBehaviour {
     List<LevelStateTrigger> activatedTriggers = new();
- //   InterfaceBehaviour interfaceBehaviour;
- //   PlayerDimensionController playerDimensionController;
-   // [SerializeField] PlayerBehaviour playerBehaviour;
-  //  PickupController pickupController;
     [SerializeField] private bool tutorialEnabled = true;
 
 

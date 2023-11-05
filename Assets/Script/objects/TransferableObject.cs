@@ -77,6 +77,7 @@ public class TransferableObject : GrabbableObject {
         IsBeingHeld = true;
     }
     public override void DropObject() {
+        Debug.Log("transferable object drop object");
         if (Is3D) 
             Drop3D();
         else
