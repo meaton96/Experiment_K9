@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 public class InteractRadarController : MonoBehaviour {
     //  [SerializeField] private PlayerControllerBeta playerScript;
     [SerializeField] private PlayerBehaviour playerBehaviour;
+    [SerializeField] private PickupController pickupController;
     [SerializeField] private PlayerDimensionController playerDimensionController;
     [SerializeField] private GameObject Player3D;
     [SerializeField] private  MovementController_2D movement;
@@ -118,7 +119,7 @@ public class InteractRadarController : MonoBehaviour {
                 tGObject = other.transform;
             }
             if (tGObject.TryGetComponent(out GrabbableObject grabbableObject)) {
-                playerBehaviour.AddObjectToInRangeList(grabbableObject);
+                pickupController.AddObjectToInRangeList(grabbableObject);
             }
         }
         //tell projection to enable
@@ -142,7 +143,7 @@ public class InteractRadarController : MonoBehaviour {
             }
             Debug.Log(tGObject.name);
             if (tGObject.TryGetComponent(out GrabbableObject tObject)) {
-                playerBehaviour.RemoveObjectFromRangeList(tObject);
+                pickupController.RemoveObjectFromRangeList(tObject);
             }
         }
         //tell projection to disasble

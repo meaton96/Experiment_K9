@@ -5,10 +5,10 @@ using UnityEngine;
 public class LevelStateTrigger : MonoBehaviour
 {
 
-    TutorialBehaviour tutorialBehaviour;
+    [SerializeField] TutorialBehaviour tutorialBehaviour;
 
     private void Awake() {
-        tutorialBehaviour = GameObject.Find("TutorialBehaviour").GetComponent<TutorialBehaviour>();
+      //  tutorialBehaviour = GameObject.Find("TutorialBehaviour").GetComponent<TutorialBehaviour>();
     }
 
     private void OnTriggerEnter(Collider other) {

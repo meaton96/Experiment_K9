@@ -7,6 +7,7 @@ public class TutorialBehaviour : MonoBehaviour {
     [SerializeField] InterfaceBehaviour interfaceBehaviour;
     [SerializeField] PlayerDimensionController playerDimensionController;
     [SerializeField] PlayerBehaviour playerBehaviour;
+    [SerializeField] PickupController pickupController;
     [SerializeField] private bool tutorialEnabled = true;
 
 
@@ -60,7 +61,7 @@ public class TutorialBehaviour : MonoBehaviour {
             interfaceBehaviour.DisableActiveTutorials();
     }
     private void HandleThirdTrigger() {
-        if (playerBehaviour.IsHoldingObject) {
+        if (pickupController.IsHoldingObject()) {
             interfaceBehaviour.DisableActiveTutorials();
         }
     }

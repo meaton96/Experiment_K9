@@ -22,6 +22,7 @@ public class PlayerDimensionController : MonoBehaviour {
     public bool RangedDOGEnabled = false;
 
     private PlayerBehaviour playerBehaviour;
+    [SerializeField] private PickupController pickupController;
     [SerializeField] private InterfaceBehaviour interfaceScript;
 
 
@@ -103,7 +104,7 @@ public class PlayerDimensionController : MonoBehaviour {
             //player is allowed to transition to the wall
             if (wallB.AllowsDimensionTransition) {
                 //player can transition and is holding an object
-                if (playerBehaviour.IsHoldingObject) {
+                if (pickupController.IsHoldingObject()) {
                     movementController_2D.SetProjectionState(MovementController_2D.ProjectionState.HoldingObject);
                 }
                 else {
@@ -119,7 +120,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
     //activate the 2d player
     void SetWallProjectionToActive() {
-        if (playerBehaviour.IsHoldingObject) {
+        if (pickupController.IsHoldingObject()) {
             movementController_2D.SetProjectionState(MovementController_2D.ProjectionState.In2DHoldingObject);
         }
         else {
@@ -168,6 +169,7 @@ public class PlayerDimensionController : MonoBehaviour {
     }
 
     private void TransitionTo2D() {
+        
         movementController_2D.GetComponent<Rigidbody>().isKinematic = false;
         SetWallProjectionToActive();
         player3D.SetActive(false);
@@ -190,7 +192,7 @@ public class PlayerDimensionController : MonoBehaviour {
         //adjust the player 3d model to be in front of the wall offset by a small amount
         player3D.transform.position = player2D.transform.position + player2D.transform.forward * playerLeaveWallOffset;
         player2D.SetActive(false);
-        playerBehaviour.ClearList();
+        pickupController.ClearList();
         radar.clearsurfaces();
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;
@@ -211,7 +213,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
         //  print(player3D.transform.position);
         player2D.SetActive(false);
-        playerBehaviour.ClearList();
+        pickupController.ClearList();
         radar.clearsurfaces();
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.position = launchPosition;

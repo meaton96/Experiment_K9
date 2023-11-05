@@ -45,7 +45,7 @@ public class TransferableObject : GrabbableObject {
        
     }
     public void Disable3D() {
-        TogglePhysics(disable: true);
+       // TogglePhysics(disable: true);
         displayObject3D_Mesh.enabled = false;
         Is3D = false;
     }

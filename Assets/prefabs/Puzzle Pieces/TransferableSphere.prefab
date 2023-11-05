@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactDisplayController: {fileID: 2617706958035673109}
   displayObject3D_Mesh: {fileID: 5916222978909152376}
-  HoldOffset3D: {x: 0, y: -2.5, z: 8}
+  HoldOffset3D: {x: 0, y: -2.5, z: 5}
   IsBeingHeld: 0
   Is3D: 1
   displayObject_2D: {fileID: 3426124303402463909}
@@ -344,7 +344,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5267620588336022957}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e65958df5e4776f4d84e039124ed6de3, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
