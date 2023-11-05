@@ -7,8 +7,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
 public class MovementController_2D : MonoBehaviour {
-    [SerializeField] PlayerBehaviour playerController;
-    [SerializeField] PlayerDimensionController playerDimensionController;
+   // [SerializeField] PlayerBehaviour playerController;
+    //[SerializeField] PlayerDimensionController playerDimensionController;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Rigidbody playerRigidBody3D;
     [SerializeField] private float offSetAmount = 5.5f;
@@ -58,7 +58,7 @@ public class MovementController_2D : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (!playerController.IsIn3D()) {
+        if (!PlayerBehaviour.Instance.IsIn3D()) {
             // Move2D();
             if (CanMove)
                 Move2D();
@@ -68,8 +68,8 @@ public class MovementController_2D : MonoBehaviour {
             //else {
             //    grounded = true;
             //}
-            if (currentWall.AllowsDimensionTransition && !playerDimensionController.DOGEnabled) {
-                playerDimensionController.TransitionTo3D();
+            if (currentWall.AllowsDimensionTransition && !PlayerBehaviour.Instance.playerDimensionController.DOGEnabled) {
+                PlayerBehaviour.Instance.playerDimensionController.TransitionTo3D();
             }
         }
         else {
@@ -141,17 +141,17 @@ public class MovementController_2D : MonoBehaviour {
 
         if (collision.gameObject.TryGetComponent(out WallBehaviour wallB)) {
 
-            if (currentWall == wallB && !playerController.IsIn3D() || currentWall == null && !playerController.IsIn3D()) {
-              //  Debug.Log("leaving wall");
+            if (currentWall == wallB && !PlayerBehaviour.Instance.IsIn3D() || currentWall == null && !PlayerBehaviour.Instance.IsIn3D()) {
+                //  Debug.Log("leaving wall");
                 //currentWall = null;
                 //print("test");
                 //playerController.ChangeDimension();
 
-                 playerDimensionController.TransitionTo3D();
+                PlayerBehaviour.Instance.playerDimensionController.TransitionTo3D();
                // UpdateWallStatus();
 
             }
-            else if (playerController.IsIn3D()) {
+            else if (PlayerBehaviour.Instance.IsIn3D()) {
                 //currentWall = null;
             }
         }
@@ -163,7 +163,7 @@ public class MovementController_2D : MonoBehaviour {
         }
         else {
             Debug.Log("leaving wall");
-            playerDimensionController.TransitionTo3D();
+            PlayerBehaviour.Instance.playerDimensionController.TransitionTo3D();
         }
     }
     bool CheckIfInCurrentWall() {

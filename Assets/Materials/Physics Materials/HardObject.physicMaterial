@@ -9,6 +9,6 @@ PhysicMaterial:
   m_Name: HardObject
   dynamicFriction: 1e+14
   staticFriction: 1e+14
-  bounciness: 1
+  bounciness: 0
   frictionCombine: 0
   bounceCombine: 0

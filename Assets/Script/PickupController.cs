@@ -10,13 +10,13 @@ public class PickupController : MonoBehaviour {
     [Header("Pickup Settings")]
     [SerializeField] Transform holdArea;
     [HideInInspector] public GrabbableObject HeldObject;
-    [SerializeField] private PlayerBehaviour playerBehaviour;
+  //  [SerializeField] private PlayerBehaviour playerBehaviour;
     private Rigidbody heldObjectRigidbody;
 
     [Header("Physics Params")]
     [SerializeField] float pickupRange = 5f;
     [SerializeField] float pickupForce = 150f;
-
+    private bool canInteract = true;                        //disable or enable player interactions
     KeyControl interactKey;
 
     private List<GrabbableObject> objectsInInteractRange;    //a list of all the objects that are in interactable range
@@ -55,7 +55,7 @@ public class PickupController : MonoBehaviour {
         return HeldObject != null;
     }
     private void PickupObject() {
-        if (playerBehaviour.IsIn3D()) {
+        if (PlayerBehaviour.Instance.IsIn3D()) {
             Handle3DInteractions();
         }
         else {
@@ -86,8 +86,8 @@ public class PickupController : MonoBehaviour {
         heldObjectRigidbody = null;
 
         //set the sprite to not holding the object
-        if (!playerBehaviour.IsIn3D()) {
-            playerBehaviour.player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2D);
+        if (!PlayerBehaviour.Instance.IsIn3D()) {
+            PlayerBehaviour.Instance.player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2D);
         }
     }
 
@@ -96,13 +96,13 @@ public class PickupController : MonoBehaviour {
             var tObject = HeldObject as TransferableObject;
             HeldObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             //swap parent and add offset when moving back to 3D with object
-            if (playerBehaviour.IsIn3D()) {
+            if (PlayerBehaviour.Instance.IsIn3D()) {
                 tObject.SetHolderAndOffset(gameObject, HeldObject.HoldOffset3D);
 
                 tObject.Enable3D();
             }
             else {
-                tObject.SetHolderAndOffset(playerBehaviour.player2D, Vector3.zero);
+                tObject.SetHolderAndOffset(PlayerBehaviour.Instance.player2D, Vector3.zero);
                 tObject.Disable3D();
             }
         }
@@ -118,8 +118,8 @@ public class PickupController : MonoBehaviour {
         if (tObject != null && !tObject.Is3D) {
             HeldObject = tObject;
             //pick up the object that was found to be the closest
-            (HeldObject as TransferableObject).Pickup2D(playerBehaviour.player2D);
-            playerBehaviour.player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2DHoldingObject);
+            (HeldObject as TransferableObject).Pickup2D(PlayerBehaviour.Instance.player2D);
+            PlayerBehaviour.Instance.player2DMovementController.SetProjectionState(MovementController_2D.ProjectionState.In2DHoldingObject);
 
         }
     }
@@ -180,7 +180,7 @@ public class PickupController : MonoBehaviour {
     //this behaviour might want to be changed later
     private TransferableObject GetObjectClosestTo2DPlayer() {
 
-        var objectsInRange = Physics.OverlapSphere(playerBehaviour.player2D.transform.position, playerBehaviour.interactDisplayRadius, LayerMask.GetMask("Interactable Objects"));
+        var objectsInRange = Physics.OverlapSphere(PlayerBehaviour.Instance.player2D.transform.position, PlayerBehaviour.Instance.interactDisplayRadius, LayerMask.GetMask("Interactable Objects"));
 
         if (!objectsInRange.Any()) return null;
 

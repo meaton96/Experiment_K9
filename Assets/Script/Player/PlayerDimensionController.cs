@@ -21,7 +21,7 @@ public class PlayerDimensionController : MonoBehaviour {
     //flag for Ranged version of device where you hold down space and release to transfer
     public bool RangedDOGEnabled = false;
 
-    private PlayerBehaviour playerBehaviour;
+   // private PlayerBehaviour playerBehaviour;
     [SerializeField] private PickupController pickupController;
     [SerializeField] private InterfaceBehaviour interfaceScript;
 
@@ -44,7 +44,7 @@ public class PlayerDimensionController : MonoBehaviour {
 
 
     private void Awake() {
-        playerBehaviour = GetComponent<PlayerBehaviour>();
+        //playerBehaviour = GetComponent<PlayerBehaviour>();
         interfaceScript.SetDogToggleText(RangedDOGEnabled);
         DOGToggleKey = Keyboard.current.fKey;
         DOGLeaveKey = Keyboard.current.spaceKey;
@@ -60,7 +60,7 @@ public class PlayerDimensionController : MonoBehaviour {
         if (pauseKey.wasPressedThisFrame) {
             paused = !paused;
 
-            playerBehaviour.SetPaused(paused);
+            PlayerBehaviour.Instance.SetPaused(paused);
             controller3D.SetPaused(paused);
             if (paused) {
                 Time.timeScale = 0;
@@ -174,7 +174,7 @@ public class PlayerDimensionController : MonoBehaviour {
         SetWallProjectionToActive();
         player3D.SetActive(false);
 
-        playerBehaviour.ChangeDimension();
+        PlayerBehaviour.Instance.ChangeDimension();
 
 
         Camera3D.SetActive(false);
@@ -197,7 +197,7 @@ public class PlayerDimensionController : MonoBehaviour {
         //set its rotation so its not clipping into the wall hopefully
         player3D.transform.forward = player2D.transform.right;
         player3D.SetActive(true);
-        playerBehaviour.ChangeDimension();
+        PlayerBehaviour.Instance.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
         if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
@@ -219,7 +219,7 @@ public class PlayerDimensionController : MonoBehaviour {
         player3D.transform.position = launchPosition;
         player3D.transform.forward = player2D.transform.right;
         player3D.SetActive(true);
-        playerBehaviour.ChangeDimension();
+        PlayerBehaviour.Instance.ChangeDimension();
         Camera3D.SetActive(true);
         Camera2D.SetActive(false);
         if (player3D.TryGetComponent(out StarterAssetsInputs sAssetsInput)) {
@@ -235,7 +235,7 @@ public class PlayerDimensionController : MonoBehaviour {
     //handle enable/disasble of DOG device while in auto mode
     private void HandleAutoModeInput() {
         if (DOGLeaveKey.wasPressedThisFrame) {
-            if (playerBehaviour.IsIn3D()) {
+            if (PlayerBehaviour.Instance.IsIn3D()) {
                 Debug.Log("oof");
             }
             else {
@@ -249,7 +249,7 @@ public class PlayerDimensionController : MonoBehaviour {
         if (DOGToggleKey.wasPressedThisFrame) {
             DOGEnabled = !DOGEnabled;
             interfaceScript.SetDogAutoEnabledText(DOGEnabled);
-            if (playerBehaviour.IsIn3D()) {
+            if (PlayerBehaviour.Instance.IsIn3D()) {
                 if (IsProjecting) {
                     DisableProjections();
                 }

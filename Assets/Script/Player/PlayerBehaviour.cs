@@ -12,24 +12,27 @@ public class PlayerBehaviour : MonoBehaviour {
 
     public bool is3D = true;                               //handles checking if the player is in 3d or 2d mode
   //  private bool canMove = true;                            //disable or enable player movement
-    private bool canInteract = true;                        //disable or enable player interactions
+    
    
     public GameObject player2D;                             //holds the 2d depiction of the player
     public MovementController_2D player2DMovementController;           //holds the 2d depiction of the player
     public GameObject player3D;                             //holds the 3d depiction of the player
 
     private CharacterController playerController;
-    [SerializeField] private ThirdPersonController thirdPersonController;
-    [SerializeField] private InterfaceBehaviour interfaceScript;
-    [SerializeField] private PickupController pickupController;
+    [SerializeField] public ThirdPersonController thirdPersonController;
+    [SerializeField] public InterfaceBehaviour interfaceScript;
+    [SerializeField] public PickupController pickupController;
+    [SerializeField] public PlayerDimensionController playerDimensionController;
 
     public float interactDisplayRadius = 20f; //radius of the collider to determine the range at which the player can interact
-    [SerializeField] private GameObject interactRadar;          //holds the game object that has the radar collider on it
+    [SerializeField] public GameObject interactRadar;          //holds the game object that has the radar collider on it
 
-    private KeyControl interactKey;                             //which key to use for interaction, set in Start()
+  //  private KeyControl interactKey;                             //which key to use for interaction, set in Start()
     private KeyControl resetKey;                             //which key to use for interaction, set in Start()
 
     [SerializeField] private GameObject spawnPoint;
+
+    public static PlayerBehaviour Instance;
 
     
 
@@ -44,8 +47,14 @@ public class PlayerBehaviour : MonoBehaviour {
     [SerializeField] private bool canResetLocation = true;
 
     private void Start() {
+        if (Instance == null) {
+            Instance = this;
+        }
+        else {
+            Destroy(this);
+        }
         //DontDestroyOnLoad(transform.parent.gameObject);
-        interactKey = Keyboard.current.eKey;
+        
         resetKey = Keyboard.current.rKey;
         interactRadar.GetComponent<SphereCollider>().radius = interactDisplayRadius;
        // objectsInInteractRange = new();
@@ -69,10 +78,7 @@ public class PlayerBehaviour : MonoBehaviour {
     void Update() {
         
         if (!paused) {
-            if (canInteract) {
-
-                //HandleInteractionInput();
-            }
+            
             if (canResetLocation) {
                 HandleResetInput();
             }

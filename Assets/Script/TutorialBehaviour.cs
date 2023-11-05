@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class TutorialBehaviour : MonoBehaviour {
     List<LevelStateTrigger> activatedTriggers = new();
-    [SerializeField] InterfaceBehaviour interfaceBehaviour;
-    [SerializeField] PlayerDimensionController playerDimensionController;
-    [SerializeField] PlayerBehaviour playerBehaviour;
-    [SerializeField] PickupController pickupController;
+ //   InterfaceBehaviour interfaceBehaviour;
+ //   PlayerDimensionController playerDimensionController;
+   // [SerializeField] PlayerBehaviour playerBehaviour;
+  //  PickupController pickupController;
     [SerializeField] private bool tutorialEnabled = true;
 
 
     int index = -1;
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
+
 
     // Update is called once per frame
     void Update() {
@@ -34,7 +31,7 @@ public class TutorialBehaviour : MonoBehaviour {
                     HandleThirdTrigger();
                     break;
                 default:
-                    interfaceBehaviour.DisableActiveTutorials();
+                    PlayerBehaviour.Instance.interfaceScript.DisableActiveTutorials();
                     break;
             }
         }
@@ -46,23 +43,23 @@ public class TutorialBehaviour : MonoBehaviour {
 
         activatedTriggers.Add(trigger);
         index++;
-        interfaceBehaviour.DisplayTutorialMessageByIndex(index);
+        PlayerBehaviour.Instance.interfaceScript.DisplayTutorialMessageByIndex(index);
     }
     public void BackupAState(LevelStateTrigger trigger) {
         index--;
     }
     private void HandleFirstTrigger() {
-        if (playerDimensionController.DOGEnabled) {
-            interfaceBehaviour.DisableActiveTutorials();
+        if (PlayerBehaviour.Instance.playerDimensionController.DOGEnabled) {
+            PlayerBehaviour.Instance.interfaceScript.DisableActiveTutorials();
         }
     }
     private void HandleSecondTrigger() {
-        if (playerBehaviour.is3D)
-            interfaceBehaviour.DisableActiveTutorials();
+        if (PlayerBehaviour.Instance.is3D)
+            PlayerBehaviour.Instance.interfaceScript.DisableActiveTutorials();
     }
     private void HandleThirdTrigger() {
-        if (pickupController.IsHoldingObject()) {
-            interfaceBehaviour.DisableActiveTutorials();
+        if (PlayerBehaviour.Instance.pickupController.IsHoldingObject()) {
+            PlayerBehaviour.Instance.interfaceScript.DisableActiveTutorials();
         }
     }
 
